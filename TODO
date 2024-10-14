@@ -1,6 +1,9 @@
 WW41:
-1. [TD] Dokoncit USB mass storage mod,TBD
+1. [TD] Dokoncit USB mass storage mod, TBD
 2. [TD] Detekce USB Power (connected),TBD
 3. [TD] Architektonicky koncept (Blokove schema),TBD
 -----
-
+WW42:
+1. [TD] Navrh Schematicu desky (Power supply backup, GPIO/ADC detekce Power drop, GPIO/ADC detekce USB Mass Storage, RTC, LEDky, teplotni senzor)
+2. [MM] Check starter kit schematic, check signalu USB1_VBUS_VALID_TXT
+-----
