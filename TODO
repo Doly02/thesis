@@ -2,8 +2,24 @@ WW41:
 1. [TD] Dokoncit USB mass storage mod, TBD
 2. [TD] Detekce USB Power (connected),TBD
 3. [TD] Architektonicky koncept (Blokove schema),TBD
+= DONE [1, 2]
 -----
 WW42:
 1. [TD] Navrh Schematicu desky (Power supply backup, GPIO/ADC detekce Power drop, GPIO/ADC detekce USB Mass Storage, RTC, LEDky, teplotni senzor)
-2. [MM] Check starter kit schematic, check signalu USB1_VBUS_VALID_TXT
+2. [MM] Check starter kit schematic, check signalu USB1_VBUS_VALID_TXT 
+= DONE [2]
 -----
+WW46:
+1. [TD] Ukladani do souboru (dir: data_YYYYMMDD/, file: rec_YYYYMMMDD-HH-MM-X.log) (.conf/)
+  ( conf/ max. lenght of file limit, min. lenght, max. record time, min. record time) 
+  important to control that unprintable chars will be printed to file as " "
+  .sys_log (To catch errors)
+2. timer for real-time
+3. [TD] Datastream -> Detection of end of line (always end with full line) -> Low Prio For Now
+4. Prevention of VBUS Drop (GPIO) 
+
+2x8kB buffer
+1 <- for rec + time marker.
+2 <- post-processing
+
+timer <- will simulate real-time
