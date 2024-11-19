@@ -14,7 +14,7 @@ WW46:
   ( conf/ max. lenght of file limit, min. lenght, max. record time, min. record time) 
   important to control that unprintable chars will be printed to file as " "
   .sys_log (To catch errors)
-2. timer for real-time
+2. timer for real-time 
 3. [TD] Datastream -> Detection of end of line (always end with full line) -> Low Prio For Now
 4. Prevention of VBUS Drop (GPIO) 
 
@@ -23,3 +23,16 @@ WW46:
 2 <- post-processing
 
 timer <- will simulate real-time
+= DONE [2]
+
+WW47:
+1. Rozchodit UART (rychlost ~230k Bd) -> rozdilna rychlost AutoS1/AutoS2, s eDMA
+2. Podminenym prekladem debug. informace (-> defs.h), time measurement (pridelit GPIOs), Active Thread -> High, Deactivate Thread -> Low
+3. vytvoreni ping & pong bufferu
+4. analyza "\r\n"
+5. vytvorit konfiguraci soubor a jeden soubor pro ukladani
+
+UART 1B fifo (cetnost interruptu) -> po 1B vyvolat Interrupt (obsluha s nejvyssi prioritou) -> po 1B vkladat do ping bufferu -> v ping bufferu kontrolovar "\r\n" potom doplnovat
+Asi pouze jedno DMA mezi CPU a SD kartou
+
+- zalozni reseni pro update casu -> interni RTC
