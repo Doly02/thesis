@@ -2,7 +2,7 @@ WW41:
 1. [TD] Dokoncit USB mass storage mod, TBD
 2. [TD] Detekce USB Power (connected),TBD
 3. [TD] Architektonicky koncept (Blokove schema),TBD
-= DONE [1, 2]
+= DONE [1, 2, 3]
 -----
 WW42:
 1. [TD] Navrh Schematicu desky (Power supply backup, GPIO/ADC detekce Power drop, GPIO/ADC detekce USB Mass Storage, RTC, LEDky, teplotni senzor)
@@ -16,14 +16,15 @@ WW46:
   .sys_log (To catch errors)
 2. timer for real-time 
 3. [TD] Datastream -> Detection of end of line (always end with full line) -> Low Prio For Now
-4. Prevention of VBUS Drop (GPIO) 
+4. Prevention of VBUS Drop (GPIO)
+
 
 2x8kB buffer
 1 <- for rec + time marker.
 2 <- post-processing
 
 timer <- will simulate real-time
-= DONE [2]
+= DONE [1, 2]
 
 WW47:
 1. Rozchodit UART (rychlost ~230k Bd) -> rozdilna rychlost AutoS1/AutoS2, s eDMA
@@ -36,3 +37,4 @@ UART 1B fifo (cetnost interruptu) -> po 1B vyvolat Interrupt (obsluha s nejvyssi
 Asi pouze jedno DMA mezi CPU a SD kartou
 
 - zalozni reseni pro update casu -> interni RTC
+= DONE [2, 5]
