@@ -37,4 +37,12 @@ UART 1B fifo (cetnost interruptu) -> po 1B vyvolat Interrupt (obsluha s nejvyssi
 Asi pouze jedno DMA mezi CPU a SD kartou
 
 - zalozni reseni pro update casu -> interni RTC
-= DONE [2, 5]
+= DONE [1, 2, 5]
+
+WW50:
+1. Field test UART kanalu 
+  a. ukladani do druheho uartu
+  b. ukladani do souboru
+2. Interni RTC (SetTime, GetTime) + aktualizace casu ve FATFS
+3. Ping Pong Buffer prepinani 
+4. Segmentace souboru
