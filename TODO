@@ -46,3 +46,11 @@ WW50:
 2. Interni RTC (SetTime, GetTime) + aktualizace casu ve FATFS
 3. Ping Pong Buffer prepinani 
 4. Segmentace souboru
+= DONE [1b ]
+
+WW51:
+1. Triple Buffering (FIFO + 2x Ping-Pong ADMA Buffers)
+2. Check Konec Transferu -> Register ze predchozi buffer byl spravne ulozen, nebo si po konci transferu vyvolat interrupt
+3. Zrusit timer pro mereni casu -> reimplementace do RTC
+4. Prepinani textu do druheho UARTu
+
