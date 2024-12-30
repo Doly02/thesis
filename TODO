@@ -53,4 +53,9 @@ WW51:
 2. Check Konec Transferu -> Register ze predchozi buffer byl spravne ulozen, nebo si po konci transferu vyvolat interrupt
 3. Zrusit timer pro mereni casu -> reimplementace do RTC
 4. Prepinani textu do druheho UARTu
+= [1, 2, 4]
 
+WW52:
+1. Text analyza CRLF \r\n
+2. Vkladani casu (hranicni pripad kdyz bude datu, vychazet na konec souboru)
+3. 12H test, soubor 100KB, zda se zaznam nerozjede v case
