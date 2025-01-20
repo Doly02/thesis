@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.4 Chrome/128.0.6613.186 Electron/32.2.5 Safari/537.36" version="26.0.4">
   <diagram name="Page-1" id="rjwEgcaiLJZMq75zWwEi">
-    <mxGraphModel dx="2022" dy="697" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2420" dy="929" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -13,23 +13,17 @@
         <mxCell id="LIRwoS4u0499D45nPthz-3" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#B9E0A5;" vertex="1" parent="1">
           <mxGeometry x="560" y="200" width="160" height="240" as="geometry" />
         </mxCell>
-        <mxCell id="LIRwoS4u0499D45nPthz-4" value="Mass Storage&lt;div&gt;Task&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="LIRwoS4u0499D45nPthz-4" value="Mass Storage&lt;div&gt;úloha&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="560" y="280" width="160" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="LIRwoS4u0499D45nPthz-5" value="Record&lt;div&gt;Task&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="LIRwoS4u0499D45nPthz-5" value="Nahrávací&lt;div&gt;úloha&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="80" y="275" width="160" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="LIRwoS4u0499D45nPthz-6" value="semaphore" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fillColor=#B9E0A5;" vertex="1" parent="1">
+        <mxCell id="LIRwoS4u0499D45nPthz-6" value="semafor" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fillColor=#B9E0A5;" vertex="1" parent="1">
           <mxGeometry x="360" y="200" width="80" height="240" as="geometry" />
         </mxCell>
-        <mxCell id="LIRwoS4u0499D45nPthz-8" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#B9E0A5;strokeColor=light-dark(#000000, #446e2c);" vertex="1" parent="1">
-          <mxGeometry x="320" y="820" width="160" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="LIRwoS4u0499D45nPthz-18" value="Fyzická karta" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=light-dark(#000000, #996500);" vertex="1" parent="1">
-          <mxGeometry x="320" y="900" width="160" height="40" as="geometry" />
-        </mxCell>
         <mxCell id="LIRwoS4u0499D45nPthz-19" value="" style="group" vertex="1" connectable="0" parent="1">
-          <mxGeometry x="640" y="680" width="160" height="120" as="geometry" />
+          <mxGeometry x="920" y="720" width="160" height="120" as="geometry" />
         </mxCell>
         <mxCell id="LIRwoS4u0499D45nPthz-11" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fillColor=#B9E0A5;" vertex="1" parent="LIRwoS4u0499D45nPthz-19">
           <mxGeometry width="40" height="40" as="geometry" />
@@ -48,9 +42,6 @@
         </mxCell>
         <mxCell id="LIRwoS4u0499D45nPthz-16" value="Hardware" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;strokeColor=default;" vertex="1" parent="LIRwoS4u0499D45nPthz-19">
           <mxGeometry x="40" y="80" width="120" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="LIRwoS4u0499D45nPthz-20" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=light-dark(#000000, #6d5100);" vertex="1" parent="1">
-          <mxGeometry x="320" y="860" width="160" height="40" as="geometry" />
         </mxCell>
         <mxCell id="LIRwoS4u0499D45nPthz-22" value="" style="group" vertex="1" connectable="0" parent="1">
           <mxGeometry x="80" y="560" width="160" height="120" as="geometry" />
@@ -133,7 +124,7 @@
             <mxPoint x="250" y="330" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="LIRwoS4u0499D45nPthz-41" value="Inicializace" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="LIRwoS4u0499D45nPthz-41" value="Inicializace" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#B9E0A5;" vertex="1" parent="1">
           <mxGeometry x="290" y="10" width="220" height="120" as="geometry" />
         </mxCell>
         <mxCell id="LIRwoS4u0499D45nPthz-42" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="LIRwoS4u0499D45nPthz-41" target="LIRwoS4u0499D45nPthz-34">
