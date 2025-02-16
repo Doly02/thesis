@@ -20,21 +20,21 @@ požadavky na způsob sběru, formátování a uchovávání dat.
 Tato bakalářská práce je věnována návrhu a implementaci takového zařízení, které bude schopno záznamu dat. Požadavek na zařízení vznikl od firmy NXP 
 Semiconductors, konkrétně od týmu zaměřeného na bezdrátové nabíjení, ve kterém pracuji. Tento tým působí v České republice – v pobočkách v Brně a Rožnově 
 pod Radhoštěm – a zároveň má své zastoupení v Asii a Severní Americe. NXP Semiconductors je jedním z předních členů WPC (Wireless Power Consortium), 
-organizace zodpovědné za definování standardu Qi pro bezdrátové nabíjení. Primární zaměření NXP v této oblasti spočívá ve vývoji referenčních designů pro 
-automotive sektor, kde zákazníkům poskytuje řešení určená pro integraci do vozidel.
+organizace zodpovědné za definování standardu Qi pro bezdrátové nabíjení. Primární zaměření NXP v této oblasti spočívá ve vývoji referenčních designů 
+pro automotive sektor, kde zákazníkům poskytuje řešení určená pro integraci do vozidel.
 
 Zákazníci, kteří využívají referenční designy NXP, pocházejí z celého světa a dostávají téměř hotový produkt, který lze následně certifikovat v Qi 
 certifikačních laboratořích. Nicméně i přesto, že jsou referenční designy navrženy podle nejnovějších standardů, často dochází k jejich úpravám podle 
-specifických požadavků zákazníků, zejména s ohledem na konkrétní poptávku koncového zákazníka (OEM – Original Equipment Manufacturer). Tyto požadavky jsou 
-obvykle shrnuty v RFQ (Request for Quotation), kde zákazník specifikuje konkrétní požadavky na systém. Tyto úpravy mohou být například realizovány z důvodu 
-snížení ceny nebo zlepšení výkonu, například EMC charakteristik a nebo speciální chování bezdrátové nabíječky v krajních situacích. 
+specifických požadavků zákazníků, zejména s ohledem na konkrétní poptávku koncového zákazníka (OEM – Original Equipment Manufacturer). Tyto požadavky 
+jsou obvykle shrnuty v RFQ (Request for Quotation), kde zákazník specifikuje konkrétní požadavky na systém. Tyto úpravy mohou být například realizovány 
+z důvodu snížení ceny nebo zlepšení výkonu, například EMC charakteristik a nebo speciální chování bezdrátové nabíječky v krajních situacích. 
 
 Při jakýchkoli úpravách však vznikají nové technické výzvy, a proto NXP poskytuje zákazníkům plnou technickou podporu až do úspěšné certifikace. Certifikace 
 probíhá v různých laboratořích po celém světě, avšak ne vždy může být přítomen zaměstnanec NXP, který by dohlížel na celý proces a zajistil, že certifikace 
-proběhne hladce. V těchto případech se tým pro bezdrátové napájení momentálně spoléhá pouze na záznamy poskytnuté operátorem certifikační laboratoře. Tyto 
-záznamy však pocházejí pouze ze strany přijímače – tedy certifikačního zařízení, zpravidla od výrobců Nok9 nebo Granite River Labs (GRL). Ty poskytují některé 
-z důležitých informací, bohužel ale tyto nabídnuté záznamy nezahrnují explicitní informace o chování vysílače. Pokud tedy bezdrátová nabíječka, tedy vysílač 
-nějakým testem neprojde, což se občas stává, je často náročné zpětně identifikovat příčinu problému. \cite{nxp_wireless_charging_team}
+proběhne hladce. V těchto případech se tým pro bezdrátové napájení momentálně spoléhá pouze na záznamy poskytnuté operátorem certifikační laboratoře. 
+Tyto záznamy však pocházejí pouze ze strany přijímače – tedy certifikačního zařízení, zpravidla od výrobců Nok9 nebo Granite River Labs (GRL). Ty poskytují 
+některé z důležitých informací, bohužel ale tyto nabídnuté záznamy nezahrnují explicitní informace o chování vysílače. Pokud tedy bezdrátová nabíječka, tedy 
+vysílač nějakým testem neprojde, což se občas stává, je často náročné zpětně identifikovat příčinu problému. \cite{nxp_wireless_charging_team}
 
 
 \chapter{Záznam dat}
@@ -67,9 +67,9 @@ budoucnosti, i jeho odpovědi, čímž vznikly první organizované záznamy psa
 \newpage
 
 Průlomem pro zaznamenáváním dat, bylo vynalezení knihtisku, které vymyslel Johann Gutenberg ve 40. letech 15. století. Do této doby byly informace 
-zaznamenávány ručním přepisováním, což bylo zdlouhavé a nákladné. V počátcích měl knihtisk význam převážně z náboženského hlediska, díky tisku se Bible 
-mohla šířit mezi širokou veřejností, což přispělo k protestantské reformaci a změně křesťanského světa. Nicméně knihtisk obecně změnil způsob, jakým lidé 
-přistupují k informacím a učinil je dostupnějšími. \cite{knihtisk_medium}
+zaznamenávány ručním přepisováním, což bylo zdlouhavé a nákladné. V počátcích měl knihtisk význam převážně z náboženského hlediska, díky tisku se Bible mohla 
+šířit mezi širokou veřejností, což přispělo k protestantské reformaci a změně křesťanského světa. Nicméně knihtisk obecně změnil způsob, jakým lidé přistupují 
+k informacím a učinil je dostupnějšími. \cite{knihtisk_medium}
 
 V 17. století se dále pokročilo, jak v způsobech záznamu dat, tak i s jejich zpracováním. Významným představitelem tohoto období je John Graunt, jež se 
 věnoval studiu dat o úmrtnosti v Londýně, během čehož odhalil určité opakující se vzorce a zákonitosti na základě, kterých položil základy moderní statistiky. 
@@ -86,11 +86,11 @@ digitální záznamníky schopné uchovávat a analyzovat obrovské objemy infor
   
 \subsection{Analogový záznam dat} %TODO: zde popsat i analogový záznam i digitální záznamníky
 \label{moznosti_zaznamu_dat}
-Prvními specializovanými záznamníky byly mechanické či elektromechanické (analogové) zařízení, ty primárně sloužily k zaznamenávání fyzikálních veličin, jako 
-je například teplota, tlak, vlhkost nebo vibrace. Ty využívaly myšlenky mechanického pohyblivého pera, které převádělo naměřenou hodnotu fyzikální veličiny 
-na samočinný pohyb. Aby tento mechanický pohyb mohl být uskutečněn, bylo třeba nejprve hodnotu měřené veličiny, například pro měření teploty, lze využít 
-bimetalový pásek, který je složen ze dvou kovových materiálů s různou hodnotou teplotní roztažitelnosti. Pokud následně dojde ke změně teploty, způsobí tento 
-přechodný jev pohyb kovového pásku, a ten je následně převeden na pohyb mechanického pera.
+Prvními specializovanými záznamníky byly mechanické či elektromechanické (analogové) zařízení, ty primárně sloužily k zaznamenávání fyzikálních veličin, 
+jako je například teplota, tlak, vlhkost nebo vibrace. Ty využívaly myšlenky mechanického pohyblivého pera, které převádělo naměřenou hodnotu fyzikální 
+veličiny na samočinný pohyb. Aby tento mechanický pohyb mohl být uskutečněn, bylo třeba nejprve hodnotu měřené veličiny, například pro měření teploty, lze 
+využít bimetalový pásek, který je složen ze dvou kovových materiálů s různou hodnotou teplotní roztažitelnosti. Pokud následně dojde ke změně teploty, způsobí 
+tento přechodný jev pohyb kovového pásku, a ten je následně převeden na pohyb mechanického pera.
 
 % mechanicky -< samocinny
 % pomocí kterého se zapisovala změřená hodnota na paměťové médiu (papírová páska nebo papírový buben)
@@ -102,12 +102,8 @@ přechodný jev pohyb kovového pásku, a ten je následně převeden na pohyb m
     \label{fig:polygraaf}
 \end{figure}
 
-Mezi přístroje využívající principu analogové záznamu, patří například polygraf - využívající se například jako detektor lži, cirkulární grafový záznamník 
-(Circular Chart Recorder)- využívající se pro měření teploty.
-
-\subsection{Digitální záznam dat}
-\label{moznosti_zaznamu_dat}
-Jak obecne probiha princip digitalniho zaznamu dat, co jsou to digitalni data, ze se v dnesni dobe uprednostnuje tento zpusob misto analogoveho zaznamu.
+Mezi přístroje využívající principu analogového záznamu, patří například polygraf - využívající se například jako detektor lži, cirkulární grafový záznamník 
+(Circular Chart Recorder) využívající se pro měření teploty.
 
 
 \section{Digitální záznamová jednotka (datalogger)}
@@ -130,8 +126,13 @@ K cemu jsou vyuzivany digitalni zaznamniky na PC.
 \subsection{Digitální záznamník na platformě mikrořadiče}
 
 \section{Koncepty využívané ke zpracování dat digitálních záznamníků}
-cirkularni buffer,vicenasobna vyrovnavaci pamet (multiple-buffering), davkove ukladani/zpracovani (batch processing), nizko-energeticke rezimy (low-power modes)
+cirkulární buffer, vícenasobná vyrovnávací paměť (multiple-buffering), dávkové ukládání/zpracování (batch processing), nízko-energetické režimy 
+(low-power modes)
+
+
 \chapter{Návrh digitálního záznamníku}
+
+\section{Představení existujících řešení}
 
 \section{Výběr vhodné platformy}
 Neni vhodne implementovat zaznamnik na pocitacovem systemu, je treba zvolit stragii implementace na mikroradici, porovnat FRDM-MCXN947, STM32 a ESP32. 
@@ -140,18 +141,76 @@ Pripraven i popis jadra ARM Cortex-M33, ktere vyuziva FRDM-MCXN947.
 
 \section{Možnosti způsobu ukládání získaných dat}
 
-\section{Možnosti ukládání časových značek}
+% ----------------------------------------------------
+% DALSI NAZVY: Volba datového úložiště, Výběr externího uložiště pro záznam dat
+\section{Výběr úložiště pro záznam dat}
+Obecný popis, proč je potřeba externí uložiště, že by se data mohla ukládat i v RAM paměti, ale že by tam moc dlouho nevydržela, 
 
-\section{Výběr přístupu k získaným datům}
+\subsection{SDHC karta}
 
+\subsection{Quad-SPI flash}
+
+\subsection{USB flash disk}
+
+% ----------------------------------------------------
+% DALSI NAZVY: Volba datového úložiště, Výběr externího uložiště pro záznam dat
+\section{Možnosti správy dat - souborové systémy} 
+Obecný popis, souborový systém je zodpovědný za organizaci, správu a přístup k datům na zvoleném úložném médiu.
+
+\subsection{FATFS}
+
+\subsection{Chan FATFD}
+
+\subsection{LittleFS}
+
+
+% ----------------------------------------------------
+
+\section{Výběr řízení přístupu k získaným datům}
+
+\subsection{USB Mass Storage}
+
+\subsection{Media Transfer Protocol}
+
+\subsection{Human Interface Device}
+
+% ----------------------------------------------------
+\section{Výběr zdroje času}
+
+\subsection{Obvod reálného času}
+
+\subsection{Interní časovač}
+
+\subsection{Bezdrátová komunikace (GPS/NTP)}
+
+% ----------------------------------------------------
 \section{Výber přístupu řízení běhu aplikace}
-Srovnani bare-metal, FreeRTOS a ZephyrRTOS
+Srovnani obecne bare-metal a RTOS.
+
+
+\subsection{Bare-Metal}
+
+% TODO: Zde to asi spis rozdelit na Baremetall vs. RTOS a pak uvest priklady jako FreeRTOS a ZephyrRTOS
+\subsection{FreeRTOS}
+Konkretní výhody a nevýhody FreeRTOS
+
+\subsection{ZephyrRTOS}
+Konkretní výhody a nevýhody ZephyrRTOS
+
+% ----------------------------------------------------
 
 \section{Architektura systému digitálního záznamníku}
+Popis architektury na základě vybraných komponent. Popis blokového diagramu.
 
-\section{Měření teploty}
+% ----------------------------------------------------
+
+\section{Rozšíření o měření teploty}
+
+% ----------------------------------------------------
 
 \section{Řešení problému synchronizace času}
+
+% ----------------------------------------------------
 
 \chapter{Návrh expanzní desky}
 Popis co všechno je již na platformě FRDM MCXN947, z toho ti vyplyne co všechno bude ještě muset nabízet expanzní deska.
@@ -161,29 +220,38 @@ Jak jsem měřil spotřebu, jak jsem spočítal hodnoty kondenzátorů
 
 \chapter{Implementace aplikace záznamníku}
 
-\section{Implementace záznamového vlákna}
+\section{Záznamové vlákno}
 
-\section{Implementace USB Mass Storage vlákna}
+\section{USB Mass Storage vlákno}
 
-\section{Implementace logiky kontrolních diod}
+\section{Logika kontrolních diod}
 
-\chapter{Testování a validace}
+% ==================================================== 
+\chapter{Vyhodnocení systému}
 Obecne proc je potreba testovat, jake jsou moznost testovani a validace vestavenych systemu
 
-\section{Funkcionální testování}
+% ----------------------------------------------------
+
+\section{Testování a validace}
+
+\subsection{Funkcionální testování}
 Popis skriptů pro automatické testování, popis výsledků, atd, ...
 
-\section{Kontrola bezpečnosti kódu}
+\subsection{Kontrola bezpečnosti kódu}
 MISRA
+
+% ----------------------------------------------------
+
+\section{Limitace systému}
+\label{limitace}
+
+% ----------------------------------------------------
+
+\section{Možná rozšíření záznamníku}
+\label{mozne_rozsireni}
 
 \chapter{Závěr}
 \label{zaverPrace}
-
-\subsection{Zhodnocení práce}
-\label{zhodnocení_prace}
-
-\subsection{Možná rozšíření záznamníku}
-\label{zhodnocení_prace}
 
 
 %===============================================================================
