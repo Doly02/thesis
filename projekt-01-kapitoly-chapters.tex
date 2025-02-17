@@ -8,33 +8,28 @@
 
 \chapter{Úvod}
 \label{uvod}
-Data a informace dnes představují jeden z nejcennějších zdrojů moderní společnosti. Často jsou označována jako "digitální zlato", protože jejich správné 
-využití může přinést obrovskou hodnotu v různých oblastech – od vědy a průmyslu až po zdravotnictví a každodenní život. Aby však mohla být efektivně využita, 
-je nutné je správně zaznamenávat, ukládat a analyzovat.
-
-Vzhledem k široké škále oblastí, kde data vznikají, se používají různé metody jejich sběru a uchovávání. Data mohou pocházet z různých zdrojů – například 
-senzorů měřících fyzikální veličiny, síťových zařízení sledujících internetový provoz, medicínských přístrojů monitorujících životní funkce pacientů, 
-ekonomických systémů analyzujících finanční transakce či průmyslových strojů zaznamenávajících provozní parametry. Každý z těchto zdrojů má specifické 
-požadavky na způsob sběru, formátování a uchovávání dat. 
-
-Tato bakalářská práce je věnována návrhu a implementaci takového zařízení, které bude schopno záznamu dat. Požadavek na zařízení vznikl od firmy NXP 
-Semiconductors, konkrétně od týmu zaměřeného na bezdrátové nabíjení, ve kterém pracuji. Tento tým působí v České republice – v pobočkách v Brně a Rožnově 
-pod Radhoštěm – a zároveň má své zastoupení v Asii a Severní Americe. NXP Semiconductors je jedním z předních členů WPC (Wireless Power Consortium), 
-organizace zodpovědné za definování standardu Qi pro bezdrátové nabíjení. Primární zaměření NXP v této oblasti spočívá ve vývoji referenčních designů 
-pro automotive sektor, kde zákazníkům poskytuje řešení určená pro integraci do vozidel.
+Tato bakalářská práce je věnována návrhu a implementaci digitálního záznamníků s autonomním dokončením záznamu dat při výpadku napájení. Požadavek na zařízení 
+vznikl od firmy NXP Semiconductors, konkrétně od týmu zaměřeného na bezdrátové nabíjení, ve kterém pracuji. Tento tým působí v České republice, jak v Rožnově 
+pod Radhoštěm tak i v Brně a zároveň má své zastoupení v Asii a Severní Americe. NXP Semiconductors je jedním z předních členů WPC (Wireless Power Consortium), 
+organizace zodpovědné za definování standardu Qi pro bezdrátové nabíjení. Primární zaměření NXP v této oblasti spočívá ve vývoji referenčních designů pro 
+automotive sektor, kde zákazníkům poskytuje řešení určená pro integraci do vozidel.
 
 Zákazníci, kteří využívají referenční designy NXP, pocházejí z celého světa a dostávají téměř hotový produkt, který lze následně certifikovat v Qi 
 certifikačních laboratořích. Nicméně i přesto, že jsou referenční designy navrženy podle nejnovějších standardů, často dochází k jejich úpravám podle 
-specifických požadavků zákazníků, zejména s ohledem na konkrétní poptávku koncového zákazníka (OEM – Original Equipment Manufacturer). Tyto požadavky 
-jsou obvykle shrnuty v RFQ (Request for Quotation), kde zákazník specifikuje konkrétní požadavky na systém. Tyto úpravy mohou být například realizovány 
-z důvodu snížení ceny nebo zlepšení výkonu, například EMC charakteristik a nebo speciální chování bezdrátové nabíječky v krajních situacích. 
+specifických požadavků zákazníků, zejména s ohledem na konkrétní poptávku koncového zákazníka (OEM – Original Equipment Manufacturer). Tyto požadavky jsou 
+obvykle shrnuty v RFP (Request for Proposal), kde zákazník specifikuje konkrétní požadavky na systém. Tyto úpravy mohou být například realizovány z důvodu 
+snížení ceny nebo zlepšení výkonu, například EMC charakteristik a nebo speciální chování bezdrátové nabíječky v krajních situacích. 
 
 Při jakýchkoli úpravách však vznikají nové technické výzvy, a proto NXP poskytuje zákazníkům plnou technickou podporu až do úspěšné certifikace. Certifikace 
 probíhá v různých laboratořích po celém světě, avšak ne vždy může být přítomen zaměstnanec NXP, který by dohlížel na celý proces a zajistil, že certifikace 
-proběhne hladce. V těchto případech se tým pro bezdrátové napájení momentálně spoléhá pouze na záznamy poskytnuté operátorem certifikační laboratoře. 
-Tyto záznamy však pocházejí pouze ze strany přijímače – tedy certifikačního zařízení, zpravidla od výrobců Nok9 nebo Granite River Labs (GRL). Ty poskytují 
-některé z důležitých informací, bohužel ale tyto nabídnuté záznamy nezahrnují explicitní informace o chování vysílače. Pokud tedy bezdrátová nabíječka, tedy 
-vysílač nějakým testem neprojde, což se občas stává, je často náročné zpětně identifikovat příčinu problému. \cite{nxp_wireless_charging_team}
+proběhne hladce. V těchto případech se momentálně tým pro bezdrátové napájení spoléhá pouze na záznamy poskytnuté operátorem certifikační laboratoře. Tyto 
+záznamy však pocházejí pouze ze strany přijímače – tedy certifikačního zařízení, zpravidla od výrobců Nok9 nebo Granite River Labs (GRL). Ty poskytují některé 
+z důležitých informací, bohužel tyto nabídnuté záznamy nezahrnují explicitní informace o chování vysílače. Pokud tedy bezdrátová nabíječka, tedy vysílač 
+nějakým testem neprojde, což se občas stává, je často náročné zpětně identifikovat příčinu problému. \cite{nxp_wireless_charging_team}
+
+Nezbytným požadavkem na implementaci tohoto záznamníku je i jeho snadná obsluha, neboť zařízení bude poskytováno zákazníkům pro účely certifikace. V klasickém 
+scénáři zákazník předá nabíječku i se záznamníkem operátorovi certifikační laboratoře, ten si ji připojí k testovanému zařízení. Po skončení testovacího dne 
+operátor záznamník vrátí zákazníkovi, který jej následně připojí k počítači a odešle společnosti NXP Semiconductors získané záznamy.
 
 
 \chapter{Záznam dat}
@@ -46,8 +41,8 @@ vysílač nějakým testem neprojde, což se občas stává, je často náročn�
 \label{historie}
 Lidstvo již od svých počátků potřebovalo zaznamenávat data, neboť člověk mnohdy dokáže datům přiřadit sémantiku - tedy význam, a proměnit je tak v informace. 
 Právě díky nim se lidé mohou učit z minulých zkušeností, předávat znalosti dalším generacím, organizovat společenské a obchodní procesy a podporovat rozvoj 
-vědy a technologií. Proto se již od pravěku hledaly způsoby, jak evidovat důležité události a hodnoty. První formy záznamu dat sahají až 19 tisíc let před 
-Kristem, kdy v paleolitu vznikl nástroj známý jako kost Ishango. Tento jednoduchý nástroj, vyrobený z kosti paviána, obsahoval vyryté zářezy, které 
+vědy a technologií. Proto se již od pravěku hledaly způsoby, jak evidovat důležité události a hodnoty. První formy záznamu dat sahají až do doby 19 tisíc 
+let před Kristem, kdy v paleolitu vznikl nástroj známý jako kost Ishango. Tento jednoduchý nástroj, vyrobený z kosti paviána, obsahoval vyryté zářezy, které 
 pravděpodobně sloužily k provádění základních matematických operací, jako je sčítání či násobení.
 
 \begin{figure}[h] % obrazek ishango
@@ -57,7 +52,7 @@ pravděpodobně sloužily k provádění základních matematických operací, j
     \label{fig:ishango}
 \end{figure}
 
-S příchodem prvních civilizací se začaly vyvíjet lepší metody uchovávání dat. Ve starověké Mezopotámii, oblasti mezi řekami Eufrat a Tigris, kde sídlil národ 
+S příchodem prvních civilizací se začaly vyvíjet lepší metody uchovávání dat. Ve starověké Mezopotámii, v oblasti mezi řekami Eufrat a Tigris, kde sídlil národ 
 Sumérů, vzniklo kolem roku 3400 před naším letopočtem klínové písmo. Tento typ písma byl využíván hlavně pro zápis obchodních transakcí, zákonů a dalších 
 důležitých informací, které byly zaznamenávány na hliněné tabulky pomocí rákosového stylusu. O několik století později, kolem roku 3200 př. n. l., začali 
 Egypťané používat hieroglyfy, které byly ryty do kamene nebo zapisovány na papyrus, což umožnilo uchovávat důležité administrativní a náboženské záznamy. 
@@ -71,8 +66,8 @@ zaznamenávány ručním přepisováním, což bylo zdlouhavé a nákladné. V p
 šířit mezi širokou veřejností, což přispělo k protestantské reformaci a změně křesťanského světa. Nicméně knihtisk obecně změnil způsob, jakým lidé přistupují 
 k informacím a učinil je dostupnějšími. \cite{knihtisk_medium}
 
-V 17. století se dále pokročilo, jak v způsobech záznamu dat, tak i s jejich zpracováním. Významným představitelem tohoto období je John Graunt, jež se 
-věnoval studiu dat o úmrtnosti v Londýně, během čehož odhalil určité opakující se vzorce a zákonitosti na základě, kterých položil základy moderní statistiky. 
+V 17. století se dále pokročilo, jak v způsobech záznamu dat, tak i s jejich zpracováním. Významným představitelem tohoto období je John Graunt, jež se věnoval 
+studiu dat o úmrtnosti v Londýně, během čehož odhalil určité opakující se vzorce a zákonitosti na základě, kterých položil základy moderní statistiky. 
 V následujících staletích pokračoval vývoj metod pro práci s daty, zejména díky rozvoji matematiky, fyziky a statistiky. \cite{britanicca_John_Graunt}
 % Jako hlavni predstavitele tohoto obdobi lze uvest jmena jako Bayes, Laplace, Pierre-Simon, Carl Friedrich Gauss, Galton
 \section{Záznam a zpracování dat v moderní době}
@@ -86,11 +81,12 @@ digitální záznamníky schopné uchovávat a analyzovat obrovské objemy infor
   
 \subsection{Analogový záznam dat} %TODO: zde popsat i analogový záznam i digitální záznamníky
 \label{moznosti_zaznamu_dat}
-Prvními specializovanými záznamníky byly mechanické či elektromechanické (analogové) zařízení, ty primárně sloužily k zaznamenávání fyzikálních veličin, 
-jako je například teplota, tlak, vlhkost nebo vibrace. Ty využívaly myšlenky mechanického pohyblivého pera, které převádělo naměřenou hodnotu fyzikální 
-veličiny na samočinný pohyb. Aby tento mechanický pohyb mohl být uskutečněn, bylo třeba nejprve hodnotu měřené veličiny, například pro měření teploty, lze 
-využít bimetalový pásek, který je složen ze dvou kovových materiálů s různou hodnotou teplotní roztažitelnosti. Pokud následně dojde ke změně teploty, způsobí 
-tento přechodný jev pohyb kovového pásku, a ten je následně převeden na pohyb mechanického pera.
+Prvními specializovanými záznamníky byly mechanické či elektromechanické zařízení, využívající principu analogového záznamu dat. Jejich primárním účelem bylo 
+zaznamenávání fyzikálních veličin, jako je například teplota, tlak, vlhkost nebo vibrace. Tyto přístroje využívaly myšlenky mechanického pohyblivého pera, 
+které převádělo naměřenou hodnotu fyzikální veličiny na samočinný pohyb. Pro realizaci tohoto pohybu bylo nutné nejprve převést měřenou fyzikální veličinu na 
+mechanický posun. Například pro měření teploty se běžně využíval bimetalový pásek, složený ze dvou kovových materiálů s různou hodnotou teplotní 
+roztažitelnosti. Při změně teploty docházelo k prohnutí pásku v důsledku rozpínání kovu, čímž se rozpohybovalo mechanické pero, které zapsalo hodnotu na 
+paměťové médium. 
 
 % mechanicky -< samocinny
 % pomocí kterého se zapisovala změřená hodnota na paměťové médiu (papírová páska nebo papírový buben)
@@ -102,13 +98,23 @@ tento přechodný jev pohyb kovového pásku, a ten je následně převeden na p
     \label{fig:polygraaf}
 \end{figure}
 
-Mezi přístroje využívající principu analogového záznamu, patří například polygraf - využívající se například jako detektor lži, cirkulární grafový záznamník 
-(Circular Chart Recorder) využívající se pro měření teploty.
 
+Tyto přístroje byly běžně používány od 19. století. Pro již zmíněný záznam teploty se využíval například přístroj zvaný cirkulární grafový záznamník (Circular 
+Chart Recorder), dále byl hojně využíván polygraf, využívaný jako detektor lži. Značnou nevýhodou těchto záznamníků byl typ paměťového média, na které probíhal 
+zápis hodnot, nejčastěji jim byla papírová páska nebo papírový buben. Tyto pásky musely být velice často měněny za ještě nepopsané, jelikož výsledné záznamy by 
+se staly značně nepřehledné, pokud by byly popsány vícekrát.
 
-\section{Digitální záznamová jednotka (datalogger)}
+Další limitací těchto přístrojů bylo ruční vyhodnocování dat, což bylo mnohdy časově zdlouhavé a také náchylné k chybám. K správné interpretaci dat byla často 
+potřeba zkušená obsluha a v některých případech i pomocné měřící pomůcky. Přenos souborů a automatizace také nebyla možná, proto jakmile se dostaly v polovině 
+20. století na trh číslicové systémy, začal jejich úpadek. \cite{newcastle_history_of_digital_computers, florian_prechod_a_analog_do_digital}
+
+Jak obecne probiha princip digitalniho zaznamu dat, co jsou to digitalni data, ze se v dnesni dobe uprednostnuje tento zpusob misto analogoveho zaznamu.
+
+% TODO: Kde napsat co je to vubec zaznamnik? Ze je to pristroj, ktery zpracovava, uklada a pripadne analyzuje data...
+\section{Digitální záznam dat}
 \label{digitalni_zaznamnik}
-Co je to digitální záznamník + jak zaznamnik realizovat jestli PC nebo MCU (dedikovane zarizeni)
+Co je to digitální záznamník + jak zaznamnik realizovat jestli PC nebo MCU (dedikovane zarizeni). Historie - odkdy se zacinaly pouzivat cislicove (digitalni) 
+systemy, rozdily v zaznamu analogovych/digitalních dat
 
 \begin{figure}[h] % obrazek polygraf
     \centering
@@ -120,37 +126,75 @@ vstupy -> surové data (raw data)
 
 vystupy -> organizovaná data např. v textové podobě
 
-\subsection{Digitální záznamník v počítačovém systému}
-K cemu jsou vyuzivany digitalni zaznamniky na PC.
+\subsection{Digitální záznam v počítačovém systému}
+Ze je to pouze SW implementace zaznamniku, cilem je vyvinout pouze aplikaci pro zaznam dat, lze vybirat z daleko vice jazyku, K cemu jsou vyuzivany digitalni 
+zaznamniky na PC.
 
-\subsection{Digitální záznamník na platformě mikrořadiče}
+\subsection{Digitální záznam na platformě mikrořadiče}
 
 \section{Koncepty využívané ke zpracování dat digitálních záznamníků}
-cirkulární buffer, vícenasobná vyrovnávací paměť (multiple-buffering), dávkové ukládání/zpracování (batch processing), nízko-energetické režimy 
-(low-power modes)
 
+\subsection{Vícenásobná vyrovnávací paměť (multiple-buffering)}
+Jedním z častých konceptů využívající se v implementaci digitálních záznamníků je vícenásobná vyrovnávací paměť. Tento koncept je převážně známý díky 
+algoritmům využívaných v oboru počítačové grafiky, kde se využívá pro plynulé vykreslování obrazu.
+
+TODO: Tento koncept je využíván z důvodu zajištění kontinuálního sběru dat - bez mezer a výpadku. Důležitý je tento koncept hlavně pro záznamníky 
+implementované na platformě MCU, pokud
+
+Popsat podle obrazku jak tento princip obecne funguje, a kde vsude se vyuziva, a proc se pouziva. Popsat nejprve podle obrazku s nahodnym stavem, ze existuji 
+dva buffery - jeden se zpracovava a druhy se plni.
+
+\begin{figure}[h] % obrazek polygraf
+    \centering
+    \includegraphics[width=0.95\textwidth]{obrazky-figures/multiple_buffering-1.png}
+    
+    \caption{Schéma principu práce s vícenásobnou vyrovnávací paměťí - náhodný stav}
+    \label{fig:multiple-buffering-1}
+\end{figure}
+
+Popsat obrazek se stavem na zacatku kdyz jsou oba buffery prazdne. Nebo mozna obrazky prohodit.
+
+\begin{figure}[h] % obrazek polygraf
+    \centering
+    \includegraphics[width=0.95\textwidth]{obrazky-figures/multiple_buffering-2.png}
+    
+    \caption{Schéma principu práce s vícenásobnou vyrovnávací paměťí - počáteční stav}
+    \label{fig:multiple-buffering-2}
+\end{figure}
+
+\subsection{Dávkové zpracování (batch processing)}
+
+\subsection{Cirkulární buffer}
+
+\subsection{Nízko-energetické režimy (low-power modes)}
+
+\section{Typy médií pro záznam dat}
+Hard disk, vyhody nevyhody,... 
 
 \chapter{Návrh digitálního záznamníku}
 
-\section{Představení existujících řešení}
+\section{Existujících řešení digitálních záznamníku}
 
 \section{Výběr vhodné platformy}
-Neni vhodne implementovat zaznamnik na pocitacovem systemu, je treba zvolit stragii implementace na mikroradici, porovnat FRDM-MCXN947, STM32 a ESP32. 
+Neni vhodne implementovat zaznamnik na pocitacovem systemu, je treba zvolit stragii implementace na mikroradici, porovnat FRDM-MCXN947, Arduino, Raspberry
+\subsection{FRDM-MCXN947}
+
+\subsection{Arduino}
+
+\subsection{Linux based - Raspberry}
 
 Pripraven i popis jadra ARM Cortex-M33, ktere vyuziva FRDM-MCXN947.
 
-\section{Možnosti způsobu ukládání získaných dat}
-
 % ----------------------------------------------------
-% DALSI NAZVY: Volba datového úložiště, Výběr externího uložiště pro záznam dat
-\section{Výběr úložiště pro záznam dat}
+% DALSI NAZVY: Volba datového úložiště, Výběr externího uložiště pro záznam dat, Možnosti způsobu ukládání získaných dat
+\section{Přístupy k ovládaní úložiště}
 Obecný popis, proč je potřeba externí uložiště, že by se data mohla ukládat i v RAM paměti, ale že by tam moc dlouho nevydržela, 
 
-\subsection{SDHC karta}
+\subsection{SDHC}
 
+\subsection{SPI}
 \subsection{Quad-SPI flash}
 
-\subsection{USB flash disk}
 
 % ----------------------------------------------------
 % DALSI NAZVY: Volba datového úložiště, Výběr externího uložiště pro záznam dat
@@ -191,10 +235,11 @@ Srovnani obecne bare-metal a RTOS.
 \subsection{Bare-Metal}
 
 % TODO: Zde to asi spis rozdelit na Baremetall vs. RTOS a pak uvest priklady jako FreeRTOS a ZephyrRTOS
-\subsection{FreeRTOS}
+\subsection{RTOS}
+\subsubsection{FreeRTOS}
 Konkretní výhody a nevýhody FreeRTOS
 
-\subsection{ZephyrRTOS}
+\subsubsection{ZephyrRTOS}
 Konkretní výhody a nevýhody ZephyrRTOS
 
 % ----------------------------------------------------
@@ -204,30 +249,33 @@ Popis architektury na základě vybraných komponent. Popis blokového diagramu.
 
 % ----------------------------------------------------
 
-\section{Rozšíření o měření teploty}
+\section{Volitelné rozšíření}
+\subsection{Měření teploty}
 
 % ----------------------------------------------------
 
-\section{Řešení problému synchronizace času}
+\subsection{Řešení problému synchronizace času}
 
 % ----------------------------------------------------
 
-\chapter{Návrh expanzní desky}
+\chapter{Realizace hardwaru}
 Popis co všechno je již na platformě FRDM MCXN947, z toho ti vyplyne co všechno bude ještě muset nabízet expanzní deska.
+\section{Základová deska}
+\section{Expanzní deska}
 
-\section{Zálohované napájení}
+\section{Mechanická část}
 Jak jsem měřil spotřebu, jak jsem spočítal hodnoty kondenzátorů
 
-\chapter{Implementace aplikace záznamníku}
+\chapter{Softwárová implementace}
 
 \section{Záznamové vlákno}
 
 \section{USB Mass Storage vlákno}
 
-\section{Logika kontrolních diod}
+\section{Signalizace stavu systému}
 
 % ==================================================== 
-\chapter{Vyhodnocení systému}
+\chapter{Testování systému}
 Obecne proc je potreba testovat, jake jsou moznost testovani a validace vestavenych systemu
 
 % ----------------------------------------------------
