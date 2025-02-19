@@ -9,9 +9,9 @@
 \chapter{Úvod}
 \label{uvod}
 Tato bakalářská práce je věnována návrhu a implementaci digitálního záznamníků s autonomním dokončením záznamu dat při výpadku napájení. Požadavek na zařízení vznikl od firmy NXP Semiconductors, 
-konkrétně od týmu zaměřeného na bezdrátové nabíjení, ve kterém pracuji. Tento tým působí v České republice, jak v Rožnově pod Radhoštěm tak i v Brně a zároveň má své zastoupení v Asii a Severní 
-Americe. NXP Semiconductors je jedním z předních členů WPC (Wireless Power Consortium), organizace zodpovědné za definování standardu Qi pro bezdrátové nabíjení. Primární zaměření NXP v této 
-oblasti spočívá ve vývoji referenčních designů pro automotive sektor, kde zákazníkům poskytuje řešení určená pro integraci do vozidel.
+konkrétně od týmu zaměřeného na bezdrátové nabíjení, ve kterém pracuji. Tento tým působí v České republice, jak v Rožnově pod Radhoštěm tak i v Brně a zároveň má své zastoupení v Asii a 
+Severní Americe. NXP Semiconductors je jedním z předních členů WPC (Wireless Power Consortium), organizace zodpovědné za definování standardu Qi pro bezdrátové nabíjení. Primární zaměření 
+NXP v této oblasti spočívá ve vývoji referenčních designů pro automotive sektor, kde zákazníkům poskytuje řešení určená pro integraci do vozidel.
 
 Zákazníci, kteří využívají referenční designy NXP, pocházejí z celého světa a dostávají téměř hotový produkt, který lze následně certifikovat v Qi certifikačních laboratořích. Nicméně i přesto, 
 že jsou referenční designy navrženy podle nejnovějších standardů, často dochází k jejich úpravám podle specifických požadavků zákazníků, zejména s ohledem na konkrétní poptávku koncového 
@@ -20,9 +20,9 @@ být například realizovány z důvodu snížení ceny nebo zlepšení výkonu,
 
 Při jakýchkoli úpravách však vznikají nové technické výzvy, a proto NXP poskytuje zákazníkům plnou technickou podporu až do úspěšné certifikace. Certifikace probíhá v různých laboratořích po 
 celém světě, avšak ne vždy může být přítomen zaměstnanec NXP, který by dohlížel na celý proces a zajistil, že certifikace proběhne hladce. V těchto případech se momentálně tým pro bezdrátové 
-napájení spoléhá pouze na záznamy poskytnuté operátorem certifikační laboratoře. Tyto záznamy však pocházejí pouze ze strany přijímače – tedy certifikačního zařízení, zpravidla od výrobců Nok9 
-nebo Granite River Labs (GRL). Ty poskytují některé z důležitých informací, bohužel tyto nabídnuté záznamy nezahrnují explicitní informace o chování vysílače. Pokud tedy bezdrátová nabíječka, 
-tedy vysílač nějakým testem neprojde, což se občas stává, je často náročné zpětně identifikovat příčinu problému. \cite{nxp_wireless_charging_team}
+napájení spoléhá pouze na záznamy poskytnuté operátorem certifikační laboratoře. Tyto záznamy však pocházejí pouze ze strany přijímače – tedy certifikačního zařízení, zpravidla od výrobců 
+Nok9 nebo Granite River Labs (GRL). Ty poskytují některé z důležitých informací, bohužel tyto nabídnuté záznamy nezahrnují explicitní informace o chování vysílače. Pokud tedy bezdrátová 
+nabíječka, tedy vysílač nějakým testem neprojde, což se občas stává, je často náročné zpětně identifikovat příčinu problému. \cite{nxp_wireless_charging_team}
 
 Nezbytným požadavkem na implementaci tohoto záznamníku je i jeho snadná obsluha, neboť zařízení bude poskytováno zákazníkům pro účely certifikace. V klasickém scénáři zákazník předá nabíječku 
 i se záznamníkem operátorovi certifikační laboratoře, ten si ji připojí k testovanému zařízení. Po skončení testovacího dne operátor záznamník vrátí zákazníkovi, který jej následně připojí 
@@ -32,53 +32,32 @@ k počítači a odešle společnosti NXP Semiconductors získané záznamy.
 \chapter{Záznam dat}
 \label{zaznam_dat}
 
-\label{uvod}
+\section{Počátky záznamu dat}
+\label{pocatky}
+Lidstvo již od svých počátků mělo potřebu zaznamenávat data, neboť člověk mnohdy dokáže datům přiřadit sémantiku - jejich význam, a proměnit je tak v informace. Právě díky nim se lidé mohou 
+učit z minulých zkušeností, předávat znalosti dalším generacím, organizovat a podpořit tak neustálý lidský pokrok. 
 
-\section{Počátky záznamu a zpracování dat (Historie záznamu a zpracování dat - předchozí název)}
-\label{historie}
-Lidstvo již od svých počátků potřebovalo zaznamenávat data, neboť člověk mnohdy dokáže datům přiřadit sémantiku - tedy význam, a proměnit je tak v informace. Právě díky nim se lidé mohou učit 
-z minulých zkušeností, předávat znalosti dalším generacím, organizovat společenské a obchodní procesy a podporovat rozvoj vědy a technologií. Proto se již od pravěku hledaly způsoby, 
-jak evidovat důležité události a hodnoty. První formy záznamu dat sahají až do doby 19 tisíc let před Kristem, kdy v paleolitu vznikl nástroj známý jako kost Ishango. Tento jednoduchý nástroj, 
-vyrobený z kosti paviána, obsahoval vyryté zářezy, které pravděpodobně sloužily k provádění základních matematických operací, jako je sčítání či násobení.
+% Nicméně největším pokrokem ve zaznamenávání dat nastal s příchodem výpočetní techniky.
+Po staletí byl záznam dat výhradně manuální. Informace se uchovávaly v rukopisech, knihách či na papírových svitcích, ať už formou psaného textu, nebo ručně zapisovaným výsledků pozorování. 
+Přesnost a dostupnost těchto dat byla však omezena kapacitou lidské obsluhy a možnostmi mechanických nástrojů.
 
-\begin{figure}[h] % obrazek ishango
+\begin{figure}[h] % obrazek patent
     \centering
-    \includegraphics[width=0.6\textwidth]{obrazky-figures/ishango.jpg}
-    \caption{Kost Ishango sloužící k záznamu informací v době Paleolitu \cite{ishango_picture}}
-    \label{fig:ishango}
+    \includegraphics[width=0.40\textwidth]{obrazky-figures/first_chart_recorder.png}
+    \caption{První skutečný grafický záznamník patentovaný Williamem Henrym Bristolem \cite{bristol_chart_recorders}}
+    \label{fig:chart_recorder}
 \end{figure}
 
-S příchodem prvních civilizací se začaly vyvíjet lepší metody uchovávání dat. Ve starověké Mezopotámii, v oblasti mezi řekami Eufrat a Tigris, kde sídlil národ Sumérů, vzniklo kolem roku 3400 
-před naším letopočtem klínové písmo. Tento typ písma byl využíván hlavně pro zápis obchodních transakcí, zákonů a dalších důležitých informací, které byly zaznamenávány na hliněné tabulky 
-pomocí rákosového stylusu. O několik století později, kolem roku 3200 př. n. l., začali Egypťané používat hieroglyfy, které byly ryty do kamene nebo zapisovány na papyrus, což umožnilo 
-uchovávat důležité administrativní a náboženské záznamy. V Číně se mezi 1200–1000 př. n. l. používaly věštecké kosti, na které se zaznamenávaly otázky kladené orákulu - což jsou důležité 
-otázky, zejména ve věcech budoucnosti, i jeho odpovědi, čímž vznikly první organizované záznamy psané ranými čínskými znaky.
+% pripadne to upravit na: Stěžejní změna přišla ve 20. století s rozvojem automatických záznamníků
+Stěžejní změna přišla ve 20. století s rozvojem elektrotechniky a nástupem automatických záznamníků, které umožnily primitivní sběr dat bez nutnosti lidského zásahu. Namísto ručně zapisovaných 
+měření začaly být hodnoty přenášeny přímo do záznamových zařízení, která je dokázala systematicky uchovávat. \cite{origin_of_chart_recorders}
 
-\newpage
-
-Průlomem pro zaznamenáváním dat, bylo vynalezení knihtisku, které vymyslel Johann Gutenberg ve 40. letech 15. století. Do této doby byly informace zaznamenávány ručním přepisováním, což 
-bylo zdlouhavé a nákladné. V počátcích měl knihtisk význam převážně z náboženského hlediska, díky tisku se Bible mohla šířit mezi širokou veřejností, což přispělo k protestantské reformaci a 
-změně křesťanského světa. Nicméně knihtisk obecně změnil způsob, jakým lidé přistupují k informacím a učinil je dostupnějšími. \cite{knihtisk_medium}
-
-V 17. století se dále pokročilo, jak v způsobech záznamu dat, tak i s jejich zpracováním. Významným představitelem tohoto období je John Graunt, jež se věnoval studiu dat o úmrtnosti v Londýně, 
-během čehož odhalil určité opakující se vzorce a zákonitosti na základě, kterých položil základy moderní statistiky. V následujících staletích pokračoval vývoj metod pro práci s daty, zejména 
-díky rozvoji matematiky, fyziky a statistiky. \cite{britanicca_John_Graunt}
-% Jako hlavni predstavitele tohoto obdobi lze uvest jmena jako Bayes, Laplace, Pierre-Simon, Carl Friedrich Gauss, Galton
-\section{Záznam a zpracování dat v moderní době}
-% TODO: pocet normostran (cca 3.1)
-S pokročilými metodami na zpracování dat, také rostly nároky na výpočty a vznikla tak potřeba efektivnějších nástrojů pro zisk a analýzu dat. S tímto rozvojem souvisí i technologický pokrok v 
-oblasti záznamu dat, který prošel dlouhou cestou – od jednoduchých mechanických přístrojů přes magnetické pásky až po moderní digitální záznamníky schopné uchovávat a analyzovat obrovské objemy 
-informací v reálném čase.
-
-%\section{Možnosti záznamu dat}
-%\label{moznosti_zaznamu_dat}
-  
-\subsection{Analogový záznam dat} %TODO: zde popsat i analogový záznam i digitální záznamníky
-\label{moznosti_zaznamu_dat}
+\section{Záznam dat v počátcích elektrotechniky}
+\label{zaznam}
 Prvními specializovanými záznamníky byly mechanické či elektromechanické zařízení, využívající principu analogového záznamu dat. Jejich primárním účelem bylo zaznamenávání fyzikálních veličin, 
 jako je například teplota, tlak, vlhkost nebo vibrace. Tyto přístroje využívaly myšlenky mechanického pohyblivého pera, které převádělo naměřenou hodnotu fyzikální veličiny na samočinný pohyb. 
 Pro realizaci tohoto pohybu bylo nutné nejprve převést měřenou fyzikální veličinu na mechanický posun. Například pro měření teploty se běžně využíval bimetalový pásek, složený ze dvou kovových 
-materiálů s různou hodnotou teplotní roztažitelnosti. Při změně teploty docházelo k prohnutí pásku v důsledku rozpínání kovu, čímž se rozpohybovalo mechanické pero, které zapsalo hodnotu na 
+materiálů s různou hodnotou teplotní roztažitelnosti. Při změně teploty docházelo k prohnutí pásku v důsledku rozpínání kovu, čímž bylo rozpohybovalo mechanické pero, které zapsalo hodnotu na 
 paměťové médium. 
 
 % mechanicky -< samocinny
@@ -92,12 +71,12 @@ paměťové médium.
 \end{figure}
 
 
-Tyto přístroje byly běžně používány od 19. století. Pro již zmíněný záznam teploty se využíval například přístroj zvaný cirkulární grafový záznamník (Circular Chart Recorder), dále byl hojně 
-využíván polygraf, využívaný jako detektor lži. Značnou nevýhodou těchto záznamníků byl typ paměťového média, na které probíhal zápis hodnot, nejčastěji jim byla papírová páska nebo papírový 
-buben. Tyto pásky musely být velice často měněny za ještě nepopsané, jelikož výsledné záznamy by se staly značně nepřehledné, pokud by byly popsány vícekrát.
+Tyto přístroje byly běžně používány od druhé poloviny 19. století. Pro již zmíněný záznam teploty se využíval například přístroj zvaný cirkulární grafový záznamník (Circular Chart Recorder), 
+dále byl hojně využíván polygraf, využívaný jako detektor lži. Značnou nevýhodou těchto záznamníků byl typ paměťového média, na které probíhal zápis hodnot, nejčastěji jim byla papírová páska 
+nebo papírový buben. Tyto pásky musely být velice často měněny za ještě nepopsané, jelikož výsledné záznamy by se staly značně nepřehledné, pokud by byly popsány vícekrát.
 Další limitací těchto přístrojů bylo ruční vyhodnocování dat, což bylo mnohdy časově zdlouhavé a také náchylné k chybám. K správné interpretaci dat byla často potřeba zkušená obsluha a v 
-některých případech i pomocné měřící pomůcky. Přenos souborů a automatizace také nebyla možná, proto jakmile se dostaly v polovině 20. století na trh číslicové systémy, začal 
-jejich úpadek. \cite{newcastle_history_of_digital_computers, florian_prechod_a_analog_do_digital}
+některých případech i pomocné měřící pomůcky. Přenos souborů a automatizace také nebyla možná, proto jakmile se dostaly v polovině 20. století na trh číslicové systémy, 
+začal jejich úpadek. \cite{newcastle_history_of_digital_computers, florian_prechod_a_analog_do_digital}
 
 Jak obecne probiha princip digitalniho zaznamu dat, co jsou to digitalni data, ze se v dnesni dobe uprednostnuje tento zpusob misto analogoveho zaznamu.
 
@@ -124,20 +103,25 @@ Ze je to pouze SW implementace zaznamniku, cilem je vyvinout pouze aplikaci pro 
 
 \section{Koncepty využívané ke zpracování dat digitálních záznamníků}
 What is Lorem Ipsum?
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley 
+of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was 
+popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of 
+Lorem Ipsum.
 
 Why do we use it?
-It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', 
+It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal 
+distribution of letters, as opposed to using 'Content here, content here', 
 
 \subsection{Vícenásobná vyrovnávací paměť (multiple-buffering)}
 Jedním z častých konceptů využívaných v implementaci digitálních záznamníků je použití vícenásobné vyrovnávací paměti. Tento koncept je převážně známý díky algoritmům využívaným v oboru 
-počítačové grafiky. Grafický čip musí zpracovat velké množství dat za krátký časový úsek, proto algoritmus zpracování dat využívá dvě vyrovnávací paměti - přední vyrovnávací paměť, takzvaný 
-front-buffer, jež je využívána pro zobrazení aktuálního snímku a zadní vyrovnávací paměť, ve které čip připravuje nový obsah. Výsledný obsah tak může být plynule vykreslen bez artefaktů a 
-trhání. Jakmile je nový snímek kompletní, vyrovnávací paměti se prohodí. \cite{double_buffering_model}
+počítačové grafiky. Grafický čip musí zpracovat velké množství dat za krátký časový úsek, proto algoritmus zpracování dat využívá dvě vyrovnávací paměti - přední vyrovnávací paměť, 
+takzvaný front-buffer, jež je využívána pro zobrazení aktuálního snímku 
+a zadní vyrovnávací paměť, ve které čip připravuje nový obsah. Výsledný obsah tak může být plynule vykreslen bez artefaktů a trhání. Jakmile je nový snímek kompletní, vyrovnávací paměti se 
+prohodí. \cite{double_buffering_model}
 
-Obdobný mechanismus se využívá i v digitálních záznamnících, kde slouží k zajištění kontinuálního sběru dat bez výpadků. Zatímco jeden buffer přijímá nová data ze vstupní periferie 
-(například analogově-digitálního převodníku či jiných vstupů), druhý buffer je současně zpracováván nebo ukládán na úložné médium. Tím se minimalizuje riziko ztráty dat způsobené časovou 
-prodlevou při jejich zpracování nebo zápisu.
+Obdobný mechanismus se využívá i v digitálních záznamnících, kde slouží k zajištění kontinuálního sběru dat bez výpadků. Zatímco jeden buffer přijímá nová data ze vstupní periferie (například 
+analogově-digitálního převodníku či jiných vstupů), druhý buffer je současně zpracováván nebo ukládán na úložné médium. Tím se minimalizuje riziko ztráty dat způsobené časovou prodlevou při 
+jejich zpracování nebo zápisu.
 
 \begin{figure}[h]
     \centering
@@ -162,15 +146,16 @@ stane zpracovávaným bufferem (Front Buffer) a původní front buffer se uvoln�
 Tato metoda nachází významné uplatnění zejména v systémech pracujících v reálném čase, kde dochází k příjmu velkého objemu dat v krátkých časových intervalech a kde doba zpracování nesmí 
 překročit dobu sběru dat. Využitím vícenásobné vyrovnávací paměti se minimalizuje latence zpracování a současně se snižuje riziko přetečení paměťového prostoru. \cite{buffering_chang}
 
-Nicméně, žadný algoritmus není dokonalý a i tato metoda mé své nevýhody, které je třeba zmínit. Vyrovnávací paměti jsou zpravidla implementovány softwárově, nikoliv hardwarově, což vede 
-k zvýšeným nárokům na paměťové prostředky, obzvlášť v segmentu volatilní paměti (SRAM/DRAM) kde jsou buffery uložené. \cite{basics_of_digital_forensics}
+Nicméně, žadný algoritmus není dokonalý a i tato metoda mé své nevýhody, které je třeba zmínit. Vyrovnávací paměti jsou zpravidla implementovány softwárově, nikoliv hardwarově, což vede k 
+zvýšeným nárokům na paměťové prostředky, obzvlášť v segmentu volatilní paměti (SRAM/DRAM) kde jsou buffery uložené. \cite{basics_of_digital_forensics}
 % TODO: Je tedy vhodne si promyslet zda zdroje MCU budou dostacovat.
 
 \subsection{Dávkové zpracování (batch processing)}
 Další princip, jež je využívaný v implementacích digitálních záznamníků, souvisí s typem uložišť na které jsou získaná data zaznamenávána. Některé typy nevolatilních pamětí, například 
 NAND Flash paměť, jež umožňují uchování dat i po odpojení napájení. Tyto druhy paměti jsou organizovány do bloků (viz. obrázek \ref{fig:batch-processing}), přičemž bloky jsou následně 
 rozděleny na menší jednotky zvané sektory. Velikost sektoru obvykle bývá 512 bajtů či 4096 bajtů, v závislosti na typu média a jeho architektůře. Tato bloková struktura, umožňuje účinnou 
-správu prostoru, které uložiště nabízí, ale současně vyžaduje specifický způsob zápisu/čtení dat, které je pouze umožněno na úrovni celých bloků.  \cite{tech_target_nand_flash, non_volatile_memories}
+správu prostoru, které uložiště nabízí, ale současně vyžaduje specifický způsob zápisu/čtení dat, které je pouze umožněno na úrovni celých 
+bloků.  \cite{tech_target_nand_flash, non_volatile_memories}
 
 Dávkové zpracovátí tohoto chování paměti využívá, data se tedy nejprve shromažďují ve volatilní paměti - například RAM a teprve po naplňení určitého objemu (celého bloku či jeho násobku) 
 dojde k jejich zápisu na konečné paměťové médium.
@@ -201,20 +186,19 @@ Tento přístup je často využíván v systémech pro zpracování datových to
 
 Princip činnosti cirkulárního bufferu spočívá v použití dvou ukazatelů - head (zápisový ukazatel) a tail (čtecí ukazatel). Ukazatel head vždy směřuje na pozici, kam bude zapisován následující 
 prvek, zatímco ukazatel tail ukazuje na pozici, ze které bude načtena následující hodnota. Pokud ukazatel head dosáhne konce pole, vrací se na jeho začátek, čímž je zajištěna kruhová povaha 
-struktury. Při plném bufferu lze zvolit dvě strategie – přepsání nejstarších dat nebo odmítnutí nových vstupů, přičemž výběr závisí na konkrétní 
-aplikaci.\cite{embedjournal_ring_buffer, medium_ring_buffer}
+struktury. Při plném bufferu lze zvolit dvě strategie – přepsání nejstarších dat nebo odmítnutí nových vstupů, přičemž výběr závisí na konkrétní aplikaci. \cite{embedjournal_ring_buffer, medium_ring_buffer}
 
 Z hlediska časové složitosti nabízí cirkulární buffer konstantní časovou složitost (O(1)) pro všechny základní operace, jako je zápis (enqueue) a  čtení (dequeue). Tato efektivita je dána tím, 
 že se při zápisu a čtení dat není potřeba přesouvat prvky v paměti, ale stačí pouze inkrementovat ukazatele s využitím operace modulo. Pokud jde o prostorovou složitost, velikost cirkulárního 
-bufferu je určena předem – zpravidla jde o staticky alokované pole o velikosti n prvků, což odpovídá složitosti O(n), kde n je maximální počet prvků, které může buffer pojmout. 
-\cite{petrungaro_ring_buffer_complexity}
+bufferu je určena předem – zpravidla jde o staticky alokované pole o velikosti n prvků, což odpovídá složitosti O(n), kde n je maximální počet prvků, které může buffer 
+pojmout. \cite{petrungaro_ring_buffer_complexity}
 
 \subsection{Nízko-energetické režimy (low-power modes)}
-Energetická efektivita je jedním z klíčových parametrů obecně vestavěných zařízení, tedy i digitálních záznamníků implementovaných na platformě MCU, zejména pokud jsou napájeny z baterií či 
-jiných omezených zdrojů energie. Minimalizace spotřeby je v těchto případech realizována využitím nízkoenergetických režimů (low-power modes), které umožňují zařízení přejít do stavu s 
-minimální energetickou náročností během nečinných period. V praxi mnoho digitálních záznamníků nemusí provádět měření a záznam dat nepřetržitě. Například záznamník teploty může v pravidelných 
-intervalech provést měření, uložit naměřenou hodnotu, přejít do režimu nízké spotřeby a po uplynutí definovaného časového intervalu nebo při vyskytnutí speciální události přejít do aktivního 
-režimu. \cite{analog_devices_low_power_modes}
+Energetická efektivita je jedním z klíčových parametrů obecně vestavěných zařízení, tedy i digitálních záznamníků implementovaných na platformě MCU, zejména pokud jsou napájeny z baterií 
+či jiných omezených zdrojů energie. Minimalizace spotřeby je v těchto případech realizována využitím nízkoenergetických režimů (low-power modes), které umožňují zařízení přejít do stavu 
+s minimální energetickou náročností během nečinných period. V praxi mnoho digitálních záznamníků nemusí provádět měření a záznam dat nepřetržitě. Například záznamník teploty může v 
+pravidelných intervalech provést měření, uložit naměřenou hodnotu, přejít do režimu nízké spotřeby a po uplynutí definovaného časového intervalu nebo při vyskytnutí speciální události 
+přejít do aktivního režimu. \cite{analog_devices_low_power_modes}
 
 Průběh takového cyklického chování spotřeby mikrokontroléru, kde se střídají fáze měření a spánku s pravidelnou periodou měření teploty, je znázorněn na obrázku \ref{fig:low-power-modes} níže.
 
@@ -232,8 +216,8 @@ spotřebu energie, často vedou k delšímu zpoždění při probuzení a nižš
 zpracování velkého množství dat, může tento faktor negativně ovlivnit spolehlivost a efektivitu záznamníku. \cite{embedded_low_power_modes}
 
 V těchto případech je proto vhodné zvážit provozní podmínky a očekávanou dostupnost systému. Pokud záznamník pracuje s velkým datovým tokem a má možnost být po dobu záznamu stále dostupné 
-externí napájení, může být výhodnější upustit od implementace nízkoenergetických režimů a místo toho optimalizovat architekturu systému pro nepřetržitý provoz s důrazem na výkon a rychlou 
-odezvu. \cite{analog_devices_low_power_modes}
+externí napájení, může být výhodnější upustit od implementace nízkoenergetických režimů a místo toho optimalizovat architekturu systému pro nepřetržitý provoz s důrazem na výkon 
+a rychlou odezvu. \cite{analog_devices_low_power_modes}
 
 \section{Typy médií pro záznam dat}
 Hard disk, vyhody nevyhody,... 
