@@ -108,19 +108,23 @@ Hlavní výhodou digitálního záznamu oproti analogovému je jeho odolnost vů
 záznamového média, digitální data lze bezztrátově kopírovat, přenášet a rekonstruovat bez snížení kvality.
 
 \subsection{Digitální záznamník}
-Digitální záznamník je zařízení nebo softwarový program určený ke sběru, zpracování a ukládání dat ve formě digitálního záznamu. Při pohledu na blokové diagramy digitálních záznamníků 
-lze jejich strukturu rozdělit do tří základních komponent: přijímající periferie, procesorové jádro a úložiště.
+Digitální záznamník je zařízení nebo softwarový program určený ke sběru, zpracování a ukládání dat ve formě digitálního záznamu. Při pohledu na blokové diagramy digitálních záznamníků lze jejich strukturu rozdělit obecně do tří základních komponent, kterými jsou přijímající periferie, procesorové jádro a úložiště (viz. obrázek \ref{fig:common-digital-datalogger}). \cite{ieee_digital_sound_recorder_arm_sd_card, ieee_multi_connectivity_datalogger_sd_card, researchgate_general_dataloggger_multiple_sdcards}
 
+Prvním klíčovým prvkem digitálního záznamníku je přijímající periferie, která slouží ke sběru vstupních dat. V závislosti na konkrétní aplikaci může tato komponenta zahrnovat různé typy vstupních rozhraní, jako jsou sériová rozhraní (UART, SPI, I2C a další) síťová rozhraní (Ethernet, Wi-Fi, LoRa, či CAN) nebo analogově-digitální převodníky.\footnote{Vyjímkou jsou specifické monitorovací programy mezi, které patří například Windows Task Manager, jež ke svému sběru dat využívají rozhraní pro programování aplikací tzv. kernel API. \cite{fourcore_win_process_birth}} \cite{ieee_digital_sound_recorder_arm_sd_card}
+
+\newpage
+
+Druhým hlavním prvkem digitálního záznamníku je procesorové jádro, zajišťující zpracování vstupních dat. Procesorové jádro může být jak součástí mikrokontroléru, tak i procesoru, které může mít v tomto případě na starosti jednoduché operace, jako přepočet hodnoty z analogově-digitálního převodníku na teplotu podle kalibrační křivky senzoru, přes filtrování šumu a doplňování časových značek k naměřeným vzorkům, až po pokročilé analýzy dat - například EKG měření. \cite{springer_development_ECG_recorder}
+
+Poslední a také jednou z nejdůležitějších všeobecnou částí digitálního záznamníku je úložiště, kde jsou data uložena pro pozdější přenos a zpracování (post-processing). Volba tohoto úložného prostoru závisí na požadavcích aplikace a může zahrnovat různé technologie od paměťových karet SD a eMMC přes interní flash paměti až po síťová úložiště a cloudové služby.
 
 \begin{figure}[h] % obrazek polygraf
     \centering
     \includegraphics[width=0.95\textwidth]{obrazky-figures/common_digital_datalogger_scheme.png}
     \caption{Obecné schéma digitálního záznamníku}
-    \label{fig:polygraaf}
+    \label{fig:common-digital-datalogger}
 \end{figure}
-vstupy -> surové data (raw data)
 
-vystupy -> organizovaná data např. v textové podobě
 
 \subsection{Digitální záznam v počítačovém systému}
 Ze je to pouze SW implementace zaznamniku, cilem je vyvinout pouze aplikaci pro zaznam dat, lze vybirat z daleko vice jazyku, K cemu jsou vyuzivany digitalni zaznamniky na PC.
