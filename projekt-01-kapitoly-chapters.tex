@@ -202,6 +202,14 @@ dostatečným výpočetním výkonem pro pokročilé operace. Výsledkem těchto
 stavu sledovaného systému, které mohou být využity pro monitorování a další rozhodovací procesy. 
 \cite{linux_in_action_log_and_monitoring}
 
+Digitální záznamníky na počítačových systémech se často používají v aplikacích, kde je nutné monitorovat a analyzovat velké 
+objemy dat. Tyto systémy se uplatňují v monitorování síťového provozu jako TCP/IP záznamníky, pokročilé sériové záznamníky 
+a terminály, či záznamníky speciálních rozhraní, jako je například HID (Human Interface Device). \footnote{Digitálních záznamníků 
+implementovaných na počítačových systémech je opravdu širová řada a tato práce bohužel není schopna pokrýt všechny typy těchto 
+zařízení, proto jsou zde zmíněny alespoň ty nejpoužívanější.}  
+
+
+
 \subsection{Digitální záznam na platformě mikrořadiče}
 Pro návrh a implementaci 
 
@@ -331,8 +339,18 @@ datovým tokem a má možnost být připojen po dobu záznamu stále k externím
 nízkoenergetických režimů a místo toho optimalizovat architekturu systému pro nepřetržitý provoz s důrazem na výkon a rychlou 
 odezvu. \cite{analog_devices_low_power_modes}
 
-\section{Typy médií pro záznam dat}
-Hard disk, vyhody nevyhody,...
+\section{Způsoby zápisu dat}
+Již z předchozích kapitol je jasné, že nedílnou součástí záznamníku dat je datové uložiště, na které budou získané záznamy uloženy. 
+To musí být spolehlivé, poskytovat dostatečnou kapacitu, vhodné je i uvažovat o rychlosti zápisu, energetické efektivitě a také 
+odolnosti vůči vnějším vlivům. Také bylo již zmíněno, že obvykle se používají externí uložiště, jakými jsou například SD karta, 
+USB Flash Disk, ale také je možné využít vzdálené uložiště, jakýmiž jsou třeba databázové systémy či cloudy. tedy typy paměti, 
+které jsou data uložena perzistentně. Tato kapitola odhalí způsoby, jakými je možné pracovat s těmito pamětmi.
+
+\subsection{Přímý zápis na permanentní uložiště}
+
+\subsection{Zápis na permanentní uložiště přes mezivrstvu s FRAM paměti}
+
+\subsection{Zápis na vzdálené uložiště}
 
 \chapter{Návrh digitálního záznamníku}
 
