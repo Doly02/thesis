@@ -340,11 +340,18 @@ nízkoenergetických režimů a místo toho optimalizovat architekturu systému 
 odezvu. \cite{analog_devices_low_power_modes}
 
 \section{Způsoby zápisu dat}
-Již z předchozích kapitol je jasné, že nedílnou součástí záznamníku dat je datové uložiště, na které budou získané záznamy uloženy. 
-To musí být spolehlivé, poskytovat dostatečnou kapacitu, vhodné je i uvažovat o rychlosti zápisu, energetické efektivitě a také 
-odolnosti vůči vnějším vlivům. Také bylo již zmíněno, že obvykle se používají externí uložiště, jakými jsou například SD karta, 
-USB Flash Disk, ale také je možné využít vzdálené uložiště, jakýmiž jsou třeba databázové systémy či cloudy. tedy typy paměti, 
-které jsou data uložena perzistentně. Tato kapitola odhalí způsoby, jakými je možné pracovat s těmito pamětmi.
+Stejně jak jsou důležitá uložiště, na které jsou zaznamenaná data získana, je tak je důležitá práce s tímto uložištěm. 
+Záznamníky dat musí být navrženy tak, aby umožnily spolehlivé ukládání získaných dat, které by mělo být efektivní ve 
+smyslu rychlosti a šetrné pro zvýšení životnosti uložiště. Tato kapitola popisuje tři různé způsobý, první dva se věnují 
+ukládání na lokální uložiště a třetí z nich využívá nastupujícího trendu vzdálených uložišť.
+
+V některých případech se data zapisují přímo na permanentní uložiště, jako je SD karta nebo USB flash disk, které poskytuje 
+jednoduché a okamžité uložení bez nutnosti dodatečné správy. Alternativním přístupem je použití mezivrstvy v podobě FRAM paměti, 
+která umožňuje rychlé dočasné ukládání dat a jejich následný dávkový zápis na trvalé médium, čímž se minimalizuje opotřebení 
+paměťového média a snižuje spotřeba energie. Třetí možností je zápis na vzdálené uložiště, kde jsou data přenášena na cloudové 
+služby, databázové servery nebo jiné síťové úložiště, což umožňuje jejich sdílení a analýzu na dálku.
+
+Tato kapitola detailně rozebere jednotlivé způsoby zápisu dat, jejich výhody a nevýhody, a uvede příklady využití v různých aplikacích digitálních záznamníků.
 
 \subsection{Přímý zápis na permanentní uložiště}
 
