@@ -6,35 +6,29 @@
 %\documentclass[../projekt.tex]{subfiles}
 %\begin{document}
 
+% TODO: Kde rict ze implementovany zaznamnik je konkretne na seriovou komunikaci - vylozene UART? 
+
 \chapter{Úvod}
 \label{uvod}
-Tato bakalářská práce je věnována návrhu a implementaci digitálního záznamníků s autonomním dokončením záznamu dat při výpadku 
-napájení. Požadavek na zařízení vznikl od firmy NXP Semiconductors, konkrétně od týmu zaměřeného na bezdrátové nabíjení, 
-ve kterém pracuji. Tento tým působí v České republice, jak v Rožnově pod Radhoštěm tak i v Brně a zároveň má své zastoupení 
-v Asii a Severní Americe. NXP Semiconductors je jedním z předních členů WPC (Wireless Power Consortium), organizace zodpovědné 
-za definování standardu Qi pro bezdrátové nabíjení. Primární zaměření NXP v této oblasti spočívá ve vývoji referenčních designů 
-pro automotive sektor, kde zákazníkům poskytuje řešení určená pro integraci do vozidel.
+Tato bakalářská práce je věnována návrhu a implementaci digitálního záznamníku s autonomním dokončením záznamu dat při výpadku napájecího napětí. Požadavek na zařízení vznikl od firmy 
+NXP Semiconductors, konkrétně od týmu zaměřeného věnující se bezdrátovému nabíjení, ve kterém pracuji. Tento tým působí v České republice, jak v Rožnově pod Radhoštěm tak i v Brně a 
+zároveň má své zastoupení v Asii a Severní Americe. NXP Semiconductors je jedním z předních členů WPC (Wireless Power Consortium), organizace zodpovědné za definování standardu Qi 
+pro bezdrátové nabíjení. Primární zaměření NXP v této oblasti spočívá ve vývoji referenčních designů pro automotive sektor, kde zákazníkům poskytuje řešení určená pro integraci do vozidel.
 
-Zákazníci, kteří využívají referenční designy NXP, pocházejí z celého světa a dostávají téměř hotový produkt, který lze následně 
-certifikovat v Qi certifikačních laboratořích. Nicméně i přesto, že jsou referenční designy navrženy podle nejnovějších standardů, 
-často dochází k jejich úpravám podle specifických požadavků zákazníků, zejména s ohledem na konkrétní poptávku koncového zákazníka 
-(OEM – Original Equipment Manufacturer). Tyto požadavky jsou obvykle shrnuty v RFP (Request for Proposal), kde zákazník specifikuje 
-konkrétní požadavky na systém. Tyto úpravy mohou být například realizovány z důvodu snížení ceny nebo zlepšení výkonu, například 
-EMC charakteristik a nebo speciální chování bezdrátové nabíječky v krajních situacích. 
+Zákazníci, kteří využívají referenční designy NXP, pocházejí z celého světa a dostávají téměř hotový produkt, který lze následně certifikovat v Qi certifikačních laboratořích. Nicméně 
+i přesto, že jsou referenční designy navrženy podle nejnovějších standardů, často dochází k jejich úpravám podle specifických požadavků zákazníků, zejména s ohledem na konkrétní poptávku 
+koncového zákazníka (OEM – Original Equipment Manufacturer). Tyto požadavky jsou obvykle shrnuty v RFP (Request for Proposal), kde zákazník specifikuje konkrétní požadavky na systém. 
+Tyto úpravy mohou být například realizovány z důvodu snížení ceny nebo zlepšení výkonu, například EMC charakteristik a nebo speciální chování bezdrátové nabíječky v krajních situacích. 
 
-Při jakýchkoli úpravách však vznikají nové technické výzvy, a proto NXP poskytuje zákazníkům plnou technickou podporu až do úspěšné 
-certifikace. Certifikace probíhá v různých laboratořích po celém světě, avšak ne vždy může být přítomen zaměstnanec NXP, který by 
-dohlížel na celý proces a zajistil, že certifikace proběhne hladce. V těchto případech se momentálně tým pro bezdrátové napájení 
-spoléhá pouze na záznamy poskytnuté operátorem certifikační laboratoře. Tyto záznamy však pocházejí pouze ze strany přijímače – 
-tedy certifikačního zařízení, zpravidla od výrobců Nok9 nebo Granite River Labs (GRL). Ty poskytují některé z důležitých informací, 
-bohužel tyto nabídnuté záznamy nezahrnují explicitní informace o chování vysílače. Pokud tedy bezdrátová nabíječka, tedy vysílač 
-nějakým testem neprojde, což se občas stává, je často náročné zpětně identifikovat příčinu 
-problému. \cite{nxp_wireless_charging_team}
+Při jakýchkoli úpravách však vznikají nové technické výzvy, a proto NXP poskytuje zákazníkům plnou technickou podporu až do úspěšné certifikace. Certifikace probíhá v různých laboratořích 
+po celém světě, avšak ne vždy může být přítomen zaměstnanec NXP, který by dohlížel na celý proces a zajistil, že certifikace proběhne hladce. V těchto případech se momentálně tým pro 
+bezdrátové napájení spoléhá pouze na záznamy poskytnuté operátorem certifikační laboratoře. Tyto záznamy však pocházejí pouze ze strany přijímače – tedy certifikačního zařízení, zpravidla 
+od výrobců Nok9 nebo Granite River Labs (GRL). Ty poskytují některé z důležitých informací, bohužel tyto nabídnuté záznamy nezahrnují explicitní informace o chování vysílače. 
+Pokud tedy bezdrátová nabíječka, tedy bezdrátový vysílač nějakým testem neprojde, což se občas stává, je často náročné zpětně identifikovat příčinu problému. \cite{nxp_wireless_charging_team}
 
-Nezbytným požadavkem na implementaci tohoto záznamníku je i jeho snadná obsluha, neboť zařízení bude poskytováno zákazníkům pro 
-účely certifikace. V klasickém scénáři zákazník předá nabíječku i se záznamníkem operátorovi certifikační laboratoře, ten si ji 
-připojí k testovanému zařízení. Po skončení testovacího dne operátor záznamník vrátí zákazníkovi, který jej následně připojí k 
-počítači a odešle společnosti NXP Semiconductors získané záznamy.
+Nezbytným požadavkem na implementaci tohoto záznamníku je i jeho snadná obsluha, neboť zařízení bude poskytováno zákazníkům pro již zmíněné účely certifikace. V klasickém scénáři 
+zákazník předá nabíječku i se záznamníkem operátorovi certifikační laboratoře, ten si ji připojí k testovanému zařízení. Po skončení testovacího dne operátor záznamník vrátí 
+zákazníkovi, který jej následně připojí k počítači a odešle společnosti NXP Semiconductors získané záznamy.
 
 
 \chapter{Záznam dat}
@@ -42,36 +36,31 @@ počítači a odešle společnosti NXP Semiconductors získané záznamy.
 
 \section{Počátky záznamu dat}
 \label{pocatky}
-Lidstvo již od svých počátků mělo potřebu zaznamenávat data, neboť člověk mnohdy dokáže datům přiřadit sémantiku - jejich význam, 
-a proměnit je tak v informace. Právě díky nim se lidé mohou učit z minulých zkušeností, předávat znalosti dalším generacím, 
-organizovat a podpořit tak neustálý lidský pokrok. 
+Lidstvo již od svých počátků mělo potřebu zaznamenávat data, neboť člověk mnohdy dokáže datům přiřadit sémantiku - jejich význam, a proměnit je tak v informace. Právě díky nim se 
+lidé mohou učit z minulých zkušeností, předávat znalosti dalším generacím, organizovat a podpořit tak neustálý lidský pokrok. 
 
 % Nicméně největším pokrokem ve zaznamenávání dat nastal s příchodem výpočetní techniky.
-Po staletí byl záznam dat výhradně manuální. Informace se uchovávaly v rukopisech, knihách či na papírových svitcích, ať už formou 
-psaného textu, nebo ručně zapisovaným výsledků pozorování. Přesnost a dostupnost těchto dat byla však omezena kapacitou lidské 
-obsluhy a možnostmi mechanických nástrojů.
+Po staletí byl záznam dat výhradně manuální. Informace se uchovávaly v rukopisech, knihách či na papírových svitcích, ať už formou psaného textu, nebo ručně zapisovaným výsledků 
+pozorování. Přesnost a dostupnost těchto dat byla však omezena kapacitou lidské obsluhy a možnostmi mechanických nástrojů.
 
 \begin{figure}[h] % obrazek patent
     \centering
     \includegraphics[width=0.40\textwidth]{obrazky-figures/first_chart_recorder.png}
-    \caption{První skutečný grafický záznamník (Chart Recorder) patentovaný Williamem Henrym Bristolem \cite{bristol_chart_recorders}}
+    \caption{První skutečný grafický záznamník (Chart Recorder) patentovaný Williamem Henrym Bristolem v roce 1888 \cite{bristol_chart_recorders}}
     \label{fig:chart_recorder}
 \end{figure}
 
 % pripadne to upravit na: Stěžejní změna přišla ve 20. století s rozvojem automatických záznamníků
-Stěžejní změna přišla ve 20. století s rozvojem elektrotechniky a nástupem automatických záznamníků, které umožnily primitivní 
-sběr dat bez nutnosti lidského zásahu. Namísto ručně zapisovaných měření začaly být hodnoty přenášeny přímo do záznamových 
-zařízení, která je dokázala systematicky uchovávat. \cite{origin_of_chart_recorders}
+Stěžejní změna přišla ve 20. století s rozvojem elektrotechniky a nástupem automatických záznamníků, které umožnily jednoduchý sběr dat bez nutnosti lidského zásahu. Namísto ručně 
+zapisovaných měření začaly být hodnoty přenášeny přímo do záznamových zařízení, která je dokázala systematicky uchovávat. \cite{origin_of_chart_recorders}
 
 \section{Záznam dat v počátcích elektrotechniky}
 \label{zaznam}
-Prvními specializovanými záznamníky byly mechanické či elektromechanické zařízení, využívající principu analogového záznamu dat. 
-Jejich primárním účelem bylo zaznamenávání fyzikálních veličin, jako je například teplota, tlak, vlhkost nebo vibrace. 
-Tyto přístroje využívaly myšlenky mechanického pohyblivého pera, které převádělo naměřenou hodnotu fyzikální veličiny na 
-samočinný pohyb. Pro realizaci tohoto pohybu bylo nutné nejprve převést měřenou fyzikální veličinu na mechanický posun. 
-Například pro měření teploty se běžně využíval bimetalový pásek, složený ze dvou kovových materiálů s různou hodnotou teplotní 
-roztažitelnosti. Při změně teploty docházelo k prohnutí pásku v důsledku rozpínání kovu, čímž bylo rozpohybováno mechanické pero, 
-které zapsalo hodnotu na paměťové médium. 
+Prvními specializovanými záznamníky byly mechanické či elektromechanické zařízení, využívající principu analogového záznamu dat. Jejich primárním účelem bylo zaznamenávání fyzikálních 
+veličin, jako je například teplota, tlak, vlhkost nebo vibrace. Tyto přístroje využívaly myšlenky mechanického pohyblivého pera, které převádělo naměřenou hodnotu fyzikální veličiny 
+na samočinný pohyb. Pro realizaci tohoto pohybu bylo nutné nejprve převést měřenou fyzikální veličinu na mechanický posun. Například pro měření teploty se běžně využíval bimetalový 
+pásek, složený ze dvou kovových materiálů s různou hodnotou teplotní roztažitelnosti. Při změně teploty docházelo k prohnutí pásku v důsledku rozpínání kovu, čímž bylo rozpohybováno 
+mechanické pero, které zapsalo hodnotu na paměťové médium. 
 
 % mechanicky -< samocinny
 % pomocí kterého se zapisovala změřená hodnota na paměťové médiu (papírová páska nebo papírový buben)
@@ -84,37 +73,37 @@ které zapsalo hodnotu na paměťové médium.
 \end{figure}
 
 
-Tyto přístroje josu běžně používány od druhé poloviny 19. století. Pro již zmíněný záznam teploty lze například využít přístroj 
-zvaný cirkulární grafový záznamník (Circular Chart Recorder), dále je hojně využíván polygraf, využívaný jako detektor lži. 
-Značnou nevýhodou těchto záznamníků byvá typ paměťového média, na které probíhá zápis hodnot, nejčastěji jim je papírová páska 
-nebo papírový buben. Tyto pásky musí být velice často měněny za nové, ještě nepopsané, jelikož výsledné záznamy by se, jinak staly 
-značně nepřehledné, pokud by byly popsány vícekrát. \cite{origin_of_chart_recorders}
+Tyto přístroje jsou běžně používány od druhé poloviny 19. století. Pro již zmíněný záznam teploty lze například využít přístroj zvaný cirkulární grafový záznamník (Circular Chart Recorder), 
+dále je hojně využíván polygraf, využívaný jako detektor lži. Značnou nevýhodou těchto záznamníků bývá typ paměťového média, na které probíhá zápis hodnot, nejčastěji jim je papírová páska 
+nebo papírový buben. Tyto pásky musí být velice často měněny za nové, ještě nepopsané, jelikož výsledné záznamy by se, jinak staly značně nepřehledné, 
+pokud by byly popsány vícekrát. \cite{origin_of_chart_recorders}
 
-Největší nevýhodou analogových záznamových systémů je jejich vysoká specializace \footnote{Řešení jsou současně mnohdy 
-optimalizovaná pro záznam konkrétního systému.} pro jediný konkrétní typ záznamu. Tyto záznamníky tedy nejsou snadno upravitelné 
-pro jiné účely, na rozdíl od digitálních řešení, která umožňují flexibilnější přizpůsobení (například pouhou úpravou programu) k 
-sledování monitorované soustavy. Často je v těchto případech nutné využít jiné analogové 
+Největší nevýhodou analogových záznamových systémů je jejich vysoká specializace \footnote{Řešení jsou současně mnohdy optimalizovaná pro záznam konkrétního systému.} pro jediný 
+konkrétní typ záznamu. Tyto záznamníky tedy nejsou snadno upravitelné pro jiné účely, na rozdíl od digitálních řešení, která umožňují flexibilnější přizpůsobení 
+(například pouhou úpravou programu) k sledování monitorované soustavy. Často je v těchto případech nutné využít jiné analogové 
 řešení. \cite{analog_signal_and_digital_signal_processing_Tel_System}
 
-Další limitací těchto přístrojů bylo ruční vyhodnocování dat, což bylo mnohdy časově zdlouhavé a také náchylné k chybám. K správné 
-interpretaci dat byla často potřeba zkušená obsluha a v některých případech i pomocné měřící pomůcky. Přenos souborů a automatizace 
-také nebyla možná, proto jakmile se v polovině 20. století začaly na trh dostávat číslicové systémy, analogové záznamové systémy 
-jimi byly postupně nahrazovány. \cite{newcastle_history_of_digital_computers, florian_prechod_a_analog_do_digital}
+Další limitací těchto přístrojů bylo ruční vyhodnocování dat, což bylo mnohdy časově zdlouhavé a také náchylné k chybám. K správné interpretaci dat byla často potřeba zkušená obsluha 
+a v některých případech i pomocné měřící pomůcky. Přenos souborů a automatizace taktéž nebyla možná, proto jakmile se v polovině 20. století začaly na trh dostávat číslicové systémy, 
+analogové záznamové systémy jimi byly postupně nahrazovány. \cite{newcastle_history_of_digital_computers, florian_prechod_a_analog_do_digital}
 
 %Jak obecne probiha princip digitalniho zaznamu dat, co jsou to digitalni data, ze se v dnesni dobe uprednostnuje tento zpusob misto analogoveho zaznamu.
 
 % TODO: Kde napsat co je to vubec zaznamnik? Ze je to pristroj, ktery zpracovava, uklada a pripadne analyzuje data...
-\section{Digitální záznam dat}
+\section{Digitální zpracování dat}
 \label{digitalni_zaznam_dat}
-S nástupem číslicových systémů v polovině 20. století došlo k velkému pokroku ve způsobu, jakým jsou data zaznamenávána, 
-zpracovávána a uchovávána. Digitální záznam dat postupně nahradil analogové metody, které byly omezené nejen kapacitou paměťových 
-médií (viz. kapitola \ref{zaznam}), ale také nutností manuálního vyhodnocení záznamů a obtížným sdílením získaných dat.
+S nástupem číslicových systémů v polovině 20. století došlo k velkému pokroku ve způsobu, jakým jsou data zaznamenávána, zpracovávána a uchovávána. Digitální záznam dat postupně 
+nahradil analogové metody, které byly omezené nejen kapacitou paměťových médií (viz. kapitola \ref{zaznam}), ale také nutností manuálního vyhodnocení záznamů a obtížným sdílením 
+získaných dat.
 
 \subsection{Princip digitálního záznamu dat}
-Digitální záznam dat se oproti analogovému liší způsobem, jakým se v systému obecně pracuje se signály. Zatímco analogový záznam 
-pracuje s kontinuálními (spojitými) signály, jak již bylo zmíněno v kapitole \ref{zaznam}, digitální záznam využívá diskrétní 
-(číslicové) hodnoty. Tento rozdíl znamená, že analogový signál může nabývat libovolných hodnot v čase, zatímco digitální signál 
-je reprezentován jako sada přesně definovaných úrovní, obvykle ve formě binárního kódu (nuly a jedničky).
+Digitální záznam dat se oproti analogovému liší způsobem, jakým se v systému obecně pracuje se signály (viz. \ref{zaznam}). Zatímco analogový záznam pracuje se spojitými (kontinuálními) 
+signály, digitální záznam využívá diskrétní hodnoty, které jsou uchovávány v binární podobě. To znamená, že již na vstupu musí být příchozí signály v digitální podobě. Data tedy musí být 
+generována číslicovými zdroji a nebo musí být převedena do digitálního tvaru pomocí komponenty k tomu určené - digitálně-analogového převodníku. 
+
+V případě převodu analogových signálů do jejich digitální podoby prochází proces digitalizace ve třech základních krocích. V počátku dochází ke vzorkování, při kterém je tento spojitý 
+signál snímán v pravidelných časových intervalech a převáděn na diskrétní hodnoty. Následně dochází ke kvantizaci, při níž jsou vzorkované hodnoty zaokrouhleny na nejbližší úroveň v 
+omezeném rozsahu, to s sebou nese drobnou ztrátu přesnosti. Nakonec je kvantizovaný signál kódován do binární podoby, umožňující jeho další zpracování, ukládání a přenos výpočetním strojem.
 
 \begin{figure}[h]
     \centering
@@ -123,39 +112,40 @@ je reprezentován jako sada přesně definovaných úrovní, obvykle ve formě b
     \label{fig:digital-vs-analog}
 \end{figure}
 
-% TODO: Digitální záznamník může sloužit i pouze pro čistě PC programy? Pokud je zde nejak prijimaci periferie? To by slo primo do CPU
-
-Hlavní výhodou digitálního záznamu oproti analogovému je jeho odolnost vůči šumu a zkreslení. Zatímco analogový signál může být 
-postupně degradován například vlivem rušení nebo degradace záznamového média, digitální data lze bezztrátově kopírovat, přenášet 
-a rekonstruovat bez snížení kvality.
-
-\subsection{Digitální záznamník}
-\label{digitalni_zaznamik}
-Digitální záznamník je zařízení nebo softwarový program určený ke sběru, zpracování a ukládání dat ve formě digitálního záznamu. 
-Při pohledu na blokové diagramy digitálních záznamníků lze jejich strukturu rozdělit obecně do tří základních komponent, kterými 
-jsou přijímající periferie, procesorové jádro a úložiště (viz. obrázek \ref{fig:common-digital-datalogger}). 
-\cite{researchgate_general_dataloggger_multiple_sdcards, ieee_digital_sound_recorder_arm_sd_card, ieee_multi_connectivity_datalogger_sd_card}
-
-Prvním klíčovým prvkem digitálního záznamníku je přijímající periferie, která slouží ke sběru vstupních dat. V závislosti na 
-konkrétní aplikaci může tato komponenta zahrnovat různé typy vstupních rozhraní, jako jsou sériová rozhraní (UART, SPI, I2C a další) 
-síťová rozhraní (Ethernet, Wi-Fi, LoRa, či CAN) nebo analogově-digitální převodníky.\footnote{Vyjímkou jsou specifické monitorovací programy 
-mezi, které patří například Windows Task Manager, jež ke svému sběru dat využívají rozhraní pro programování aplikací tzv. kernel API. 
-\cite{fourcore_win_process_birth}} \cite{ieee_digital_sound_recorder_arm_sd_card}
+U digitálních signálů je proces záznamu výrazně jednodušší, protože již nevyžaduje žádnou digitalizaci. Digitální data vstupující do záznamníku v podobě datové toku (data stream) skrz 
+přijímací periferie. Tyto periferie jsou specializované nikoliv na konkrétní fyzikální veličinu (jak tomu bylo u analogových záznamnových zařízení viz. kapitola \ref{zaznam}), ale na 
+specifický komunikační protokol. Tedy jedna periferie může přenášet jak údaje o teplotě, vlhkosti, tak i cokoliv jiného  pokud je dodrženo správné komunikační rozhraní, přičemž povaha 
+přenášených dat závisí na senzorech a zařízeních připojených k této periferii. Přijímaná data jsou tedy příjímací periferii zpracovávány přímo ve své binární podobě, čímž odpadá celý 
+proces potřeby provedení procesu digitalizace složené z vzorkování, kvantizace a kódování. 
 
 \newpage
 
-Druhým hlavním prvkem digitálního záznamníku je procesorové jádro, zajišťující zpracování vstupních dat. Procesorové jádro může být 
-jak součástí mikrokontroléru, tak i procesoru, které může mít v tomto případě na starosti jednoduché operace, jako přepočet hodnoty 
-z analogově-digitálního převodníku na teplotu podle kalibrační křivky senzoru, přes filtrování šumu a doplňování časových značek 
-k naměřeným vzorkům, až po pokročilé analýzy dat - například zpracování signálů pro EKG měření. 
-\cite{springer_development_ECG_recorder}
+Digitální záznam poskytuje mnoho výhod oproti svému analogovému protějšku. Primárně je to jeho flexibilita a efektivita při zpracování, ukládání a přenosu dat. Digitální data lze snadno 
+kopírovat, bezeztrátově přenášet a ukládat bez degradace kvality, což je pro záznamové systémy zásadní. Díky digitálnímu záznamu můžeme dnes i jednoduše analyzovat data, než tomu bylo 
+dřív u analogového záznamu. Proto jsou dnes systémy s digitálním záznamem preferovanou volbou.
 
-Poslední a také jednou z nejdůležitějších všeobecnou částí digitálního záznamníku je úložiště, kde jsou data uložena pro pozdější 
-přenos a zpracování (post-processing). Volba tohoto úložného prostoru závisí na požadavcích aplikace a rozsahu jejího využití - od 
-osobních "hobby" projektů až po používání mnoha uživateli. V závislosti na tom lze využít různé technologie od paměťových karet SD 
-a eMMC přes interní RAM či flash paměti až po síťová úložiště a cloudové služby. V mnoha případech je také využíván hybridní přístup, 
-kdy jsou data nejprve ukládána do interní paměti záznamníku (například RAM úložiště) a následně dávkově přenášena na trvalé médium 
-(viz. kapitola \ref{fig:batch-processing}) nebo odesílána přes síť. \cite{rta_local_vs_cloud}
+    
+% TODO: Digitální záznamník může sloužit i pouze pro čistě PC programy? Pokud je zde nejak prijimaci periferie? To by slo primo do CPU
+\subsection{Digitální záznamník}
+\label{digitalni_zaznamik}
+Digitální záznamník je dedikované zařízení nebo softwarový program určený ke sběru, zpracování a ukládání dat ve formě digitálního záznamu. Při pohledu na blokové diagramy digitálních 
+záznamníků lze jejich strukturu rozdělit obecně do tří základních komponent, kterými jsou přijímající periferie, procesorové jádro a 
+úložiště (viz. obrázek \ref{fig:common-digital-datalogger}). \cite{researchgate_general_dataloggger_multiple_sdcards, ieee_digital_sound_recorder_arm_sd_card, ieee_multi_connectivity_datalogger_sd_card}
+
+Prvním klíčovým prvkem digitálního záznamníku je přijímající periferie, která slouží ke sběru vstupních dat. V závislosti na konkrétní aplikaci může tato komponenta zahrnovat různé 
+typy vstupních rozhraní, jako jsou sériová rozhraní (UART, SPI, I2C a další) síťová rozhraní (Ethernet, Wi-Fi, LoRa, či CAN) nebo analogově-digitální 
+převodníky.\footnote{Vyjímkou jsou specifické monitorovací programy mezi, které patří například Windows Task Manager, jež ke svému sběru dat využívají rozhraní pro programování aplikací 
+tzv. kernel API. \cite{fourcore_win_process_birth}} \cite{ieee_digital_sound_recorder_arm_sd_card}
+
+
+Druhým hlavním prvkem digitálního záznamníku je procesorové jádro, zajišťující zpracování vstupních dat. Procesorové jádro může být jak součástí mikrokontroléru, tak i procesoru, které 
+může mít v tomto případě na starosti jednoduché operace, jako přepočet hodnoty z analogově-digitálního převodníku na teplotu podle kalibrační křivky senzoru, přes filtrování šumu a 
+doplňování časových značek k naměřeným vzorkům, až po pokročilé analýzy dat - například zpracování signálů pro EKG měření. \cite{springer_development_ECG_recorder}
+
+Poslední a také jednou z nejdůležitějších všeobecnou částí digitálního záznamníku je úložiště, kde jsou data uložena pro pozdější přenos a zpracování (post-processing). Volba tohoto 
+úložného prostoru závisí na požadavcích aplikace a rozsahu jejího využití - od osobních "hobby" projektů až po používání mnoha uživateli. V závislosti na tom lze využít různé technologie 
+od paměťových karet SD a eMMC přes interní RAM či flash paměti až po síťová úložiště a cloudové služby. V mnoha případech je také využíván hybridní přístup, kdy jsou data nejprve ukládána 
+do interní paměti záznamníku (například RAM úložiště) a následně dávkově přenášena na trvalé médium (viz. kapitola \ref{fig:batch-processing}) nebo odesílána přes síť. \cite{rta_local_vs_cloud}
     
 
 \begin{figure}[h]
@@ -165,20 +155,263 @@ kdy jsou data nejprve ukládána do interní paměti záznamníku (například R
     \label{fig:common-digital-datalogger}
 \end{figure}
 
-Digitální záznamník poskytuje výstupy, kterými jsou organizovaná data, jež mohou být dále analyzována, vizualizována nebo 
-zpracovávána jinými systémy. Jakou podobu mají výstupní data, tedy jejich formát, opět závisí na konkrétních požadavcích aplikace. 
-Jedním je volba podle typu typ uložiště, jedná-li se o lokální úložný prostor, například paměťovou kartu, využívají se obecně 
-soubory různých formátů, jako třeba textové nebo binární formy. Zatímco cloudová řešení využívají objektové formáty nebo lehké 
-databázové systémy. Dále záleží, jakým způsobem bude proveden přenos dat, pokud bude využita síťová komunikace třeba pomocí MQTT 
-či HTTP, je vhodné data uspořádávat do serializované podoby, zatímco při zvolení přenosu po sériové lince je naopak vhodnější a 
-efektivnější využít opět některý z binárních formátů. Důležitou roli hrají i požadavky na následné zpracování (post-processing) a 
-interpretaci dat v jiných systémech či aplikacích k tomu určeným. Například pro nazírání na data z pohledu časových řad může být 
-vhodné využít formáty, které jsou kompatibilní s například databázovým systémem TimescaleDB. V dalších případech může být efektivní 
-využít knihovny pro zpracování a analýzu dat, například Pandas v prostředí Pythonu, které umožňují rychlou manipulaci s velkým 
-objemem strukturovaných dat, v takových případech je tedy zase lepší strukturovat data podle formátu CSV. 
-\cite{medium_optimalization_iot_data_storage_timescaledb}
+\newpage
+
+Digitální záznamník poskytuje výstupy, kterými jsou organizovaná data, jež mohou být dále analyzována, vizualizována nebo zpracovávána jinými systémy. Jakou podobu mají výstupní data, 
+tedy jejich formát, opět závisí na konkrétních požadavcích aplikace. Jedním je volba podle typu úložiště, jedná-li se o lokální úložný prostor, například paměťovou kartu, využívají se 
+obecně soubory různých formátů, jako třeba textové nebo binární formy. Zatímco cloudová řešení využívají objektové formáty nebo lehké databázové systémy. Dále záleží, jakým způsobem bude 
+proveden přenos dat, pokud bude využita síťová komunikace třeba pomocí MQTT či HTTP, je vhodné data uspořádávat do serializované podoby, zatímco při zvolení přenosu po sériové lince je 
+naopak vhodnější a efektivnější využít opět některý z binárních formátů. Důležitou roli hrají i požadavky na následné zpracování (post-processing) a interpretaci dat v jiných systémech 
+či aplikacích k tomu určeným. Například pro nazírání na data z pohledu časových řad může být vhodné využít formáty, které jsou kompatibilní s například databázovým systémem TimescaleDB. 
+V dalších případech může být efektivní využít knihovny pro zpracování a analýzu dat, například Pandas v prostředí Pythonu, které umožňují rychlou manipulaci s velkým objemem strukturovaných 
+dat, v takových případech je tedy zase lepší strukturovat data podle formátu CSV. \cite{medium_optimalization_iot_data_storage_timescaledb}
+
+Způsobů, jak lze digitální záznamník sestavit, existuje mnoho, přičemž volba konkrétní architektury závisí na požadavcích dané aplikace. Velice často se však skládá z výše představených 
+komponent. 
+
+\subsection{Digitální záznam v počítačovém systému}
+Digitální záznamníky lze implementovat na počítačových systémech jako jsou osobní počítače či servery, kde představují softwarová řešení, sloužící ke sběru, zpracování a potenciální 
+archivaci dat. Tyto systémy obvykle také vycházejí ze struktury obecného číslicového záznamníku popsaného v kapitole \ref{digitalni_zaznamik}. 
+
+Vstupní data přicházejí často z periferií, jako je například síťová karta či sériové porty, ale mohou také pocházet ze "pseudo" zařízení obsahujících stavy aplikací běžících na daném 
+počítači či speciálních API (např. již zmiňovaných kernel API). Procesor, který tato data příjímá, tak je obvykle nejen zpracovává, ale často i určitým způsobem vyhodnocuje, 
+jelikož disponuje dostatečným výpočetním výkonem pro pokročilé operace. Výsledkem těchto úkonů procesoru nad daty bývají informace o aktuálním stavu sledovaného systému, které lze využít 
+k monitorování a dalším rozhodovacím procesům. \cite{linux_in_action_log_and_monitoring}
+
+% Wireshark: RAM -> Export
+% Terminal or Serial Dataloggers (COM, RS232,...) -> Export to File, Excel or Database
+% 
+Podle požadavků aplikace a jejího zaměření se liší i způsob, jakým jsou data uchovávána. Mnohdy si tyto záznamníky odkládají data pouze dočasně do operační paměti RAM, to umožňuje 
+sledovat pouze aktuální stav nebo krátkodobé trendy. Pro sledování dlouhodobých trendů je pak možné tyto záznamy exportovat na dlouhodobá uložiště, do různých typů souborů - CSV, XLS 
+či speciálních formátů relevantních dané aplikaci. Také se zde velmi často uplatňuje koncept exportování do databázových systémů a cloudových služeb.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.90\textwidth]{obrazky-figures/computer_recorder.png}
+    
+    \caption{Schéma pokročilého digitálního záznamníku síťové komunikace - Wireshark \cite{researchgate_wireshark_architecture, winpcap_architecture}}
+    \label{fig:computer-recorder}
+\end{figure}
+
+% Energie a udrzba?
+Tyto záznamníky jsou především implementovány na strojích s relativně výkonnými hardwarovými prostředky, což je činí až překvalifikovanými pro mnohé stroje. Kromě provozních 
+nákladů, jako je spotřeba elektrické energie, je také vysoká pořizovací cena, neboť každý záznamník vyžaduje plnohodnotný počítač s dostatečným výpočetním výkonem, úložným 
+prostorem a případným připojením k síti. Proto se softwarové záznamníky na počítačových systémech nejčastěji využívají jako doplňkový nástroj pro monitorování procesů, jako 
+jsou TCP/IP záznamníky, pokročilé sériové záznamníky a terminály, či záznamníky speciálních rozhraní, jako je například HID (Human Interface Device). Typicky se nasazují tam, 
+kde počítač plní jinou primární funkci, například jako server zpracovávající velké objemy síťového provozu nebo vývojové prostředí pro embedded systémy. V těchto případech se 
+využívají k diagnostice, analýze logů běžících aplikací nebo jako terminál pro připojená zařízení, čímž rozšiřují možnosti sledování a ladění bez nutnosti pořizování 
+specializovaného hardwaru. 
+
+Před implementací či použití takového záznamníku, je tedy dobré si promyslet, zda účel záznamníku, jestli budeme zaznamenávat stav pokročilého zařízení, na které se vleze i 
+implementovaný záznamník. Pro dedikované záznamníky je z hlediska ceny a efektivity často výhodnější využít specializované vestavěné systémy, jejichž hardware je navržen tak, 
+aby výkonově odpovídal konkrétním potřebám aplikace.
+
+% Používají se však trošku jiným způsob
+%  Je nutné si uvědomit, že jádro mikrořadiče neposkytuje stejnou výpočetní sílu jako jádro procesoru.
+
+\subsection{Digitální záznam na platformě mikrořadiče}
+Digitální záznamníky nemusí být nutně implementovány na výkonných počítačových systémech, ale mohou být také realizovány jako vestavěné systémy postavené na mikrořadičích (MCU). 
+Narozdíl od svých protějšků na PC jsou však zaměřena na oblasti, kde je potřeba určitým způsobem sbírat a ukládat data s minimálními nároky na spotřebu energie a výpočetní výkon. 
+Proto své uplatnění nacházejí v průmyslové automatizaci, IoT aplikacích, zdravotnických zařízeních a dalších oblastech.
+
+I tyto záznamníky také obvykle obsahují základní komponenty obecného záznamníku představeného v kapitole \ref{digitalni_zaznamik}, které je možno libovolně rozšířit. Data vstupují 
+do záznamníku prostřednictvím přijímacích periferií, která mohou pocházet z různých senzorů ať už analogových či digitálních (tedy teplotních čidel, akcelerometrů nebo proudových 
+snímačů a dalších) nebo z jiných pozorovaných zařízení. Vstupní periferie záznamníků mohou tvořit klasické komunikační rozhraní, jakými jsou UART, SPI, I2C či I3C, ale také 
+bezdrátová rozhraní v podobě Wi-Fi, Bluetooth nebo analogově-digitální převodník.\footnote{Vstupních komunikačních je vícero, zde jsou zmíněna jen ty nejzákladnější} Tyto vstupní 
+periferie mohou být přímo integrovány v mikrořadiči - například již uvedený analogově-digitální převodník, nebo mohou být připojeny externě ve formě samostatných modulů, které 
+komunikují s MCU prostřednictvím již standardních rozhraní.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.95\textwidth]{obrazky-figures/recorder_mcu.png}
+    
+    \caption{Architektura digitálního záznamníku pro měření teploty}
+    \label{fig:mcu-recorder}
+\end{figure}
+
+Vstupní data jsou následně zpracována jádrem mikrořadiče. To může provádět základní operace, jako je převod číslicové hodnoty z ADC na teplotu, filtrování signálu, doplňování časových 
+značek, nebo provádět lehce obtížnější operace, jako je výpočet tepu v případě měření srdečních aktivit a další. 
+
+Následně jsou data ukládána do uložiště. Obvykle se používají externí nevolatilní uložiště, která zaručují perzistenci dat i po vypnutí záznamníku. Standardně se dnes používají různé 
+typy SD karet, které poskytují relativně jednoduché připojení    přes rozhraní SPI nebo SDIO. Široce využívané jsou také paměti FRAM (Ferroelectric Random Access Memory) které kombinují 
+výhody rychlého zápisu (pohybujícího se kolem 1–10 MB/s) a nízké spotřeby energie. Možné je také upřednostnit přístup se vzdáleným uložištěm v podobě databáze či cloudového systému.
+
+
+\section{Koncepty využívané ke zpracování dat digitálních záznamníků} 
+Digitální záznamníky často bývají implementovány na platformě MCU, která dokáže poskytnout dobrý kompromis mezi cenou a výkonem, nicméně je nezbytné zohlednit specifická omezení a 
+vlastnosti daného mikrokontroléru. Oproti počítačovým systémům mají MCU omezené výpočetní a paměťové zdroje, což vyžaduje důkladný návrh architektury systému. Proto je i nutné volit 
+takové metody, které mohou minimalizovat latenci, spotřebu energie a nároky na paměť, a zároveň zajistí spolehlivý provoz v reálném čase.
+
+\subsection{Vícenásobná vyrovnávací paměť (multiple-buffering)}
+Jedním z častých konceptů využívaných v implementaci digitálních záznamníků je použití vícenásobné vyrovnávací paměti. Tento koncept je převážně známý díky algoritmům využívaným v 
+oboru počítačové grafiky. Grafický čip musí zpracovat velké množství dat za krátký časový úsek, proto algoritmus zpracování dat využívá dvě vyrovnávací paměti - přední vyrovnávací 
+paměť, takzvaný front-buffer, jež je využívána pro zobrazení aktuálního snímku a zadní vyrovnávací paměť, ve které čip připravuje nový obsah. Výsledný obsah tak může být plynule 
+vykreslen bez artefaktů a trhání. Jakmile je nový snímek kompletní, vyrovnávací paměti se prohodí. \cite{double_buffering_model}
+
+Obdobný mechanismus se využívá i v digitálních záznamnících, kde slouží k zajištění kontinuálního sběru dat bez výpadků. Zatímco jeden buffer přijímá nová data ze vstupní periferie 
+(například analogově-digitálního převodníku či jiných vstupů), druhý buffer je současně zpracováván nebo ukládán na úložné médium. Tím se minimalizuje riziko ztráty dat způsobené 
+časovou prodlevou při jejich zpracování nebo zápisu.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.95\textwidth]{obrazky-figures/multiple_buffering-1-1.png}
+    
+    \caption{Schéma principu práce s vícenásobnou vyrovnávací paměťí - náhodný stav}
+    \label{fig:multiple-buffering-1}
+\end{figure}
 
 \newpage
+
+Důležitou vlastností tohoto algoritmu je jeho nízká operační režijní náročnost. Plynulý chod zpracování dat je zajištěn bez nutnosti fyzického přenosu obsahu mezi vyrovnávacími 
+pamětmi. Místo toho se využívají ukazatele (pointery), které směřují na počáteční adresy jednotlivých bufferů. Jakmile je sběrný buffer (Back Buffer) naplněn, ukazatele se prohodí~–~back 
+buffer se stane zpracovávaným bufferem (Front Buffer) a původní front buffer se uvolní pro další sběr dat.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.90\textwidth]{obrazky-figures/multiple_buffering-2-2.png}
+    
+    \caption{Schéma principu práce s vícenásobnou vyrovnávací paměťí - přeřazení ukazatelů}
+    \label{fig:multiple-buffering-2}
+\end{figure}
+
+Tato metoda nachází významné uplatnění zejména v systémech pracujících v reálném čase, kde dochází k příjmu velkého objemu dat v krátkých časových intervalech a kde doba zpracování 
+nesmí překročit dobu sběru dat. Využitím vícenásobné vyrovnávací paměti se minimalizuje latence zpracování a současně se snižuje riziko přetečení paměťového prostoru. \cite{buffering_chang}
+
+Nicméně, žádný algoritmus není dokonalý a i tato metoda má své nevýhody, které je třeba zmínit. Vyrovnávací paměti jsou zpravidla implementovány softwarově, nikoliv hardwarově, 
+což vede k zvýšeným nárokům na paměťové prostředky, obzvlášť v segmentu volatilní paměti (SRAM/DRAM) kde jsou buffery uložené. \cite{basics_of_digital_forensics}
+% TODO: Je tedy vhodne si promyslet zda zdroje MCU budou dostacovat.
+
+\subsection{Dávkové zpracování (batch processing)}
+\label{davkove_zpracovani}
+Další princip, jež je využívaný v implementacích digitálních záznamníků, souvisí s typem uložišť, na které jsou získaná data zaznamenávána. Některé typy nevolatilních pamětí, 
+například NAND Flash paměť, jež umožňují uchování dat i po odpojení napájení. Tyto druhy paměti jsou organizovány do bloků (viz. obrázek \ref{fig:batch-processing}), přičemž bloky 
+jsou následně rozděleny na menší jednotky zvané sektory. Velikost sektoru obvykle bývá 512 bajtů či 4096 bajtů, v závislosti na typu média a jeho architektuře. Tato bloková struktura 
+umožňuje účinnou správu prostoru, které uložiště nabízí, ale současně vyžaduje specifický způsob zápisu/čtení dat, které je pouze umožněno na úrovni celých 
+bloků.  \cite{tech_target_nand_flash, non_volatile_memories}
+
+Dávkové zpracovátí tohoto chování paměti využívá, data se tedy nejprve shromažďují ve volatilní paměti - například RAM a teprve po naplnění určitého objemu (celého bloku či jeho násobku) 
+dojde k jejich zápisu na konečné paměťové médium.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.70\textwidth]{obrazky-figures/batch_processing.png}
+    
+    \caption{Organizace bloku nevolatilní paměti \cite{ieee_relationships_among_region_segment_frame_and_cluster}}
+    \label{fig:batch-processing}
+\end{figure}
+
+\newpage
+
+\subsection{Cirkulární buffer}
+Cirkulární buffer (circular buffer), někdy také označovaný jako kruhový nebo cylindrický buffer, je datová struktura, která funguje na principu FIFO fronty (First-In, First-Out) a považuje 
+tuto paměť za kruhovou. Tento přístup je často využíván k řešení problému jednoho producenta a konzumenta (producent-consumer problem), kde jedno vlákno je konzument a druhé producent. 
+Například ve vestavěných zařízeních, jednímž vláken je rutina obsluhy přerušení, která čte data ze senzoru a druhým vláknem je hlavní smyčka události.  \cite{embedjournal_ring_buffer}
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.88\textwidth]{obrazky-figures/circular_buffer_titles.png}
+    
+    \caption{Cirkulární vyrovnávací paměť}
+    \label{fig:circular-buffer}
+\end{figure}
+
+Princip činnosti cirkulárního bufferu spočívá v použití dvou ukazatelů - zápisový ukazatel (head) a čtecí ukazatel (tail). Ukazatel head vždy směřuje na pozici, kam bude zapisován následující 
+prvek, zatímco ukazatel tail ukazuje na pozici, ze které bude čtena následující hodnota. Pokud ukazatel head dosáhne konce pole, vrací se na jeho začátek, čímž je zajištěna kruhová povaha 
+struktury. Při plném bufferu lze zvolit dvě strategie – přepsání nejstarších dat nebo odmítnutí nových vstupů, přičemž výběr závisí na konkrétní 
+aplikaci. \cite{embedjournal_ring_buffer, medium_ring_buffer}
+
+Z hlediska časové složitosti nabízí cirkulární buffer konstantní časovou složitost - O(1) pro základní operace, jako je zápis (enqueue) a  čtení (dequeue). Tato efektivita je dána tím, že 
+se při zápisu a čtení dat není potřeba přesouvat prvky v paměti, ale lze pouze inkrementovat ukazatele s využitím operace modulo. Pokud jde o prostorovou složitost, velikost cirkulárního 
+bufferu je určena předem – zpravidla jde totiž o staticky alokované, to v tomto případě odpovídá složitosti O(n), kde n je maximální počet prvků, které může buffer 
+pojmout. \cite{petrungaro_ring_buffer_complexity}
+
+\subsection{Nízko-energetické režimy (low-power modes)}
+\label{nizko_energeticke_rezimy}
+Energetická efektivita je jedním z klíčových parametrů obecně vestavěných zařízení, tedy i digitálních záznamníků implementovaných na platformě MCU, zejména pokud jsou napájeny z 
+baterií či jiných omezených zdrojů energie (například energy harvesting). Minimalizace spotřeby bývá v těchto případech realizována využitím nízkoenergetických režimů (low-power modes), 
+které umožňují zařízení přejít do stavu s minimální energetickou náročností během nečinných period. V praxi mnoho digitálních záznamníků nemusí provádět měření a záznam dat nepřetržitě. 
+Například záznamník teploty může v pravidelných intervalech provést měření, uložit naměřenou hodnotu, přejít do režimu nízké spotřeby a po uplynutí definovaného časového intervalu nebo 
+při vyskytnutí speciální události přejít do aktivního režimu. \cite{analog_devices_low_power_modes}
+
+Průběh takového cyklického chování spotřeby mikrokontroléru, kde se střídají fáze měření a spánku s pravidelnou periodou měření teploty, je znázorněn na obrázku \ref{fig:low-power-modes} níže.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.83\textwidth]{obrazky-figures/low_power_modes.png}
+    
+    \caption{Graf znázorňujíci dynamiku spotřeby mikrokontroléru v průběhu času při využití aktivního a nízkoenergetického režimu}
+    \label{fig:low-power-modes}
+\end{figure}
+
+Ačkoliv nízkoenergetické režimy přinášejí značné úspory energie a jsou nezbytné pro zařízení napájená z baterií, u dataloggerů s velkým objemem zaznamenávaných dat mohou představovat 
+významná omezení. Tyto režimy sice snižují energetickou náročnost systému, avšak zároveň omezují schopnost mikrokontroléru rychle reagovat na události. Spánkové stavy, které minimalizují 
+spotřebu energie, často vedou k delšímu zpoždění při probuzení a nižší dostupnosti kritických periferií. V aplikacích, kde je vyžadována okamžitá odezva na externí podněty nebo nepřetržité 
+zpracování velkého množství dat, může tento faktor negativně ovlivnit spolehlivost a efektivitu záznamníku. \cite{embedded_low_power_modes}
+
+V těchto případech je proto nutné zvážit provozní podmínky a očekávanou dostupnost systému. Pokud záznamník pracuje s velkým datovým tokem a má možnost být připojen po dobu záznamu stále k 
+externímu napájení, může být výhodnější upustit od implementace nízkoenergetických režimů a místo toho optimalizovat architekturu systému pro nepřetržitý provoz s důrazem na výkon a rychlou 
+odezvu. \cite{analog_devices_low_power_modes}
+
+% Normostrany = 11.34
+
+\section{Způsoby zápisu dat}
+Stejně jak jsou důležitá uložiště, na které jsou zaznamenaná data získana, je tak je důležitá práce s tímto uložištěm. Záznamníky dat musí být navrženy tak, aby umožnily spolehlivé ukládání 
+získaných dat, které by mělo být efektivní ve smyslu rychlosti a šetrné pro zvýšení životnosti uložiště. Tato kapitola popisuje tři různé způsoby ukládání dat: přímý zápis na lokální úložiště, 
+ukládání prostřednictvím mezivrstvy s FRAM pamětí a využití vzdálených úložišť. Každá z těchto metod má své specifické výhody a omezení, které určují její vhodnost pro konkrétní aplikace.
+
+\subsection{Přímý zápis na permanentní uložiště}
+Přímý zápis na permanentní úložiště představuje nejjednodušší a nejpřímější metodu ukládání dat. V tomto případě jsou zaznamenaná data ihned zapisována na nevolatilní paměťové médium, jako 
+je SD karta, eMMC, USB Flash disk nebo NAND Flash čip. Tento způsob eliminuje potřebu mezivrstvy mezi záznamníkem a úložištěm, čímž se minimalizuje latence a zjednodušuje celková implementace.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.85\textwidth]{obrazky-figures/forward_write.png}
+    
+    \caption{Přímý zápis na permanentní uložiště s SDHC kartou za pomocí čtyř pinové datové sběrnice}
+    \label{fig:forward-write}
+\end{figure}
+
+Hlavní výhodou této metody je její jednoduchost a okamžitá perzistence dat. Data jsou ukládána přímo na trvalé úložiště a nehrozí tak jejich ztráta při výpadku napájení. To je zvláště 
+výhodné v záznamnících, které zapisují drobné množství dat, kde se data neměří neustále ale jednou za danou periodu uvedených v kapitole \ref{nizko_energeticke_rezimy}, například v 
+environmentálních záznamnících monitorujících teplotu nebo vlhkost.
+
+Problémem tohoto principu, je však častý zápis na paměťové médium. Proto aby se předešlo nadměrnému opotřebení uložiště a zvýšila se efektivita zápisu, využívá se mnohdy současně metoda 
+dávkového zpracování (batch processing) zmíněná v kapitole \ref{davkove_zpracovani}. Data jsou krátkodobě uložena ve volatilním uložišti, a jakmile jich je nashromažděno dostatek, 
+tak jsou přepsána do dlouhodobé nevolatilní paměti. To ale přináší i nové úskalí, hodnoty uložené v neperzistentním uložišti jsou vystavena riziku ztráty, v případě ztráty napájecího napětí.
+
+\subsection{Zápis na permanentní uložiště přes mezivrstvu s FRAM paměti}
+Alternativní volbou k přímému zápisu na permanentní úložiště je využití mezivrstvy ve formě FRAM (Ferroelectric Random Access Memory). FRAM je nevolatilní paměť jež kombinuje výhody 
+rychlé volatilní RAM paměti a perzistentního úložiště.
+
+Ve Feroelektrické RAM paměťi (FRAM/FeRAM) jsou data ukládána pomocí změny polarizace feroelektrického materiálu v paměťové buňce. Jednotlivé buňky se skládají podobně jako je tomu u dynamické 
+RAM (DRAM), z jednoho tranzistoru a jednoho kondenzátoru (1T-1C). Na rozdíl však od DRAM, kde je informace uchovávána jako elektrický náboj v lineárním dielektriku, FeRAM využívá feroelektrický 
+materiál jakým je třeba titaničitan olovnatý (PZT), který vykazuje hysterezní chování. Jakmile je aktivní elektrickéhé pole, dipóly se v krystalové mřížce přeuspořádají do jednoho ze dvou 
+stabilních stavů odpovídajících binárním hodnotám nula či jedna a tento stav zůstává zachován i po odeznění elektrického pole.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.70\textwidth]{obrazky-figures/feram.png}
+    
+    \caption{Struktura feroelektrické RAM paměti (FeRAM)}
+    \label{fig:feram-structure}
+\end{figure}
+
+FRAM lze v dedikovaném digitálním záznamníku využít jako takzvanou mezivrstvy neboli vyrovnávací paměť, pomoocí které lze optimalizovat zápisy na konečné dlouhodobé uložiště. Jak jsou tedy 
+data záznamníkem postupně sbírána, tak mohou být postupně či po blocích zapisována do této mezivrstvy. Pokud je následně vyrovnávací paměť FRAM dostatečně zaplněna, její obsah je dávkově 
+přenesen na dohodnuté trvalé úložiště, a tento cyklus se opakuje. 
+
+% navíc nevolatilní, diky usporadanym dipolum, ktere bylo zajisteno aktivnim elektrickem poli 
+Použití FRAM jako vyrovnávací paměti přináší několik výhod. Jedním z hlavních přinosů je snížení opotřebení hlavního úložiště, eliminán je totiž častý zápis po malých blocích dat, který 
+zbytečně opotřebovává koncová nevolatilní uložiště typu flash, která mají omezený počet přepisovacích cyklů. Další výhodou je velice rychlý zápis oproti flash pamětím, obvykle trvá zápis 
+na FRAM v řádě nanosekund, což je řádově rychlejší než srovnávané flash paměti, na kterých zápis trvá typicky v řádu mikrosekund až milisekund. FRAM je navíc nevolatilní, což znamená, že 
+i v případě výpadku napájecího napětí zůstávají zaznamenaná data na feroelektrickém uložišti zachována, čímž se eliminuje potřeba dodatečných opatření k ochraně dat, jako jsou záložní baterie 
+nebo superkondenzátory.
+
+\subsection{Zápis na vzdálené uložiště}
+Pro dlouhodobé uložení dat, lze v neposledním případě, také využit vzdálená uložišťě, jakými jsou databáze či cloudy. Lze tak využít jednotného uložiště pro velké množství digitálních záznamníků a eliminovat tak potřebu lokálních, nevolatilních paměťových médií.
+
+Pouzivaji se treba v pokrocilych systemech kdy uz je mozne z dat neco i odvozovat, napriklad venku je pekne a v dobe je 25 stupnu tak trosku pootevru okna.
 
 \begin{figure}[h]
     \centering
@@ -189,199 +422,37 @@ objemem strukturovaných dat, v takových případech je tedy zase lepší struk
 \end{figure}
 
 
-Způsobů, jak lze digitální záznamník sestavit, existuje mnoho, přičemž volba konkrétní architektury závisí na požadavcích dané 
-aplikace. Velice často se však skládá z výše představených komponent. 
-
-\subsection{Digitální záznam v počítačovém systému}
-Digitální záznamníky lze implementovat na počítačových systémech, které představují softwarová řešení, sloužící ke sběru, 
-zpracování a případnou archivaci dat. Tyto systémy obvykle také vycházejí ze struktury obecného číslicového záznamníku popsaného 
-v kapitole \ref{digitalni_zaznamik}. Vstupní data přicházejí často z periferií jako je například síťová karta či senzorických 
-zařízení, ale mohou také pocházet ze speciálních "pseudo" zařízeních obsahující stavy aplikací běžících na daném počítači. 
-Procesor, který tato data příjímá tak je obvykle nejen zpracovává, ale často i nějakým způsobem vyhodnocuje, jelikož disponuje 
-dostatečným výpočetním výkonem pro pokročilé operace. Výsledkem těchto operací procesoru nad daty mohou být informace o aktuálním 
-stavu sledovaného systému, které mohou být využity pro monitorování a další rozhodovací procesy. 
-\cite{linux_in_action_log_and_monitoring}
-
-Digitální záznamníky na počítačových systémech se často používají v aplikacích, kde je nutné monitorovat a analyzovat velké 
-objemy dat. Tyto systémy se uplatňují v monitorování síťového provozu jako TCP/IP záznamníky, pokročilé sériové záznamníky 
-a terminály, či záznamníky speciálních rozhraní, jako je například HID (Human Interface Device). \footnote{Digitálních záznamníků 
-implementovaných na počítačových systémech je opravdu širová řada a tato práce bohužel není schopna pokrýt všechny typy těchto 
-zařízení, proto jsou zde zmíněny alespoň ty nejpoužívanější.}  
-
-
-
-\subsection{Digitální záznam na platformě mikrořadiče}
-Pro návrh a implementaci 
-
-\section{Koncepty využívané ke zpracování dat digitálních záznamníků} 
-Digitální záznamníky často bývají implementovány na platformě MCU, která dokáže poskytnout dobrý kompromis mezi cenou a výkonem, 
-nicméně je nezbytné zohlednit specifická omezení a vlastnosti daného mikrokontroléru. Oproti počítačovým systémům mají MCU omezené 
-výpočetní a paměťové zdroje, což vyžaduje důkladný návrh architektury systému. Proto je i nutné volit takové metody, které mohou 
-minimalizovat latenci, spotřebu energie a nároky na paměť, a zároveň zajistí spolehlivý provoz v reálném čase.
-
-\subsection{Vícenásobná vyrovnávací paměť (multiple-buffering)}
-Jedním z častých konceptů využívaných v implementaci digitálních záznamníků je použití vícenásobné vyrovnávací paměti. Tento 
-koncept je převážně známý díky algoritmům využívaným v oboru počítačové grafiky. Grafický čip musí zpracovat velké množství dat 
-za krátký časový úsek, proto algoritmus zpracování dat využívá dvě vyrovnávací paměti - přední vyrovnávací paměť, takzvaný 
-front-buffer, jež je využívána pro zobrazení aktuálního snímku a zadní vyrovnávací paměť, ve které čip připravuje nový obsah. 
-Výsledný obsah tak může být plynule vykreslen bez artefaktů a trhání. Jakmile je nový snímek kompletní, vyrovnávací paměti se 
-prohodí. \cite{double_buffering_model}
-
-Obdobný mechanismus se využívá i v digitálních záznamnících, kde slouží k zajištění kontinuálního sběru dat bez výpadků. Zatímco 
-jeden buffer přijímá nová data ze vstupní periferie (například analogově-digitálního převodníku či jiných vstupů), druhý buffer 
-je současně zpracováván nebo ukládán na úložné médium. Tím se minimalizuje riziko ztráty dat způsobené časovou prodlevou při 
-jejich zpracování nebo zápisu.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.95\textwidth]{obrazky-figures/multiple_buffering-1-1.png}
-    
-    \caption{Schéma principu práce s vícenásobnou vyrovnávací paměťí - náhodný stav}
-    \label{fig:multiple-buffering-1}
-\end{figure}
-
-Důležitou vlastností tohoto algoritmu je jeho nízká operační režijní náročnost. Plynulý chod zpracování dat je zajištěn bez 
-nutnosti fyzického přenosu obsahu mezi vyrovnávacími pamětmi. Místo toho se využívají ukazatele (pointery), které směřují na 
-počáteční adresy jednotlivých bufferů. Jakmile je sběrný buffer (Back Buffer) naplněn, ukazatele se prohodí~–~back buffer se 
-stane zpracovávaným bufferem (Front Buffer) a původní front buffer se uvolní pro další sběr dat.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.90\textwidth]{obrazky-figures/multiple_buffering-2-2.png}
-    
-    \caption{Schéma principu práce s vícenásobnou vyrovnávací paměťí - přeřazení ukazatelů}
-    \label{fig:multiple-buffering-2}
-\end{figure}
-
-Tato metoda nachází významné uplatnění zejména v systémech pracujících v reálném čase, kde dochází k příjmu velkého objemu dat 
-v krátkých časových intervalech a kde doba zpracování nesmí překročit dobu sběru dat. Využitím vícenásobné vyrovnávací paměti se 
-minimalizuje latence zpracování a současně se snižuje riziko přetečení paměťového prostoru. \cite{buffering_chang}
-
-Nicméně, žádný algoritmus není dokonalý a i tato metoda má své nevýhody, které je třeba zmínit. Vyrovnávací paměti jsou zpravidla 
-implementovány softwarově, nikoliv hardwarově, což vede k zvýšeným nárokům na paměťové prostředky, obzvlášť v segmentu volatilní 
-paměti (SRAM/DRAM) kde jsou buffery uložené. \cite{basics_of_digital_forensics}
-% TODO: Je tedy vhodne si promyslet zda zdroje MCU budou dostacovat.
-
-\subsection{Dávkové zpracování (batch processing)}
-Další princip, jež je využívaný v implementacích digitálních záznamníků, souvisí s typem uložišť, na které jsou získaná data 
-zaznamenávána. Některé typy nevolatilních pamětí, například NAND Flash paměť, jež umožňují uchování dat i po odpojení napájení. 
-Tyto druhy paměti jsou organizovány do bloků (viz. obrázek \ref{fig:batch-processing}), přičemž bloky jsou následně rozděleny na 
-menší jednotky zvané sektory. Velikost sektoru obvykle bývá 512 bajtů či 4096 bajtů, v závislosti na typu média a jeho architektuře. Tato bloková struktura umožňuje účinnou správu prostoru, které uložiště nabízí, ale současně vyžaduje specifický způsob zápisu/čtení dat, které je pouze umožněno na úrovni celých bloků.  \cite{tech_target_nand_flash, non_volatile_memories}
-
-Dávkové zpracovátí tohoto chování paměti využívá, data se tedy nejprve shromažďují ve volatilní paměti - například RAM a teprve po 
-naplnění určitého objemu (celého bloku či jeho násobku) dojde k jejich zápisu na konečné paměťové médium.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.70\textwidth]{obrazky-figures/batch_processing.png}
-    
-    \caption{Organizace bloku nevolatilní paměti \cite{ieee_relationships_among_region_segment_frame_and_cluster}}
-    \label{fig:batch-processing}
-\end{figure}
-
-
-\subsection{Cirkulární buffer}
-Cirkulární buffer (circular buffer), někdy také označovaný jako kruhový nebo cylindrický buffer, je datová struktura, která 
-funguje na principu FIFO fronty (First-In, First-Out) a považuje tuto paměť za kruhovou. Tento přístup je často využíván k řešení 
-problému jednoho producenta a konzumenta (producent-consumer problem), kde jedno vlákno je konzument a druhé producent. Například 
-ve vestavěných zařízeních, jednímž vláken je rutina obsluhy přerušení, která čte data ze senzoru a druhým vláknem je hlavní smyčka 
-události.  \cite{embedjournal_ring_buffer}
-
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.90\textwidth]{obrazky-figures/circular_buffer_titles.png}
-    
-    \caption{Cirkulární vyrovnávací paměť}
-    \label{fig:circular-buffer}
-\end{figure}
-
-Princip činnosti cirkulárního bufferu spočívá v použití dvou ukazatelů - zápisový ukazatel (head) a čtecí ukazatel (tail). Ukazatel 
-head vždy směřuje na pozici, kam bude zapisován následující prvek, zatímco ukazatel tail ukazuje na pozici, ze které bude čtena 
-následující hodnota. Pokud ukazatel head dosáhne konce pole, vrací se na jeho začátek, čímž je zajištěna kruhová povaha struktury. 
-Při plném bufferu lze zvolit dvě strategie – přepsání nejstarších dat nebo odmítnutí nových vstupů, přičemž výběr závisí na konkrétní aplikaci. \cite{embedjournal_ring_buffer, medium_ring_buffer}
-
-Z hlediska časové složitosti nabízí cirkulární buffer konstantní časovou složitost - O(1) pro základní operace, jako je zápis 
-(enqueue) a  čtení (dequeue). Tato efektivita je dána tím, že se při zápisu a čtení dat není potřeba přesouvat prvky v paměti, 
-ale stačí pouze inkrementovat ukazatele s využitím operace modulo. Pokud jde o prostorovou složitost, velikost cirkulárního bufferu 
-je určena předem – zpravidla jde o staticky alokované pole o velikosti n prvků, což odpovídá složitosti O(n), kde n je maximální 
-počet prvků, které může buffer pojmout. \cite{petrungaro_ring_buffer_complexity}
-
-\subsection{Nízko-energetické režimy (low-power modes)}
-Energetická efektivita je jedním z klíčových parametrů obecně vestavěných zařízení, tedy i digitálních záznamníků implementovaných 
-na platformě MCU, zejména pokud jsou napájeny z baterií či jiných omezených zdrojů energie (například energy harvesting). 
-Minimalizace spotřeby bývá v těchto případech realizována využitím nízkoenergetických režimů (low-power modes), které umožňují 
-zařízení přejít do stavu s minimální energetickou náročností během nečinných period. V praxi mnoho digitálních záznamníků nemusí 
-provádět měření a záznam dat nepřetržitě. Například záznamník teploty může v pravidelných intervalech provést měření, uložit 
-naměřenou hodnotu, přejít do režimu nízké spotřeby a po uplynutí definovaného časového intervalu nebo při vyskytnutí speciální 
-události přejít do aktivního režimu. \cite{analog_devices_low_power_modes}
-
-Průběh takového cyklického chování spotřeby mikrokontroléru, kde se střídají fáze měření a spánku s pravidelnou periodou měření 
-teploty, je znázorněn na obrázku \ref{fig:low-power-modes} níže.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.90\textwidth]{obrazky-figures/low_power_modes.png}
-    
-    \caption{Graf znázorňujíci dynamiku spotřeby mikrokontroléru v průběhu času při využití aktivního a nízkoenergetického režimu}
-    \label{fig:low-power-modes}
-\end{figure}
-
-Ačkoliv nízkoenergetické režimy přinášejí značné úspory energie a jsou nezbytné pro zařízení napájená z baterií, u dataloggerů s 
-velkým objemem zaznamenávaných dat mohou představovat významná omezení. Tyto režimy sice snižují energetickou náročnost systému, 
-avšak zároveň omezují schopnost mikrokontroléru rychle reagovat na události. Spánkové stavy, které minimalizují spotřebu energie, 
-často vedou k delšímu zpoždění při probuzení a nižší dostupnosti kritických periferií. V aplikacích, kde je vyžadována okamžitá 
-odezva na externí podněty nebo nepřetržité zpracování velkého množství dat, může tento faktor negativně ovlivnit spolehlivost a 
-efektivitu záznamníku. \cite{embedded_low_power_modes}
-
-V těchto případech je proto nutné zvážit provozní podmínky a očekávanou dostupnost systému. Pokud záznamník pracuje s velkým 
-datovým tokem a má možnost být připojen po dobu záznamu stále k externímu napájení, může být výhodnější upustit od implementace 
-nízkoenergetických režimů a místo toho optimalizovat architekturu systému pro nepřetržitý provoz s důrazem na výkon a rychlou 
-odezvu. \cite{analog_devices_low_power_modes}
-
-\section{Způsoby zápisu dat}
-Stejně jak jsou důležitá uložiště, na které jsou zaznamenaná data získana, je tak je důležitá práce s tímto uložištěm. 
-Záznamníky dat musí být navrženy tak, aby umožnily spolehlivé ukládání získaných dat, které by mělo být efektivní ve 
-smyslu rychlosti a šetrné pro zvýšení životnosti uložiště. Tato kapitola popisuje tři různé způsobý, první dva se věnují 
-ukládání na lokální uložiště a třetí z nich využívá nastupujícího trendu vzdálených uložišť.
-
-V některých případech se data zapisují přímo na permanentní uložiště, jako je SD karta nebo USB flash disk, které poskytuje 
-jednoduché a okamžité uložení bez nutnosti dodatečné správy. Alternativním přístupem je použití mezivrstvy v podobě FRAM paměti, 
-která umožňuje rychlé dočasné ukládání dat a jejich následný dávkový zápis na trvalé médium, čímž se minimalizuje opotřebení 
-paměťového média a snižuje spotřeba energie. Třetí možností je zápis na vzdálené uložiště, kde jsou data přenášena na cloudové 
-služby, databázové servery nebo jiné síťové úložiště, což umožňuje jejich sdílení a analýzu na dálku.
-
-Tato kapitola detailně rozebere jednotlivé způsoby zápisu dat, jejich výhody a nevýhody, a uvede příklady využití v různých aplikacích digitálních záznamníků.
-
-\subsection{Přímý zápis na permanentní uložiště}
-
-\subsection{Zápis na permanentní uložiště přes mezivrstvu s FRAM paměti}
-
-\subsection{Zápis na vzdálené uložiště}
-
 \chapter{Návrh digitálního záznamníku}
 
 
 \section{Existujících řešení digitálních záznamníku}
+Také již bylo zmíněno, že záznam dat lidé řeší od nepaměti. A problém záznamníků dat se také nevyskytuje poprvé a existuje mnoho již produkčních řešení. Tato kapitola obsahuje popis 
+těchto řešení, konkrétně řešením zaměřeným na záznam sériové komunikace, kterému konkrétně je implementovaný záznamník věnován. 
 
+
+\subsection{OpenLog Serial Data Logger}
+
+\subsection{SerialGhost RS-232 Data Logger}
+
+\subsection{AntiLog Data Logger}
 
 \section{Výběr vhodné platformy}
 Neni vhodne implementovat zaznamnik na pocitacovem systemu, je treba zvolit stragii implementace na mikroradici, porovnat FRDM-MCXN947, Arduino, Raspberry
 
 \subsection{FRDM-MCXN947}
+Připravený i popis jádra ARM Cortex-M33, které využívá FRDM-MCXN947.
 
 \subsection{Arduino}
 
 \subsection{Linux based - Raspberry}
 
-Pripraven i popis jadra ARM Cortex-M33, ktere vyuziva FRDM-MCXN947.
 
 % ----------------------------------------------------
 % DALSI NAZVY: Volba datového úložiště, Výběr externího uložiště pro záznam dat, Možnosti způsobu ukládání získaných dat
 \section{Přístupy k ovládaní úložiště}
 Obecný popis, proč je potřeba externí uložiště, že by se data mohla ukládat i v RAM paměti, ale že by tam moc dlouho nevydržela, 
 
-\subsection{SDHC}
+\subsection{SDIO}
 
 \subsection{SPI}
 
