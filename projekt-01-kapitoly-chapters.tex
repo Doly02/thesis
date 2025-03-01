@@ -434,8 +434,36 @@ těchto řešení, konkrétně řešením zaměřeným na záznam sériové komu
 
 \subsection{SerialGhost RS-232 Data Logger}
 
-\subsection{AntiLog Data Logger}
+\subsection{Anticyclone Systems AntiLog Data Logger Pro}
+\label{anticyclone_systems_antilog_data_logger}
+Třetím řešením je AntiLog Data Logger od společnosti Anticyclone Systems, který lze klasifikovat jako vysoce výkonný digitální záznamník určený pro záznam sériových dat v průmyslových a 
+vývojových aplikacích.\footnote{Společnost Anticyclone Systems nabízí tři varianty těchto záznamníků, v tomto textu je primárně popsána verze PRO, jež je svými parametry a funkcionalitou 
+nejblíže záznamníkům, které jsou předmětem této bakalářské práce.} Opět jako u řešení od společnosti Keyylog (viz. kapitola \ref{keelog_airdrive_serial_datalogger}) umožňuje data přijímat 
+pomocí standardu RS-232 a také plnohodnotně zaznamenávat obousměrné sériové přenosy s vysokými přenosovými rychlostmi až 921 600 baudů. Zařízení umožňuje dlouhodobé zaznamenávání díky podpoře 
+velkokapacitních (lokálních) úložišť až do velikosti 1 TB.
 
+Společnost Anticyclone Systems nabízí tři varianty těchto záznamníků - verze AntiLog, AntiLog Pro a také OEM verze ta poslední je ve formě modulu, který umožňuje přímou integraci do jiných 
+systémů. Následující text se věnuje pouze variantě AntiLog Pro, jelikož je svými parametry a funkcionalitou nejblíže záznamníkům, které jsou předmětem této bakalářské práce. Tato pokročilá 
+verze jako u řešení od společnosti Keyylog (viz. kapitola \ref{keelog_airdrive_serial_datalogger}) umožňuje data přijímat pomocí standardu RS-232 a také plnohodnotně zaznamenávat obousměrné 
+sériové přenosy s vysokými přenosovými rychlostmi až 921 600 baudů.
+
+Opět jako u řešení od společnosti Keyylog (viz. kapitola \ref{keelog_airdrive_serial_datalogger}) umožňuje data přijímat pomocí standardu RS-232 a také plnohodnotně zaznamenávat obousměrné 
+sériové přenosy s vysokými přenosovými rychlostmi až 921 600 baudů. Zařízení umožňuje dlouhodobé zaznamenávání díky podpoře velkokapacitních (lokálních) úložišť až do velikosti 1 TB. 
+Datalogger existuje v několika variantách - verze AntiLog, AntiLog Pro a také OEM verze (ta je ve formě modulu), která umožňuje přímou integraci do jiných systémů. Opět je zde rozdíl mezi 
+základní verzí AntiLog a AntiLog Pro, pokročilejší verze na rozdíl od svého levnějšího protějšku podporuje funkce jako časové razítkování (timestamps), podpora GNSS/NMEA dat a možnost 
+vícekanálového záznamu, což jej činí atraktivní volbou pro aplikace, kde je potřeba přesné a rozsáhlé monitorování sériových přenosů.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.60\textwidth]{obrazky-figures/antilogpro_boxed.png}
+    
+    \caption{Anticyclone Anti-Log Pro\cite{keelog_airdrive_serial_datalogger, keelog_airdrive_serial_datalogger_scheme}}
+    \label{fig:sparkfun-openlog-use-case}
+\end{figure}
+
+Hlavní výhodou AntiLog Data Loggeru je podpora vysokých přenosových rychlostí, což umožňuje záznam i těch nejrychlejších sériových komunikací. Díky nízké spotřebě energie je vhodný i pro bateriově napájené systémy, například v leteckých a mobilních aplikacích. Velká úložná kapacita umožňuje dlouhodobý záznam dat bez nutnosti častého stahování souborů, což z něj činí ideální nástroj pro průmyslové monitorování nebo záznam telemetrických dat. Navíc podporuje pokročilé časové razítkování a synchronizaci, což je nezbytné pro aplikace, kde je nutné přesně korelovat zaznamenaná data s jinými systémy. Možnost propojení až 255 jednotek do jednoho vícekanálového záznamníku pak umožňuje komplexní monitorování více zařízení současně, což je využitelné například ve výrobních linkách nebo laboratorních testech.
+
+Přesto má AntiLog Data Logger i své nevýhody. Je omezen pouze na RS-232, což znamená, že nepodporuje jiné běžně používané komunikační sběrnice, jako jsou I2C, SPI, CAN nebo USB. To může omezit jeho využití v aplikacích, kde se pracuje s modernějšími standardy. Dalším omezením je vyšší pořizovací cena, která je vzhledem k pokročilým funkcím a robustnosti přiměřená, avšak pro některé jednodušší aplikace může být zbytečně nákladná. Navíc pro konfiguraci a přehrávání zaznamenaných dat je nutné použít RS-232 terminálový software, což může být pro méně zkušené uživatele méně intuitivní než modernější webové rozhraní nebo cloudová integrace. Přesto však AntiLog Data Logger představuje jedno z nejvýkonnějších a nejspolehlivějších řešení pro profesionální záznam sériových dat, zejména v průmyslových, výzkumných a leteckých aplikacích.
 \section{Výběr vhodné platformy}
 Neni vhodne implementovat zaznamnik na pocitacovem systemu, je treba zvolit stragii implementace na mikroradici, porovnat FRDM-MCXN947, Arduino, Raspberry
 
