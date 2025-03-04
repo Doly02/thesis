@@ -581,22 +581,28 @@ konfiguraci a přehrávání zaznamenaných dat je zase nutné využívat speci�
 obsluhu.  \cite{anticyclone_systems_antilog_pro, anticyclone_systems_antilog_pro_price}
 
 \subsection{Shrnutí představených řešení}
+
 Představená řešení reprezentují různé přístupy k problematice digitálního záznamu sériových dat, ať už se jedná o jednoduché a cenově velmi dostupné systémy typu OpenLog, 
-pokročilejší řešení jakými je  AirDrive Serial Logger a AntiLog Pro. Každé z těchto řešení má své výhody, od kapacity úložiště přes různé možnosti přístupu k získaným datům 
-až po vysokou přenosovou rychlost a další vlastnosti zmíněné v kapitolách věnující se jednotlivým zařízením.
+pokročilejší řešení, jakými je  AirDrive Serial Logger a AntiLog Pro. Každé z těchto řešení má své výhody, od kapacity úložiště přes různé možnosti přístupu k získaným datům 
+až po vysokou přenosovou rychlost a další vlastnosti zmíněné v kapitolách věnujících se jednotlivým zařízením.
 
-Navzdory těmto vlastnostem však žádné z uvedených řešení plně neodpovídá požadavkům společnosti NXP Semiconductors. Hlavním společným problémem všech třech představených řešení 
-je problém prevence ztráty dat při výpadku napájecího napětí, jež ani jedno neřeší. Dále například záznamník od společnosti OpenLog nepodporuje přístup k datům bez nutnosti 
-vyjmutí fyzického média a navíc je nutné, aby každá nová SD karta musela být nejprve zformátována v počítači před použitím v záznamníku. Potenciálním problémem OpenLogu je i 
-schopnost zpracovávat vyšší přenosové rychlosti – všiml jsem si, že při praktických ukázkách byly mezi odesíláním dat z hlavního MCU vkládány timeouty, což naznačuje, že záznamník 
-není schopen efektivně pracovat s velkými objemy dat při vyšších baudratech. Záznamník od společnosti Keeylog zase má problém v maximální rychlosti přijímání dat, která činí 115200 
-bps. Základní požadavky splňuje pouze záznamník od společnosti Anticyclone, ten je však zbytečně drahý a pro vyčtení dat je nutné mít v počítači nainstalovanou speciální aplikaci, 
-to je zbytečná zátěž pro nezkušenou obsluhu u které se očekává, že záznamník použije hned na poprvé správně. Další nevýhodou záznamníků Keelog a Anticyclone Systems je jejich 
-zaměření výhradně na standard RS-232, což také není vhodné pro použití, digitální záznamník bude použit k monitorování bezdrátového nabíjení, kde stačí pouze UART, musela by se 
-tedy zakoupit ještě redukce, která by byla poskytována se záznamníkem.
+Navzdory těmto vlastnostem však žádné z uvedených řešení plně neodpovídá požadavkům společnosti NXP Semiconductors. Požadovaný digitální záznamník musí zvládat zaznamenávat 
+sériovou komunikaci o rychlosti mezi 300,000-400,000 baudů, dále je potřeba vkládat časová razítka (timestamps), jelikož výsledné záznamy musí být možné synchronizovat s dalším 
+systémem. Nezbytně nutné je, aby záznamník disponoval mechanismem prevence proti ztrátě dat při výpadku napájecího napětí, získaná data musí být možné vyčíst bez nutnosti vyjmutí 
+fyzického média a navíc to vše musí být za rozumnou cenu.
 
-Rozhodl jsem se tedy navrhnout a implementovat vlastní digitální záznamník, který bude možné využít pro záznam bezdrátových nabíječek a nebude mít výše zmíněné neduhy. Návrh je 
-popsán v této kapitole, která rozděluje digitální záznamník na jeho jednotlivé části, kte 
+Hlavním společným problémem všech třech představených řešení je problém prevence ztráty dat při výpadku napájecího napětí, jež ani jedno neřeší. Dále například záznamník od 
+společnosti OpenLog nepodporuje přístup k datům bez nutnosti vyjmutí fyzického média a navíc je nutné, aby každá nová SD karta musela být nejprve zformátována v počítači před 
+použitím v záznamníku. Potenciálním problémem OpenLogu je i schopnost zpracovávat vyšší přenosové rychlosti – všiml jsem si, že při praktických ukázkách byly mezi odesíláním 
+dat z hlavního MCU vkládány časové mezery (timeouty), což naznačuje, že záznamník není schopen efektivně pracovat s velkými objemy dat při vyšších baudratech. Záznamník od 
+společnosti Keeylog zase má problém v maximální rychlosti přijímání dat, která činí 115200 baudů. Základní požadavky splňuje pouze záznamník od společnosti Anticyclone, ten 
+je však zbytečně drahý a pro vyčtení dat je nutné mít v počítači nainstalovanou speciální aplikaci, to je zbytečná zátěž pro nezkušenou obsluhu, u které se očekává, že 
+záznamník použije hned na poprvé správně. Další nevýhodou záznamníků Keelog a Anticyclone Systems je jejich zaměření výhradně na standard RS-232, což také není vhodné pro 
+použití, digitální záznamník bude použit k monitorování bezdrátového nabíjení, kde stačí pouze UART, musela by se tedy zakoupit ještě redukce, která by byla poskytována se 
+záznamníkem.
+
+Rozhodl jsem se tedy navrhnout a implementovat vlastní digitální záznamník, který bude možné využít pro záznam bezdrátových nabíječek a nebude mít výše zmíněné neduhy. Návrh 
+je popsán v této kapitole, která rozděluje digitální záznamník na jeho jednotlivé části, kte 
 Další nevýhodou jsou vysoké pořizovací náklady u profesionálních modelů, které by v rámci daného projektu nebyly ekonomicky efektivní. Rovněž žádné z těchto řešení nenabízí 
 optimální kompromis mezi nízkou spotřebou energie, snadnou integrací do vestavěných systémů a dostatečnou flexibilitou v ukládání a přenosu dat.
 
