@@ -610,11 +610,47 @@ optimální kompromis mezi nízkou spotřebou energie, snadnou integrací do ves
 Již z předchozí kapitoly \ref{zaznam_dat} je jasné, že bude třeba implementovat digitální záznamník na mikrořadiči, jelikož požadavkem na koncový systém ze strany NXP 
 Semiconductors je přenost, jednoduchost na použití nízká cena a něco vymysli. 
 
+\subsection{Arduino}
+Nejpřívětivější alternativou pro vývoj digitálního záznamníku v podobě dedikovaného zařízení je zvolit platformu Arduino, která umožňuje snadný vývoj vestavěných aplikací 
+díky intuitivnímu programovacímu prostředí a široké podpoře komunity. Programování probíhá v jazyce podobném C/C++, přičemž při programování na platformě Arduino lze využít 
+rozsáhlou sadu knihoven a softwarových rozšíření vyvíjených výrobci hardwaru, nezávislými vývojáři a komunitou, což značně usnadňuje vývoj a práci s různými periferiemi a senzory.
+
+Jednou z hlavních výhod Arduina je jeho modulární a rozšiřitelný ekosystém, který umožňuje připojení různých rozšíření v podobě expanzních desek (shieldů) a periferií, jako 
+jsou paměťová úložiště, komunikační moduly, senzory pro měření fyzikálních veličin a lze také využít záznamový modul Serial Data Logger od společnosti OpenLog zmíněný v 
+kapitole \ref{openlog_serial_datalogger_module}. Arduino poskytuje vícero standardizovaných desek od těch nejjednodušších, jakým je Arduino Uno, po daleko výkonější modely 
+Arduino Due a Arduino Portenta, postavených již na architektuře s jádry Cortex-M od společnosti Arm®.
+
+Velkou výhodou této platformy je povaha s otevřeným zdrojovým kódem (open source), která otevírá dvířka k velkému množství zdrojových v podobě knihoven a příkladů podporující rychlý vývoj vestavěných aplikací. K vývoji samotnému lze využít vývojové prostředí (IDE - integrated development environment) Arduino IDE, které je jednoduché na použití umožňující vývoj programů v podobě skiců, nicméně nepodporuje debugger. Alternativně lze také využít pokročilejší vývojové nástroje, jako jsou PlatformIO a Arduino CLI.
+
+
 \subsection{FRDM-MCXN947}
 Jednou z možností, jak digitální záznamník implementovat, je využití moderní platformy FRDM-MCXN947, což je vývojová deska společnosti NXP Semiconductors postavená na mikrořadiči 
-MCXN947. Tato platforma je navržena pro vestavěné systémy s důrazem na výkon, rozšiřitelnost s rozumnou cenou.
+MCXN947. Tato platforma je navržena pro rychlé prototypování vestavěných systémů. 
 
-Srdce mikrořadič MCXN947 je tvořeno dvoujádrovým procesorem Arm® Cortex®-M33, jež může být taktován až na 150 MHz.
+Srdce mikrořadiče MCXN947 je tvořeno dvoujádrovým procesorem Arm® Cortex-M33, jež může být taktován až na 150 MHz, jež představuje novou generaci procesoru ARM, jež oproti té 
+předchozí nabízí větší míru bezpečnosti v podobě Trust-Zone, jež umožňuje rozdělení paměťového prostoru na zabezpečenou (Secure World) a nezabezpečenou oblast (Non-Secure World). 
+Dále jádro poskytuje možnost zvýšení výkonu pomocí integrovaného rozšíření DSP (Digital Signal Processor), které umožňuje efektivnější zpracování digitálních signálů a numerických 
+výpočtů.
+
+Z hlediska paměťových zdrojů nabízí MCXN947 512 KB paměti SRAM s podporou detekce a opravy chyb (Error Correction Code či zkráceně ECC). Pro zvýšení výkonu systému je zařízení 
+vybaveno několika typy cache. Mikrokontrolér dále poskytuje 2 MB integrované flash paměti, kde tato flash paměť je rozdělena na dva bloky. Pro aplikace s vyššími požadavky na 
+úložiště je možné paměť rozšířit o dalších 8 MB prostřednictvím externí paměti typu flash připojené přes rozhraní Quad-SPI (QSPI).
+
+Pro implementaci různorodých aplikací a variabilitu systému postavených na tomto čipu, MCXN947 nabízí širokou škálu periferií od základních časovačů v podobě CTIMER a CSTIMER, 
+přes komunikační periferii LP\_FLEXCOMM, jež může být nastavena pro komunikační rozhraní I2C, UART či SPI, nechybí ani podpora pro Ethernet a vysokorychlostní přenosy pomocí 
+standardu USB 2.0 s Universal Serial Bus Full Speed Host and Device Controller (USBFS), který podporuje protokol OTG. Pro práci s paměťovými kartami je do čipu integrován Ultra 
+Secured Digital Host Controller (uSDHC), který zprostředkovává komunikaci se SD, SDIO a MMC kartami. Ještě říct, že to má 16bit ADC a CMP.
+
+Všechny periferie a části mikrokontroleru jsou znázorněny na dalším obrázku. Jak je vidno, lze tento mikrokontroler využít na spostu různých aplikacící, to podporuje i velikost 
+paměti díky, které lze zvolit i různé možnosti vývoje jako je Bare-Metal čí s operačním systémem.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.80\textwidth]{obrazky-figures/UM1208-blokovy-diagram-funkci.png}
+    
+    \caption{Keeylog AirDrive Serial Logger s přístupem k datům přes webové rozhraní \cite{keelog_airdrive_serial_datalogger, keelog_airdrive_serial_datalogger_scheme}}
+    \label{fig:keelog-airdrive-serial-datalogger}
+\end{figure}
 
 tvoří 
 Připravený i popis jádra ARM Cortex-M33, které využívá FRDM-MCXN947.
