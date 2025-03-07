@@ -334,7 +334,7 @@ Prvním z vybraných existujících záznamníků je modul OpenLog, který je ko
     \label{fig:sparkfun-openlog}
 \end{figure}
 
-Tento záznamník je vhodný na jednoduché projekty, hobby projekty, či prototypování, OpenLog lze totiž snadno použít v systémech postavených například na nepájivém poli. není tedy potřeba složitá integrace do PCB. Záznamník je vhodný k monitorování systému, který již předzpracoval data ze zdroje dat (viz. obrázek \ref{fig:sparkfun-openlog-use-case}). Obvykle máme v tomto případě hlavní mikrokontroler, jež přijímá monitorovaná data (např. z GPS modulu) a následně je jakýmsi způsobem zpracovává a formátuje je do koncové podoby a následně je posílá po sériové lince na bázi UART komunikace, Openlog modulu. Záznamník si data následně ukládá do vyrovnávací paměti ve volatilní RAM paměti a jakmile se tento buffer naplní, tedy nasbírá 512 bajtů, tak je zapíše do micro SD karty. \cite{cirkit_openlog}
+Tento záznamník je vhodný na jednoduché projekty, hobby projekty, či prototypování, OpenLog lze totiž snadno použít v systémech postavených například na nepájivém poli. není tedy potřeba složitá integrace do PCB (Printed Circuit Board). Záznamník je vhodný k monitorování systému, který již předzpracoval data ze zdroje dat (viz. obrázek \ref{fig:sparkfun-openlog-use-case}). Obvykle máme v tomto případě hlavní mikrokontroler, jež přijímá monitorovaná data (např. z GPS modulu) a následně je jakýmsi způsobem zpracovává a formátuje je do koncové podoby a následně je posílá po sériové lince na bázi UART komunikace, Openlog modulu. Záznamník si data následně ukládá do vyrovnávací paměti ve volatilní RAM paměti a jakmile se tento buffer naplní, tedy nasbírá 512 bajtů, tak je zapíše do micro SD karty. \cite{cirkit_openlog}
 
 \begin{figure}[h]
     \centering
@@ -412,21 +412,33 @@ Po stránkách periferií čip nabízí až 4 moduly periferie USART, 2 moduly I
 
 
 \subsection{NXP FRDM-MCXN947}
-Alternativou k vývoji digitálního záznamníku na platformě Arduino je vývoj programu na klasickém mikrokontroléru pomocí C/C++ jazyků, to umožňuje větší variabilitu při vývoji, mikrokontrolér jde více variabilní způsob, jak zabezpečit program, paměť, operace mikrokontroléru, program lze více optimalizovat, a další výhody. Jako vhodnou možnost jsem vybral moderní vývojovou desku FRDM-MCXN947 od společnosti NXP Semiconductors postavenou na mikrořadiči MCXN947, která je navržena pro rychlé prototypování vestavěných systémů. Srdce mikrořadiče MCXN947 je tvořeno dvoujádrovým procesorem Arm® Cortex-M33 s taktem až na 150 MHz, který představuje novou generaci procesoru ARM. Cortex-M33 oproti předchozí generaci - Cortex-M3 je postaven s novější instruční sadou ARMv8-M, nabízí větší míru bezpečnosti v podobě Trust-Zone, jež umožňuje rozdělení paměťového prostoru na zabezpečenou (Secure World) a nezabezpečenou oblast (Non-Secure World). Dále jádro poskytuje možnost zvýšení výkonu pomocí integrovaného rozšíření DSP (Digital Signal Processor), které umožňuje efektivnější zpracování digitálních signálů a numerických výpočtů.
+Alternativou k vývoji digitálního záznamníku na platformě Arduino je vývoj programu na klasickém mikrokontroléru pomocí C/C++ jazyků. Tento způsob umožňuje větší variabilitu a (případně i specializaci pro danou aplikaci) při vývoji, operace mikrokontroléru lze více zabezpečit, tak jako program či samotnou paměť. Jen samotné zabezpečení není jedinou výhodou, lze program také více optimalizovat, ať už na rychlost nebo na paměťovou náročnost, umožňuje přímý přístup k hardwarovým periferiím a rychlý přenos pomocí DMA. Těchto výhod je však mnohem více. 
 
-\subsubsection{NXP MCXN947}
-Z hlediska paměťových zdrojů nabízí MCXN947 512 KB paměti SRAM s podporou detekce a opravy chyb (Error Correction Code či zkráceně ECC). Pro zvýšení výkonu systému je čip vybaven několika typy cache. Mikrokontrolér dále poskytuje 2 MB integrované flash paměti a pro programy s vyššími požadavky na úložiště je možné paměť rozšířit o dalších 8 MB prostřednictvím externí paměti typu flash připojené přes rozhraní Quad-SPI (QSPI).
-
-Pro implementaci různorodých aplikací a variabilitu systému postavených na tomto čipu, MCXN947 nabízí širokou škálu periferií od základních časovačů v podobě CTIMER a CSTIMER, přes komunikační periferii LP\_FLEXCOMM, jež může být nastavena pro komunikační rozhraní I2C, UART či SPI, nechybí ani podpora pro Ethernet a vysokorychlostní přenosy pomocí standardu USB 2.0 s Universal Serial Bus Full Speed Host and Device Controller (USBFS), který podporuje protokol OTG. Pro práci s paměťovými kartami je do čipu integrován Ultra Secured Digital Host Controller (uSDHC), který zprostředkovává komunikaci se SD, SDIO a MMC kartami. Ještě říct, že to má 16bit ADC a CMP.
-
-Všechny periferie a části mikrokontroleru jsou znázorněny na dalším obrázku. Jak je vidno, lze tento mikrokontroler využít na spoustu různých aplikací, to podporuje i velikost paměti, díky které lze zvolit i různé možnosti vývoje, jako je Bare-Metal či s operačním systémem.
+Jako vhodného zástupce jsem vybral moderní vývojovou desku FRDM-MCXN947 od společnosti NXP Semiconductors postavenou s mikrokontrolerem MCXN947, která je navržena pro rychlé prototypování vestavěných systémů. Tato deska obsahuje nespočet komponent usnadňujících vývoj široké škály aplikací, přítomna je Q-SPI flash paměť s 8MB úložným prostorem, FRDM-MCXN947 obsahuje dedikovaný slot pro SD kartu, lze tedy paměťový prostor rozšířit o 32GB paměti. FRDM-MCXN947 je dále vybavena integrovaným digitálním teplotním senzorem P3T1755DP s přesností až 0.5 teplotního stupně, kolíkovými lištami typu Arduino a microBus pro možné rozšíření v podobě expanzních desek plošných spojů. Významnou výhodou je přítomnost vestavěného debuggeru NXP LPC55569, který umožňuje krokové ladění kódu a sledování hodnot proměnných pomocí MCU LinkServer nebo pomocí J-Link programů. K dispozici jsou také dva porty USB typu C, první z nich MCU-Link USB port je určen pro již zmíněné debuggovací účely, nahrávání programů a sériovou komunikaci, a druhé z portů - MCU USB slouží pro aplikační účely a podporuje standardy USB Mass Storage, HID (Human Interface Device), USB CDC (Communications Device Class), USB MTP (Media Transfer Protocol) a dalšími standardy pro datový přenos. \cite{nxp_MCX_Nx4x_Reference_Manual, nxp_FRDM_MCXN947_getting_started}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.80\textwidth]{obrazky-figures/UM1208-blokovy-diagram-funkci.png}
+    \includegraphics[width=0.65\textwidth]{obrazky-figures/frdm-mcxn947.png}
     
-    \caption{Keeylog AirDrive Serial Logger s přístupem k datům přes webové rozhraní \cite{keelog_airdrive_serial_datalogger, keelog_airdrive_serial_datalogger_scheme}}
+    \caption{Vývojová deska NXP FRDM-MCX947 \cite{nxp_FRDM_MCXN947_getting_started}}
     \label{fig:keelog-airdrive-serial-datalogger}
+\end{figure}
+
+\subsubsection{NXP MCXN947}
+Srdce mikrořadiče MCXN947 je tvořeno dvoujádrovým procesorem Arm® Cortex-M33 s taktem až na 150 MHz, který představuje novou generaci procesoru ARM. Cortex-M33 oproti předchozí generaci - Cortex-M3 je postaven s novější instruční sadou ARMv8-M, nabízí větší míru bezpečnosti v podobě TrustZone, jež umožňuje rozdělení paměťového prostoru na zabezpečenou (Secure World) a nezabezpečenou oblast (Non-Secure World). Dále jádro poskytuje možnost zvýšení výkonu pomocí integrovaného rozšíření DSP (Digital Signal Processor), které umožňuje efektivnější zpracování digitálních signálů a numerických výpočtů. \cite{nxp_MCX_Nx4x_Reference_Manual}
+
+Z hlediska paměťových zdrojů nabízí MCXN947 512 KB paměti SRAM s podporou detekce a opravy chyb (Error Correction Code či zkráceně ECC). Pro zvýšení výkonu systému je čip vybaven několika typy rychlé paměti cache. Mikrokontrolér dále poskytuje 2 MB integrované flash paměti a pro programy s vyššími požadavky na úložiště je možné paměť rozšířit o dalších 8 MB prostřednictvím externí paměti typu flash připojené přes rozhraní Quad-SPI (QSPI). \cite{nxp_MCX_Nx4x_Reference_Manual}
+
+Pro implementaci různorodých aplikací a variabilitu systému postavených na tomto čipu, MCXN947 nabízí širokou škálu periferií od základních časovačů v podobě CTIMER a CSTIMER, přes komunikační periferii LP\_FLEXCOMM, jež může být nastavena pro komunikační rozhraní I2C, UART či SPI, nechybí ani podpora pro Ethernet a vysokorychlostní přenosy pomocí standardu USB 2.0 s Universal Serial Bus Full Speed Host and Device Controller (USBFS), který podporuje protokol OTG. Pro práci s paměťovými kartami je do čipu integrován Ultra Secured Digital Host Controller (uSDHC), který zprostředkovává komunikaci se SD, SDIO a MMC kartami. Ještě říct, že to má 16bit ADC a CMP. \cite{nxp_MCX_Nx4x_Reference_Manual}
+
+Všechny periferie a části mikrokontroleru jsou znázorněny na dalším obrázku \ref{fig:mcx-Nx4x-ref-man-features}. Jak je vidno, lze tento mikrokontroler využít na spoustu různých aplikací, to podporuje i velikost paměti, díky které lze zvolit i různé možnosti vývoje, jako je Bare-Metal či s operačním systémem. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.70\textwidth]{obrazky-figures/UM1208-blokovy-diagram-funkci.png}
+    
+    \caption{Blokové schéma funkcí mikrokontroléru MCXN947 \cite{nxp_MCX_Nx4x_Reference_Manual}}
+    \label{fig:mcx-Nx4x-ref-man-features}
 \end{figure}
 
 \subsection{Linux based - Raspberry}
@@ -516,10 +528,20 @@ Popis architektury na základě vybraných komponent. Popis blokového diagramu.
 
 \chapter{Realizace hardwaru}
 \label{realizace_hardwaru}
-Popis co všechno je již na platformě FRDM MCXN947, z toho ti vyplyne co všechno bude ještě muset nabízet expanzní deska.
+Popis, co všechno je již na platformě FRDM MCXN947, z toho ti vyplyne, co všechno bude ještě muset nabízet expanzní deska.
 \section{Základová deska}
 
 \section{Expanzní deska}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.65\textwidth]{obrazky-figures/test_capacitors.png}
+    
+    \caption{Obvod pro testování kondenzátoru}
+    \label{fig:test-capacitors}
+\end{figure}
+
+Na diodě je úbytek napětí 0.4V. Měření intervalu od 4.6V do 3.5V, jelikož ztráta napětí na diodě je 0.4V, tedy 4.6V (tedy 5V - 0.4V = 4.6V) a výstupní napětí z LDO je 3.3V a dropout napětí je 0.2V (tedy 3.3V + 0.2V = 3.5V).
 
 \[
 V_{\text{in min}} = V_{\text{out}} + V_{\text{do}}
