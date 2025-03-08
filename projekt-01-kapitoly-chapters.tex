@@ -163,7 +163,7 @@ Následně jsou data ukládána do uložiště. Obvykle se používají externí
 Digitální záznamníky často bývají implementovány na platformě MCU, která dokáže poskytnout dobrý kompromis mezi cenou a výkonem, nicméně je nezbytné zohlednit specifická omezení a vlastnosti daného mikrokontroléru. Oproti počítačovým systémům mají MCU omezené výpočetní a paměťové zdroje, což vyžaduje důkladný návrh architektury systému. Proto je i nutné volit takové metody, které mohou minimalizovat latenci, spotřebu energie a nároky na paměť, a zároveň zajistí spolehlivý provoz v reálném čase.
 
 \subsection{Vícenásobná vyrovnávací paměť (multiple-buffering)}
-Jedním z častých konceptů využívaných v implementaci digitálních záznamníků je použití vícenásobné vyrovnávací paměti. Tento koncept je převážně známý díky algoritmům využívaným v oboru počítačové grafiky. Grafický čip musí zpracovat velké množství dat za krátký časový úsek, proto algoritmus zpracování dat využívá dvě vyrovnávací paměti - přední vyrovnávací paměť, takzvaný front-buffer, jež je využívána pro zobrazení aktuálního snímku a zadní vyrovnávací paměť, ve které čip připravuje nový obsah. Výsledný obsah tak může být plynule vykreslen bez artefaktů a trhání. Jakmile je nový snímek kompletní, vyrovnávací paměti se prohodí. \cite{double_buffering_model}
+Jedním z častých konceptů využívaných v implementaci digitálních záznamníků je použití vícenásobné vyrovnávací paměti. Tento koncept je převážně známý díky algoritmům využívaným v oboru počítačové grafiky. Grafický čip musí zpracovat velké množství dat za krátký časový úsek, proto algoritmus zpracování dat využívá dvě vyrovnávací paměti - přední vyrovnávací paměť, takzvaný front-buffer, jež je využívána pro zobrazení aktuálního snímku, a zadní vyrovnávací paměť, ve které čip připravuje nový obsah. Výsledný obsah tak může být plynule vykreslen bez artefaktů a trhání. Jakmile je nový snímek kompletní, vyrovnávací paměti se prohodí. \cite{double_buffering_model}
 
 Obdobný mechanismus se využívá i v digitálních záznamnících, kde slouží k zajištění kontinuálního sběru dat bez výpadků. Zatímco jeden buffer přijímá nová data ze vstupní periferie (například analogově-digitálního převodníku či jiných vstupů), druhý buffer je současně zpracováván nebo ukládán na úložné médium. Tím se minimalizuje riziko ztráty dat způsobené časovou prodlevou při jejich zpracování nebo zápisu.
 
@@ -402,7 +402,7 @@ Jednou z hlavních výhod Arduina je jeho modulární a rozšiřitelný ekosyst�
     \includegraphics[width=0.80\textwidth]{obrazky-figures/arduino-due.png}
     
     \caption{Arduino Due vývody (pinout) \cite{arduino_shop_due}}
-    \label{fig:keelog-airdrive-serial-datalogger}
+    \label{fig:arduino-due-pinout}
 \end{figure}
 
 
@@ -433,20 +433,39 @@ Pro implementaci různorodých aplikací a variabilitu systému postavených na 
 
 Všechny periferie a části mikrokontroleru jsou znázorněny na dalším obrázku \ref{fig:mcx-Nx4x-ref-man-features}. Jak je vidno, lze tento mikrokontroler využít na spoustu různých aplikací, to podporuje i velikost paměti, díky které lze zvolit i různé možnosti vývoje, jako je Bare-Metal či s operačním systémem. 
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.70\textwidth]{obrazky-figures/UM1208-blokovy-diagram-funkci.png}
-    
-    \caption{Blokové schéma funkcí mikrokontroléru MCXN947 \cite{nxp_MCX_Nx4x_Reference_Manual}}
-    \label{fig:mcx-Nx4x-ref-man-features}
-\end{figure}
+%\begin{figure}[h]
+%    \centering
+%    \includegraphics[width=0.70\textwidth]{obrazky-figures/UM1208-blokovy-diagram-funkci.png}
+%    
+%    \caption{Blokové schéma funkcí mikrokontroléru MCXN947 \cite{nxp_MCX_Nx4x_Reference_Manual}}
+%    \label{fig:mcx-Nx4x-ref-man-features}
+%\end{figure}
 
 \subsection{Raspberry PI - mikrokontrolér postaven na Linuxu}
-Jednou z nejvýkonnějších možností pro implementaci digitálního záznamníku v podobě dedikovaného zařízení je využití mikroprocesorových platforem s operačním systémem Linux, přičemž nejznámějším zástupcem této kategorie je Raspberry Pi. Tato platforma spadá do kategorie jednodeskových počítačů (SBC – Single Board Computer), které kombinují výpočetní výkon a flexibilitu standardních počítačových systémů s rozhraními vhodnými pro práci s externími periferiemi.
+Jednou z nejvýkonnějších možností pro implementaci digitálního záznamníku v podobě dedikovaného zařízení je využití mikroprocesorových platforem s operačním systémem Linux, přičemž nejznámějším zástupcem této kategorie je Raspberry Pi. Tato platforma spadá do kategorie jednodeskových počítačů (SBC – Single Board Computer), které kombinují výpočetní výkon a pružnost standardních počítačových systémů s rozhraními vhodnými pro práci s externími periferiemi.
 
-Raspberry Pi je nízkonákladový minipočítač de facto dnes už rodina počítačů postavených na procesorech společnosti ARM, které podporují běh různých operačních systémů, nejčastěji Raspberry Pi OS. Raspberry Pi oproti klasickým mikrokontrolerům (MCU) poskytuje vyšší výpočetní výkon, taktéž větší množství operační paměti (RAM) a podporuje multitasking, umožňující běh více aplikací či procesů současně.
+Raspberry Pi je nízkonákladový minipočítač, de facto dnes už rodina počítačů, postavených na procesorech společnosti ARM, které podporují běh různých operačních systémů, nejčastěji Raspberry Pi OS. Raspberry Pi oproti klasickým mikrokontrolerům (MCU) poskytuje vyšší výpočetní výkon, taktéž i větší množství operační paměti (RAM) a podporuje také multitasking, umožňující běh více aplikací či procesů současně.
+
+Raspberry Pi existuje v několika verzích, proto bude následný text věnován modelu Raspberry Pi Zero 2 W, který představuje rozumné parametry pro implementaci digitálního záznamníku v podobě dedikovaného zařízení. Model Zero 2 W je vybaven čtyřjádrovým procesorem Broadcom BCM2710A1 založeným na jádru ARM Cortex-A53 s taktem 1 GHz a disponuje 512 MB nízkoenergetické operační paměti SDRAM typu LPDDR2. Raspberry Pi Zero 2 W disponuje jedním USB portem typu micro-B, jenž podporuje režim OTG (On-The-Go) a umožňuje tak připojení externích zařízení, jako jsou USB flash disky či další periferie. Úložnou kapacitu zařízení lze jednoduše rozšířit díky přítomnosti slotu pro microSD kartu, která zároveň slouží jako primární úložiště operačního systému. Model Zero 2 W obsahuje také integrovaný bezdrátový komunikační modul podporující Wi-Fi standardu 802.11 b/g/n pracující v pásmu 2,4 GHz, díky kterému lze snadno implementovat digitální záznamník s podporou vzdáleného úložiště (viz. kapitola \ref{zapis_na_vzdalene_uloziste}).
+
+\newpage
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.85\textwidth]{obrazky-figures/raspberry_pi_zero_2w.png}
+    
+    \caption{Raspberry Pi Zero 2W vývody (pinout) \cite{arduino_shop_due}}
+    \label{fig:raspberry-pi-zero-2w}
+\end{figure}
+
+Raspberry Pi tedy jako varianta pro implementaci digitálního záznamníku vypadá dobře, má ale i nějaké nevýhody? Hlavním omezením Raspberry Pi Zero 2 W je obecně nedostatek komunikačních periferií – tato platforma totiž disponuje pouze jedním modulem UART, jedním modulem SPI a jedním modulem I2C. Tento omezený počet periferií může značně limitovat další rozšiřování zařízení o senzory či externí moduly. Například, komplikace může nastat pouze při řešení vkládání časových razítek do záznamů, deska bohužel neobsahuje interní obvod reálného, nabízí se  tedy využít jako referenční zdroj času, časovač (Timer) se softwarovým přerušením, druhou variantou je připojení záznamníku k síti a získat čas pomocí NTP (Network Time Protocol). Alternativním řešením se nabízí dokoupit externí obvod reálného času, to by znamenalo, že už by nebylo možné rozšířit zařízení o další periferie komunikující pomocí rozhraní I2C, jelikož RTC moduly toto rozhraní většinou využívají, tedy sníží se možnost budoucích rozšíření.
 
 \subsection{Závěr výběru platformy}
+Jaká je tedy nejvhodnější platforma pro implementaci digitálního záznamníku ve formě dedikovaného zařízení? Vybral jsem FRDM-MCXN947 od společnosti NXP Semiconductors, jelikož poskytuje největší kompromis a nabízí nejvíce možností, z jakých komponent výsledný záznamník složit.
+
+Alternativa Arduino Due, za svoji cenu za mě dostatečný poměr cena/výkon, jak je vidno v tabulce \ref{tab:board-comparison}. Maximální taktovací frekvence jádra je pouze 84 MHz, navíc to je postaveno na starší architektuře Cortex-M3. Kapacita flash paměti je oproti svým konkurentům za nižší cenu pouze 512 KB. V základu deska také neposkytuje možnost prostého rozšíření o externí uložiště jako je třeba mikro SD karta, na které by mohly být získané záznamy uloženy. Také výběr z jakého je možné vybrat řešení pro detekci ztráty napájení je omezen.
+
+Raspberry Pi Zero 2W naopak nabízí z vybraných možností velice dobrý poměr cena/výkon, obsahuje vysoce výkonný čip BCM2711 s taktem až 1.5 GHz a nabízí prostor, kde mohou být uloženy získané záznamy, a to konkrétně na micro SD kartě. Nicméně obtížněji by se řešilo vkládání časových značek a možná rozšíření v podobě doplňujících periferii.
 
 \begin{table}[h]
     \centering
@@ -456,28 +475,27 @@ Raspberry Pi je nízkonákladový minipočítač de facto dnes už rodina počí
         \hline
         \textbf{Parametr / Platforma}   & \textbf{Arduino Due}  & \textbf{FRDM-MCXN947} & \textbf{Raspberry Pi} \\ 
         \hline
-        \textbf{Procesor}               & ATSAM3X8E             & MCXN947               & BCM2711               \\ 
+        \textbf{Typ čipu}               & ATSAM3X8E             & MCXN947               & BCM2711               \\ 
         \hline
-        \textbf{Typ jádra}              & ARM Cortex-M3         & ARM Cortex-M33        & ARM Cortex-A72        \\ 
+        \textbf{Typ jádra}              & ARM Cortex-M3         & ARM Cortex-M33        & ARM Cortex-A53        \\ 
         \hline
         \textbf{Architektura jádra}     & 32-bit                & 32-bit                & 64-bit                \\ 
         \hline
         \textbf{Taktovací frekvence}    & 84 MHz                & 150 MHz               & 1.5 GHz               \\ 
         \hline
-        \textbf{RAM}                    & 96 KB                 & 1 MB                  & Až 8 GB LPDDR4        \\ 
+        \textbf{Operační paměť}         & 96 KB                 & 1 MB                  & Až 8 GB LPDDR4        \\ 
         \hline
         \textbf{Flash paměť}            & 512 KB                & 2 MB                  & MicroSD               \\ 
         \hline
         \textbf{Spotřeba }              & -                     & -                     & -                     \\ 
         \hline
-        \textbf{Pořizovací cena}        & -                     & -                     & -                     \\ 
+        \textbf{Pořizovací cena}        & 2 058 kč (50,82€)                    & 593 Kč                & 459 Kč  \\ 
         \hline
     \end{tabular}
     \end{adjustbox}
     \caption{Porovnání vývojových desek Arduino Due, FRDM-MCXN947 a Raspberry Pi}
-    \label{tab:comparison}
+    \label{tab:board-comparison}
 \end{table}
-
 % ----------------------------------------------------
 % DALSI NAZVY: Volba datového úložiště, Výběr externího uložiště pro záznam dat, Možnosti způsobu ukládání získaných dat
 \section{Přístupy k ovládaní úložiště}
