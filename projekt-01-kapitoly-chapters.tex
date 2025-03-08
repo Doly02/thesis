@@ -334,7 +334,7 @@ Prvním z vybraných existujících záznamníků je modul OpenLog, který je ko
     \label{fig:sparkfun-openlog}
 \end{figure}
 
-Tento záznamník je vhodný na jednoduché projekty, hobby projekty, či prototypování, OpenLog lze totiž snadno použít v systémech postavených například na nepájivém poli. není tedy potřeba složitá integrace do PCB (Printed Circuit Board). Záznamník je vhodný k monitorování systému, který již předzpracoval data ze zdroje dat (viz. obrázek \ref{fig:sparkfun-openlog-use-case}). Obvykle máme v tomto případě hlavní mikrokontroler, jež přijímá monitorovaná data (např. z GPS modulu) a následně je jakýmsi způsobem zpracovává a formátuje je do koncové podoby a následně je posílá po sériové lince na bázi UART komunikace, Openlog modulu. Záznamník si data následně ukládá do vyrovnávací paměti ve volatilní RAM paměti a jakmile se tento buffer naplní, tedy nasbírá 512 bajtů, tak je zapíše do micro SD karty. \cite{cirkit_openlog}
+Tento záznamník je vhodný na jednoduché projekty, hobby projekty, či prototypování, OpenLog lze totiž snadno použít v systémech postavených například na nepájivém poli. není tedy potřeba složitá integrace do PCB (Printed Circuit Board). Záznamník je vhodný k monitorování systému, který již předzpracoval data ze zdroje dat (viz. obrázek \ref{fig:sparkfun-openlog-use-case}). Obvykle máme v tomto případě hlavní mikrokontrolér, jež přijímá monitorovaná data (např. z GPS modulu) a následně je jakýmsi způsobem zpracovává a formátuje je do koncové podoby a následně je posílá po sériové lince na bázi UART komunikace, Openlog modulu. Záznamník si data následně ukládá do vyrovnávací paměti ve volatilní RAM paměti a jakmile se tento buffer naplní, tedy nasbírá 512 bajtů, tak je zapíše do micro SD karty. \cite{cirkit_openlog}
 
 \begin{figure}[h]
     \centering
@@ -441,8 +441,42 @@ Všechny periferie a části mikrokontroleru jsou znázorněny na dalším obrá
     \label{fig:mcx-Nx4x-ref-man-features}
 \end{figure}
 
-\subsection{Linux based - Raspberry}
+\subsection{Raspberry PI - mikrokontrolér postaven na Linuxu}
+Jednou z nejvýkonnějších možností pro implementaci digitálního záznamníku v podobě dedikovaného zařízení je využití mikroprocesorových platforem s operačním systémem Linux, přičemž nejznámějším zástupcem této kategorie je Raspberry Pi. Tato platforma spadá do kategorie jednodeskových počítačů (SBC – Single Board Computer), které kombinují výpočetní výkon a flexibilitu standardních počítačových systémů s rozhraními vhodnými pro práci s externími periferiemi.
 
+Raspberry Pi je nízkonákladový minipočítač de facto dnes už rodina počítačů postavených na procesorech společnosti ARM, které podporují běh různých operačních systémů, nejčastěji Raspberry Pi OS. Raspberry Pi oproti klasickým mikrokontrolerům (MCU) poskytuje vyšší výpočetní výkon, taktéž větší množství operační paměti (RAM) a podporuje multitasking, umožňující běh více aplikací či procesů současně.
+
+\subsection{Závěr výběru platformy}
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.2}
+    \begin{adjustbox}{max width=\textwidth} % Automatické přizpůsobení šířce stránky
+    \begin{tabular}{|l|c|c|c|}
+        \hline
+        \textbf{Parametr / Platforma}   & \textbf{Arduino Due}  & \textbf{FRDM-MCXN947} & \textbf{Raspberry Pi} \\ 
+        \hline
+        \textbf{Procesor}               & ATSAM3X8E             & MCXN947               & BCM2711               \\ 
+        \hline
+        \textbf{Typ jádra}              & ARM Cortex-M3         & ARM Cortex-M33        & ARM Cortex-A72        \\ 
+        \hline
+        \textbf{Architektura jádra}     & 32-bit                & 32-bit                & 64-bit                \\ 
+        \hline
+        \textbf{Taktovací frekvence}    & 84 MHz                & 150 MHz               & 1.5 GHz               \\ 
+        \hline
+        \textbf{RAM}                    & 96 KB                 & 1 MB                  & Až 8 GB LPDDR4        \\ 
+        \hline
+        \textbf{Flash paměť}            & 512 KB                & 2 MB                  & MicroSD               \\ 
+        \hline
+        \textbf{Spotřeba }              & -                     & -                     & -                     \\ 
+        \hline
+        \textbf{Pořizovací cena}        & -                     & -                     & -                     \\ 
+        \hline
+    \end{tabular}
+    \end{adjustbox}
+    \caption{Porovnání vývojových desek Arduino Due, FRDM-MCXN947 a Raspberry Pi}
+    \label{tab:comparison}
+\end{table}
 
 % ----------------------------------------------------
 % DALSI NAZVY: Volba datového úložiště, Výběr externího uložiště pro záznam dat, Možnosti způsobu ukládání získaných dat
