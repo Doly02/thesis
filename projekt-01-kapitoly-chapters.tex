@@ -465,7 +465,7 @@ Jaká je tedy nejvhodnější platforma pro implementaci digitálního záznamn�
 
 Alternativa Arduino Due, za svoji cenu za mě dostatečný poměr cena/výkon, jak je vidno v tabulce \ref{tab:board-comparison}. Maximální taktovací frekvence jádra je pouze 84 MHz, navíc to je postaveno na starší architektuře Cortex-M3. Kapacita flash paměti je oproti svým konkurentům za nižší cenu pouze 512 KB. V základu deska také neposkytuje možnost prostého rozšíření o externí uložiště jako je třeba mikro SD karta, na které by mohly být získané záznamy uloženy. Také výběr z jakého je možné vybrat řešení pro detekci ztráty napájení je omezen.
 
-Raspberry Pi Zero 2W naopak nabízí z vybraných možností velice dobrý poměr cena/výkon, obsahuje vysoce výkonný čip BCM2711 s taktem až 1.5 GHz a nabízí prostor, kde mohou být uloženy získané záznamy, a to konkrétně na micro SD kartě. Nicméně obtížněji by se řešilo vkládání časových značek a možná rozšíření v podobě doplňujících periferii.
+Raspberry Pi Zero 2W naopak nabízí z vybraných možností velice dobrý poměr cena/výkon, obsahuje vysoce výkonný čip BCM2711 s taktem až 1.5 GHz a nabízí prostor, kde mohou být uloženy získané záznamy, a to konkrétně na micro SD kartě. Nicméně obtížněji by se řešilo vkládání časových značek a možná rozšíření v podobě doplňujících periferií.
 
 \begin{table}[h]
     \centering
@@ -510,7 +510,11 @@ Obecný popis, proč je potřeba externí uložiště, že by se data mohla ukl�
 
 % ----------------------------------------------------
 % DALSI NAZVY: Volba datového úložiště, Výběr externího uložiště pro záznam dat
-\section{Možnosti správy dat - souborové systémy} 
+\section{Možnosti správy dat - souborové systémy}
+V předchozí části práce byla vybrána základní deska NXP FRDM-MCXN947 s mikrokontrolérem MCXN947, který bude sbírat data pomocí vstupní periferie, a tato data také zpracovávat pomocí jádra. Taktéž je vybráno externí úložiště, na které budou získaná data uložena, tím bude SD karta, konkrétněji SDHC karta. Data na tomto externím úložišti je třeba nějak organizovat a spravovat, aby následně mohly být zajištěna jejich konzistence a perzistence, ale také aby mohly být v budoucnu nějakým způsobem interpretována. K tomu účelu lze využít například souborový systém, databázový systém nebo data uchovávat v surovém (raw) formátu. Jelikož zaznamenávaná data společnosti NXP Semiconductors, která bude zaznamenávat vyvíjený záznamník, rozhodl jsem se vybrat souborový systém. Souborový systém organizuje data přirozeně do souborů a složek a hodí se zejména pro ukládání nestrukturovaných dat. Pod pojmem nestrukturovaná data rozumíme taková data, která nejsou organizována jednotně v tabulkách nebo databázových strukturách, ale mohou být ukládána do více typů souborů v různých formátech a umístěna do různorodých adresářových struktur. Tento přístup přináší výhodu v podobě flexibility a snadného umístění různých typů dat na jedno společné úložiště. \cite{weka_structured_unstructured_data, virginia_tech_file_database_systems}
+
+se  může proto existovat logika speciální pro danou aplikaci, jakou je třeba anebo lze využít již vytvořené komponenty k tomu určené, mezi které patří i souborové systémy (File Systems).
+
 Obecný popis, souborový systém je zodpovědný za organizaci, správu a přístup k datům na zvoleném úložném médiu.
 
 \subsection{FATFS}
