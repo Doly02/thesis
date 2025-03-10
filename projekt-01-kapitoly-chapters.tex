@@ -518,7 +518,8 @@ se  může proto existovat logika speciální pro danou aplikaci, jakou je třeb
 Obecný popis, souborový systém je zodpovědný za organizaci, správu a přístup k datům na zvoleném úložném médiu.
 
 \subsection{FATFS}
-Prvním z představených souborových systémů je FAT File System (FATFS), který je implementován v podobě lehké softwarové knihovny pro mikrokontroléry a vestavěné systémy implementující podporu souborového systému FAT/exFAT. FATFS se řadí mezi hierarchické souborové systémy založené na alokační tabulce souborů (File Allocation Table – FAT), ve kterých jsou data organizována do logických jednotek označovaných jako shluky (clusters). Každý soubor uložený na úložném médiu se tak skládá z jednoho nebo více těchto shluků, přičemž informace o jejich návaznosti jsou uloženy právě v alokační tabulce FAT.
+Prvním z představených souborových systémů je FAT File System (FATFS), který je implementován v podobě lehké softwarové knihovny pro mikrokontroléry a vestavěné systémy implementující podporu souborového systému FAT/exFAT. FATFS se řadí mezi hierarchické souborové systémy založené na alokační tabulce souborů (File Allocation Table – FAT), ve kterých jsou data organizována do logických jednotek označovaných jako shluky (clusters). Každý soubor uložený na úložném médiu se tak skládá z jednoho nebo více těchto shluků, přičemž informace o jejich návaznosti jsou uloženy právě v alokační tabulce FAT. \cite{recoverit_fat_filesystem, elm_fat_filesystem_docs}
+
 
 Fyzické úložiště v systému FAT je rozděleno do několika oblastí, konkrétně do zaváděcího záznamu (Boot Record) ležícího v rezervované oblasti (Reserved Area), který obsahuje informace nutné pro inicializaci a načtení souborového systému, alokační tabulky FAT1 a FAT2, které spravují umístění jednotlivých shluků.  Za nimi se nachází oblast kořenového adresáře (Root Directory), ve které jsou umístěny záznamy o souborech a adresářích nejvyšší úrovně. Poslední část tvoří datová oblast (Data Area), kde jsou samotné soubory a podadresáře fyzicky uloženy.
 
@@ -526,26 +527,31 @@ Fyzické úložiště v systému FAT je rozděleno do několika oblastí, konkr�
     \centering
     \includegraphics[width=1.00\textwidth]{obrazky-figures/fatfs_structure.png}
     
-    \caption{Oblasti souborového systému FAT \cite{arduino_shop_due}}
+    \caption{Oblasti souborového systému FAT \cite{recoverit_fat_filesystem}}
     \label{fig:fatfs-structure}
 \end{figure}
 
 % Jaky je rozdil mezi FAT32 a FATFS?
-V dnešní době existuje několik variant systému FAT, mezi nejznámější patří FAT12, FAT16, FAT32 a exFAT. Pro úložná média typu SDHC karet se obvykle volí FAT32, neboť nižší varianty, jakou je třeba FAT16, omezuje maximální kapacitu úložného média pouze na 4 GB, což je pro dnešní aplikace často nedostatečné. Z tohoto důvodu i dnešní implementace FATFS podporují 32bitovou či 64bitovou variantu, které podporují mnohem větší kapacitu uložišť.
+V dnešní době existuje několik variant systému FAT, mezi nejznámější patří FAT12, FAT16, FAT32 a exFAT. Pro úložná média typu SDHC karet se obvykle volí FAT32, neboť nižší varianty, jakou je třeba FAT16, omezují maximální kapacitu úložného média pouze na 4 GB, což je pro dnešní aplikace často nedostatečné. Z tohoto důvodu i dnešní implementace FATFS podporují 32bitovou LBA či 64bitovou LBA variantu, které podporují mnohem větší kapacitu uložišť. \cite{elm_fat_filesystem_app_note}
+
+FATFS v současnosti představuje jeden z nejrozšířenějších souborových systémů pro použití ve vestavěných aplikacích, a to zejména díky své nízké paměťové náročnosti (nízký memory footprint) a snadné přenositelnosti mezi různými hardwarovými platformami. Významnou předností této knihovny je také široká možnost konfigurace, která umožňuje volby krátkých a dlouhých názvů souborů (Long File Name - LFN), navíc v různých formátech ANSI/OEM či Unicode. Pro velmi velká uložiště lze využít podporu exFAT s 64-bitovým adresováním bloků (LBA) a GPT (GUID Partition Table) pro práci s diskovými oddíly o velké kapacitě. FATFS také podporuje více fyzických jednotek či oddílů současně, variabilní velikost sektorů a různé kódové stránky. Knihovna rovněž obsahuje podporu pro volitelná rozhraní API, I/O buffering a režim pouze pro čtení. V případě použití v aplikaci běžící nad operačními systémy reálného času (RTOS) je výhodou této knihovny její bezpečnost, jelikož je garantována bezpečnost při práci ve vícevláknovém prostředí. \footnote{Knihovna FATFS je takzvaně Thread Safe.} \cite{elm_fat_filesystem_module}
+
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.95\textwidth]{obrazky-figures/fat_file_system_bigger.png}
     
-    \caption{Souborový systém s alokační tabulkou souborů \cite{arduino_shop_due}}
+    \caption{Souborový systém s alokační tabulkou souborů \cite{recoverit_fat_filesystem}}
     \label{fig:fat-file-system-structure}
 \end{figure}
 
 
-
-\subsection{Chan FATFD}
-
 \subsection{LittleFS}
+Alternativou k souborovému systému FATFS může být souborový systém LittleFS, který je podobně jako FATFS implementován ve formě odlehčené softwarové knihovny určené primárně pro vestavěné systémy a mikrokontroléry.  Tento systém byl vyvinut s ohledem na specifika flashových pamětí, aby se rovnoměrně rozdělil zápis na jednotlivé bloky a nebyly první bloky vytížené více než ty s většími indexy.
+
+
+\subsection{Chan FATFS}
+
 
 
 % ----------------------------------------------------
