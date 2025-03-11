@@ -545,10 +545,15 @@ FATFS v současnosti představuje jeden z nejrozšířenějších souborových s
     \label{fig:fat-file-system-structure}
 \end{figure}
 
+% FAT is pretty bad on Flash devices because the low numbered sectors get rewritten frequently. Devices like USB sticks have wear levelling code, but if you're accessing raw hardware wear is a potential issue.
 
 \subsection{LittleFS}
 Alternativou k souborovému systému FATFS může být souborový systém LittleFS, který je podobně jako FATFS implementován ve formě odlehčené softwarové knihovny určené primárně pro vestavěné systémy a mikrokontroléry.  Tento systém byl vyvinut s ohledem na specifika flashových pamětí, aby se rovnoměrně rozdělil zápis na jednotlivé bloky a nebyly první bloky vytížené více než ty s většími indexy.
 
+Souborový systém LittleFS využívá pokročilý mechanismus atomického zpracování známého z databázových systémů, kdy je každá operace buď kompletně dokončena, nebo v případě selhání či výpadku napájení zcela zrušena.
+
+jednotlivé zápisy  a také žurnálování (journaling), které je naopak 
+Mezi další důležité vlastnosti LittleFS patří vysoká odolnost vůči výpadkům napájení, jelikož je navržen s důrazem na integritu a konzistenci dat. Díky integrovaným mechanismům, jako je žurnálování (journaling) a atomicita operací, umožňuje LittleFS automatickou obnovu souborového systému do konzistentního stavu i po náhlých výpadcích napájení. Dále LittleFS nabízí velmi nízkou režii na paměť a nenáročnost na systémové prostředky, což umožňuje jeho použití i na velmi omezených mikrokontrolérech s minimální kapacitou operační paměti.
 
 \subsection{Chan FATFS}
 
