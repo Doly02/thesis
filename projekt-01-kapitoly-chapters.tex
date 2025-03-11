@@ -550,10 +550,20 @@ FATFS v současnosti představuje jeden z nejrozšířenějších souborových s
 \subsection{LittleFS}
 Alternativou k souborovému systému FATFS může být souborový systém LittleFS, který je podobně jako FATFS implementován ve formě odlehčené softwarové knihovny určené primárně pro vestavěné systémy a mikrokontroléry.  Tento systém byl vyvinut s ohledem na specifika flashových pamětí, aby se rovnoměrně rozdělil zápis na jednotlivé bloky a nebyly první bloky vytížené více než ty s většími indexy.
 
-Souborový systém LittleFS využívá pokročilý mechanismus atomického zpracování známého z databázových systémů, kdy je každá operace buď kompletně dokončena, nebo v případě selhání či výpadku napájení zcela zrušena.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.85\textwidth]{obrazky-figures/journaling.png}
+    
+    \caption{Průběh zápisu do souboru spravovaným žurnálovacím souborovým systémem \cite{architecture_and_design_of_the_linux_storage_stack}}
+    \label{fig:journaling}
+\end{figure}
 
-jednotlivé zápisy  a také žurnálování (journaling), které je naopak 
-Mezi další důležité vlastnosti LittleFS patří vysoká odolnost vůči výpadkům napájení, jelikož je navržen s důrazem na integritu a konzistenci dat. Díky integrovaným mechanismům, jako je žurnálování (journaling) a atomicita operací, umožňuje LittleFS automatickou obnovu souborového systému do konzistentního stavu i po náhlých výpadcích napájení. Dále LittleFS nabízí velmi nízkou režii na paměť a nenáročnost na systémové prostředky, což umožňuje jeho použití i na velmi omezených mikrokontrolérech s minimální kapacitou operační paměti.
+Souborový systém LittleFS využívá pokročilý mechanismus atomického zpracování známého z databázových systémů, kdy je každá operace buď kompletně dokončena, nebo v případě selhání či výpadku napájení zcela zrušena. K tomu je využit mechanismus žurnálování (journaling), který je využíván v pokročilých souborových systémech jako je ext3, XFS či ext4. Operace nad souborovým systémem jsou nejprve zaznamenány do speciální struktury (logu) před jejich fyzickým provedením. Pokud by došlo k selhání, jakým je například výpadek napájení, souborový systém se může spolehlivě vrátit do konzistentního stavu.
+
+
+Hlavními výhodami souborového systému LittleFS jsou tedy šetrnost k paměťovým médiím, nad kterými systém operuje, a také velmi nízká paměťová náročnost jak na velikost programového kódu ve flash paměti, tak na množství operační paměti RAM potřebné k jeho provozu. Dalším významným přínosem jsou již výše zmíněné pokročilé mechanismy známé z databázových systémů, zejména žurnálování a atomické operace, které umožňují zachovat souborový systém v konzistentním stavu i v případě neočekávaných selhání nebo výpadků napájení.
+
+Žurnálovací souborový systém LittleFS má ale také své nevýhody. Jednou z nejvýznamnějších je absence kompatibility při použití běžných paměťových médií, jakými jsou například SD či microSD karty, se standardními operačními systémy osobních počítačů, jakými jsou třeba Windows, Linux a MacOS. Data uložená pomocí LittleFS tak nejsou přímo čitelná na běžném počítači bez použití dodatečného softwarového nástroje (Wrapperu). \cite{cnx_software_little_fs}
 
 \subsection{Chan FATFS}
 
