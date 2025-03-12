@@ -560,6 +560,9 @@ Alternativou k souborovému systému FATFS může být souborový systém Little
 
 Souborový systém LittleFS využívá pokročilý mechanismus atomického zpracování známého z databázových systémů, kdy je každá operace buď kompletně dokončena, nebo v případě selhání či výpadku napájení zcela zrušena. K tomu je využit mechanismus žurnálování (journaling), který je využíván v pokročilých souborových systémech jako je ext3, XFS či ext4. Operace nad souborovým systémem jsou nejprve zaznamenány do speciální struktury (logu) před jejich fyzickým provedením. Pokud by došlo k selhání, jakým je například výpadek napájení, souborový systém se může spolehlivě vrátit do konzistentního stavu.
 
+V souborovém systému LittleFS se k záznamu změn využívá technologie páry metadat (Metadata Pairs). Při každé operaci jsou měněna metadata souborového systému, přičemž tato metadata musí být aktualizována (měněna) atomicky. K změně jsou využity dvě speciální oblasti, označované jako metadata páry, které jsou opatřeny kontrolními součty (Checksum) a čísly revizí (Revision Count). Při každém zápisu se střídavě aktualizuje jeden ze dvou bloků metadat, přičemž druhý blok vždy uchovává předchozí konzistentní stav. Pokud by tedy došlo k selhání zápisu, souborový systém může jednoduše detekovat poškozený (Corrupted) stav a obnovit data z druhého, neporušeného bloku.
+
+Pro samotná data (Non-Meta Data) souborový systém LittleFS používá techniku Copy-on-Write (COW). Tato technika zajišťuje konzistenci dat tak, že při každém zápisu jsou aktuální (nová) data nejprve zapsána do volných bloků a teprve po úspěšném dokončení zápisu jsou bloky s neaktuálními/starými daty označeny jako volné. Pokud by tedy došlo během zápisu k chybě nebo výpadku napájení, systém se jednoduše vrátí k původním, neporušeným blokům, a tím zabrání ztrátě nebo poškození dat.
 
 Hlavními výhodami souborového systému LittleFS jsou tedy šetrnost k paměťovým médiím, nad kterými systém operuje, a také velmi nízká paměťová náročnost jak na velikost programového kódu ve flash paměti, tak na množství operační paměti RAM potřebné k jeho provozu. Dalším významným přínosem jsou již výše zmíněné pokročilé mechanismy známé z databázových systémů, zejména žurnálování a atomické operace, které umožňují zachovat souborový systém v konzistentním stavu i v případě neočekávaných selhání nebo výpadků napájení.
 
@@ -572,8 +575,12 @@ Hlavními výhodami souborového systému LittleFS jsou tedy šetrnost k paměť
 % ----------------------------------------------------
 
 \section{Výběr řízení přístupu k získaným datům}
+Důležitým prvkem digitálního záznamníku je také přístup k získaným datům, jak již víme, že data budou ukládána na SD kartu, respektive SDHC kartu a budou organizována a spravována souborovým systémem FatFs. Nutné je také připomenout, že jedním z požadavků na realizaci zařízení v této bakalářské práci je přístup k zaznamenaným datům bez nutnosti vyjmutí fyzického média. V úvahu připadávají varianty využívající USB či Ethernet, které vývojová deska NXP FRDM-MCXN947 nabízí, nicméně vzhledem k bezpečnostním restrikcím společnosti NXP není možné zařízení připojit k síti pomocí Ethernetového rozhraní. Tato skutečnost tedy omezuje dostupné možnosti přenosu dat pouze na komunikační protokoly nad rozhraním USB. 
 
 \subsection{USB Mass Storage}
+První z možností pro zajištění přístupu k datům uloženým na SD kartě, respektive SDHC kartě, představuje použití standardu USB Mass Storage (MSC), vypracovaného v roce 1998 USB a umožňuje zařízení vystupovat jako standardní externí úložiště. Tento protokol stále dnes využívají externí úložiště jako externí hard disky, USB flash disky a podporuje ho většina moderních operačních systémů jako Microsoft Windows, operační systémy založené na Linuxu tedy Ubuntu, Mint, Debian, ale také i Mac OS. Vyčíst data z SD karty či zapsat data na SD kartu, lze zvládnout téměř z kteréhokoliv osobního počítače.
+
+Tento protokol rozlišuje dva komunikační prvky, prvním z nich je Mass Storage host, tedy zařízení, které aktivně řídí přístup k úložišti a provádí operace čtení a zápisu dat, tím je typicky osobní počítač nebo jiný hostitelský systém. Druhým prvkem je Mass Storage zařízení (Device), které je koncovým zařízením vystupující jako externí paměťové médium, tím může být například zmíněný Flash Disk či Hard Disk.
 
 \subsection{Media Transfer Protocol}
 
