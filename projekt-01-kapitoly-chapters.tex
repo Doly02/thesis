@@ -548,7 +548,7 @@ FATFS v současnosti představuje jeden z nejrozšířenějších souborových s
 % FAT is pretty bad on Flash devices because the low numbered sectors get rewritten frequently. Devices like USB sticks have wear levelling code, but if you're accessing raw hardware wear is a potential issue.
 
 \subsection{LittleFS}
-Alternativou k souborovému systému FATFS může být souborový systém LittleFS, který je podobně jako FATFS implementován ve formě odlehčené softwarové knihovny určené primárně pro vestavěné systémy a mikrokontroléry.  Tento systém byl vyvinut s ohledem na specifika flashových pamětí, aby se rovnoměrně rozdělil zápis na jednotlivé bloky a nebyly první bloky vytížené více než ty s většími indexy.
+Alternativou k souborovému systému FATFS může být blokový (Block-Based) souborový systém LittleFS, který je podobně jako FATFS implementován ve formě odlehčené softwarové knihovny určené primárně pro vestavěné systémy a mikrokontroléry.  Tento systém byl vyvinut s ohledem na specifika flashových pamětí, aby se rovnoměrně rozdělil zápis na jednotlivé bloky a nebyly první bloky vytíženy více než ty s většími indexy.
 
 \begin{figure}[h]
     \centering
@@ -558,13 +558,16 @@ Alternativou k souborovému systému FATFS může být souborový systém Little
     \label{fig:journaling}
 \end{figure}
 
+% First we have the non-resilient, block based filesystems, such as FAT and ext2. These are the earliest filesystem designs and often the most simple. Here storage is divided into blocks, with each file being stored in a collection of blocks. Without modifications, these filesystems are not power-loss resilient, so updating a file is a simple as rewriting the blocks in place.
+% https://github.com/littlefs-project/littlefs/blob/master/DESIGN.md
+
 Souborový systém LittleFS využívá pokročilý mechanismus atomického zpracování známého z databázových systémů, kdy je každá operace buď kompletně dokončena, nebo v případě selhání či výpadku napájení zcela zrušena. K tomu je využit mechanismus žurnálování (journaling), který je využíván v pokročilých souborových systémech jako je ext3, XFS či ext4. Operace nad souborovým systémem jsou nejprve zaznamenány do speciální struktury (logu) před jejich fyzickým provedením. Pokud by došlo k selhání, jakým je například výpadek napájení, souborový systém se může spolehlivě vrátit do konzistentního stavu.
 
-V souborovém systému LittleFS se k záznamu změn využívá technologie páry metadat (Metadata Pairs). Při každé operaci jsou měněna metadata souborového systému, přičemž tato metadata musí být aktualizována (měněna) atomicky. K změně jsou využity dvě speciální oblasti, označované jako metadata páry, které jsou opatřeny kontrolními součty (Checksum) a čísly revizí (Revision Count). Při každém zápisu se střídavě aktualizuje jeden ze dvou bloků metadat, přičemž druhý blok vždy uchovává předchozí konzistentní stav. Pokud by tedy došlo k selhání zápisu, souborový systém může jednoduše detekovat poškozený (Corrupted) stav a obnovit data z druhého, neporušeného bloku.
+V souborovém systému LittleFS se k záznamu změn využívá technologie páry metadat (Metadata Pairs). Při každé operaci jsou měněna metadata souborového systému, přičemž tato metadata musí být aktualizována (měněna) atomicky. K změně jsou využity dvě speciální oblasti, označované jako metadata páry, které jsou opatřeny kontrolními součty (Checksum) a čísly revizí (Revision Count). Při každém zápisu se střídavě aktualizuje jeden ze dvou bloků metadat, přičemž druhý blok vždy uchovává předchozí konzistentní stav. Pokud by tedy došlo k selhání zápisu, souborový systém může jednoduše detekovat poškozený (Corrupted) stav a obnovit data z druhého, neporušeného bloku. \cite{nxp_the_design_of_the_little_filesystem}
 
-Pro samotná data (Non-Meta Data) souborový systém LittleFS používá techniku Copy-on-Write (COW). Tato technika zajišťuje konzistenci dat tak, že při každém zápisu jsou aktuální (nová) data nejprve zapsána do volných bloků a teprve po úspěšném dokončení zápisu jsou bloky s neaktuálními/starými daty označeny jako volné. Pokud by tedy došlo během zápisu k chybě nebo výpadku napájení, systém se jednoduše vrátí k původním, neporušeným blokům, a tím zabrání ztrátě nebo poškození dat.
+Pro samotná data (Non-Meta Data) souborový systém LittleFS používá techniku Copy-on-Write (COW). Tato technika zajišťuje konzistenci dat tak, že při každém zápisu jsou aktuální (nová) data nejprve zapsána do volných bloků a teprve po úspěšném dokončení zápisu jsou bloky s neaktuálními/starými daty označeny jako volné. Pokud by tedy došlo během zápisu k chybě nebo výpadku napájení, systém se jednoduše vrátí k původním, neporušeným blokům, a tím zabrání ztrátě nebo poškození dat. \cite{nxp_the_design_of_the_little_filesystem}
 
-Hlavními výhodami souborového systému LittleFS jsou tedy šetrnost k paměťovým médiím, nad kterými systém operuje, a také velmi nízká paměťová náročnost jak na velikost programového kódu ve flash paměti, tak na množství operační paměti RAM potřebné k jeho provozu. Dalším významným přínosem jsou již výše zmíněné pokročilé mechanismy známé z databázových systémů, zejména žurnálování a atomické operace, které umožňují zachovat souborový systém v konzistentním stavu i v případě neočekávaných selhání nebo výpadků napájení.
+Hlavními výhodami souborového systému LittleFS jsou tedy šetrnost k paměťovým médiím, nad kterými systém operuje, a také velmi nízká paměťová náročnost jak na velikost programového kódu ve flash paměti, tak na množství operační paměti RAM potřebné k jeho provozu. Dalším významným přínosem jsou již výše zmíněné pokročilé mechanismy známé z databázových systémů, zejména žurnálování a atomické operace, které umožňují zachovat souborový systém v konzistentním stavu i v případě neočekávaných selhání nebo výpadků napájení. \cite{nxp_the_design_of_the_little_filesystem}
 
 Žurnálovací souborový systém LittleFS má ale také své nevýhody. Jednou z nejvýznamnějších je absence kompatibility při použití běžných paměťových médií, jakými jsou například SD či microSD karty, se standardními operačními systémy osobních počítačů, jakými jsou třeba Windows, Linux a MacOS. Data uložená pomocí LittleFS tak nejsou přímo čitelná na běžném počítači bez použití dodatečného softwarového nástroje (Wrapperu). \cite{cnx_software_little_fs}
 
@@ -577,12 +580,32 @@ Hlavními výhodami souborového systému LittleFS jsou tedy šetrnost k paměť
 \section{Výběr řízení přístupu k získaným datům}
 Důležitým prvkem digitálního záznamníku je také přístup k získaným datům, jak již víme, že data budou ukládána na SD kartu, respektive SDHC kartu a budou organizována a spravována souborovým systémem FatFs. Nutné je také připomenout, že jedním z požadavků na realizaci zařízení v této bakalářské práci je přístup k zaznamenaným datům bez nutnosti vyjmutí fyzického média. V úvahu připadávají varianty využívající USB či Ethernet, které vývojová deska NXP FRDM-MCXN947 nabízí, nicméně vzhledem k bezpečnostním restrikcím společnosti NXP není možné zařízení připojit k síti pomocí Ethernetového rozhraní. Tato skutečnost tedy omezuje dostupné možnosti přenosu dat pouze na komunikační protokoly nad rozhraním USB. 
 
+% Mozna zde dopsat ze to uplne nezalezi na FS
+% A file system defines how the files are organized in the storage media. The USB mass storage class specification does not require any particular file system to be used on conforming devices. Instead, it provides a simple interface to read and write sectors of data using the Small Computer System Interface (SCSI) transparent command set. As such, operating systems may treat the USB drive like a hard drive, and can format it with any file system they like. https://docs.silabs.com/protocol-usb/1.3.0/protocol-usb-msc-scsi/
+
 \subsection{USB Mass Storage}
-První z možností pro zajištění přístupu k datům uloženým na SD kartě, respektive SDHC kartě, představuje použití standardu USB Mass Storage (MSC), vypracovaného v roce 1998 USB a umožňuje zařízení vystupovat jako standardní externí úložiště. Tento protokol stále dnes využívají externí úložiště jako externí hard disky, USB flash disky a podporuje ho většina moderních operačních systémů jako Microsoft Windows, operační systémy založené na Linuxu tedy Ubuntu, Mint, Debian, ale také i Mac OS. Vyčíst data z SD karty či zapsat data na SD kartu, lze zvládnout téměř z kteréhokoliv osobního počítače.
+První z možností pro zajištění přístupu k datům uloženým na SD kartě, respektive SDHC kartě, představuje použití standardu USB Mass Storage (MSC), vypracovaného v roce 1998 USB a umožňuje zařízení vystupovat jako standardní externí úložiště. Tento protokol stále dnes využívají externí úložiště jako externí hard disky, USB flash disky a podporuje ho většina moderních operačních systémů jako Microsoft Windows, operační systémy založené na Linuxu, tedy Ubuntu, Mint, Debian, ale také i Mac OS. Vyčíst data z SD karty či zapsat data na SD kartu lze zvládnout téměř z kteréhokoliv osobního počítače.
 
 Tento protokol rozlišuje dva komunikační prvky, prvním z nich je Mass Storage host, tedy zařízení, které aktivně řídí přístup k úložišti a provádí operace čtení a zápisu dat, tím je typicky osobní počítač nebo jiný hostitelský systém. Druhým prvkem je Mass Storage zařízení (Device), které je koncovým zařízením vystupující jako externí paměťové médium, tím může být například zmíněný Flash Disk či Hard Disk.
 
+Z hlediska přenosových protokolů definuje USB Mass Storage dvě hlavní metody komunikace: Control/Bulk/Interrupt (CBI) a Bulk-Only Transport (BOT). CBI je přenosový protokol definovaný standardem USB 1.1, který kombinuje tři typy USB přenosů - řídicí (Control), blokové (Bulk) a přerušovací (Interrupt). Přenos se dále dělí na protokol přenosu dat, který využívá přenos přerušení, a protokol, který přenos přerušení nevyužívá. V současnosti nejrozšířenější metodou přenosu v rámci USB Mass Storage je transport pomocí BOT, v tomto režimu jsou data přenášena po blocích.
+Součástí USB Mass Storage bývá také USB Floppy Interface (UFI), což je sada příkazů založená na SCSI-2 a SFF-8070 sadách příkazů, navržená pro jednoduchá bloková zařízení, původně určená pro USB disketové mechaniky (Floppy Disk), ale dnes běžně používaná pro základní interakci s jakýmkoliv typem Mass Storage zařízení. UFI definuje sadu příkazů pro čtení, zápis a správu paměťového média. \cite{usb_standard_ufi}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.85\textwidth]{obrazky-figures/mass_storage_protocol.png}
+    
+    \caption{Stavový diagram USB Mass Storage protokolu \cite{silicon_labs_mass_storage_protocol}}
+    \label{fig:mass-storage-protocol}
+\end{figure}
+
+Komunikace mezi hostitelem a zařízením v rámci protokolu Bulk-Only Transport (BOT) probíhá ve třech hlavních fázích, zajišťují řízený přenos příkazů, dat a zpětné vazby o provedení operace. První fází je přenos příkazu (Command Transport), během které host odešle zařízení požadavek na operaci v podobě struktury Command Block Wrapper (CBW). Tato struktura obsahuje informace o typu požadované operace (jakou je třeba inicializace, čtení, zápis), adresaci cílového sektoru na médiu a velikost přenášených dat. Pokud příkaz vyžaduje přenos dat, následuje druhá fáze - přenos dat (Data Transport). Data mohou být posílána ze zařízení do hostitele (například při čtení dat ze zařízení) nebo z hostitele do zařízení (například při zápisu na SD kartu). Přenos probíhá výhradně pomocí bulk přenosů (Bulk-In/Bulk-Out). Poslední fází je Status Transport, v této fázi zařízení odešle zpět hostiteli strukturu CSW, která obsahuje informaci o výsledku provedené operace\footnote{v případě chyby může obsahovat další doplňující informace jako třeba množství nepřenesených dat (data residue)}. Ne všechny příkazy však vyžadují přenos dat (například příkazy pro kontrolu stavu zařízení), v těchto případech je fáze Data Transport vynechána a zařízení odesílá CSW ihned po přijetí CBW. \cite{silicon_labs_mass_storage_protocol}
+
+% (Bulk-In/Bulk-Out). Poslední fází je Status Transport, v této fázi zařízení odešle zpět hostiteli strukturu CSW, která obsahuje informaci o výsledku provedené operace (úspěšné dokončení, chyba, množství nepřenesených dat – tzv. data residue)
+
+
 \subsection{Media Transfer Protocol}
+Media Transfer Protokol neboli zkráceně MTP je druhým významným protokolem umožňujícím přenos dat mezi hostitelem a cílovým zařízením, pomocí USB. Na rozdíl od USB Mass Storage, kde je médium připojeno přímo jako blokové zařízení a hostitel má přímý přístup k souborovému systému, u MTP k tomu nedochází. Tedy na rozdíl od USB MSC není hostitel zodpovědný za přímé operace se souborovým systémem, ale pouze zasílá žádosti o přenos nebo manipulaci se soubory.
 
 \subsection{Human Interface Device}
 
@@ -597,7 +620,7 @@ Tento protokol rozlišuje dva komunikační prvky, prvním z nich je Mass Storag
 
 % ----------------------------------------------------
 \section{Výber přístupu řízení běhu aplikace}
-Srovnani obecne bare-metal a RTOS.
+Srovnání obecné bare-metal a RTOS.
 
 
 \subsection{Bare-Metal}
@@ -666,6 +689,15 @@ Jak jsem měřil spotřebu, jak jsem spočítal hodnoty kondenzátorů
 \section{Záznamové vlákno}
 
 \section{USB Mass Storage vlákno}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.85\textwidth]{obrazky-figures/nxp_usb_device_application_structure.png}
+    
+    \caption{Vzorová struktura aplikace využívající NXP USB Stack \cite{silicon_labs_mass_storage_protocol}}
+    \label{fig:usb-device-app-structure}
+\end{figure}
+
 
 \section{Signalizace stavu systému}
 
