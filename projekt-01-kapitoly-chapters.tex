@@ -489,7 +489,7 @@ Raspberry Pi Zero 2W naopak nabízí z vybraných možností velice dobrý pomě
         \hline
         \textbf{Spotřeba }              & -                     & -                     & -                     \\ 
         \hline
-        \textbf{Pořizovací cena}        & 2 058 kč (50,82€)                    & 593 Kč                & 459 Kč  \\ 
+        \textbf{Pořizovací cena}        & 2 058 kč (50,82€)     & 593 Kč                & 459 Kč                \\ 
         \hline
     \end{tabular}
     \end{adjustbox}
@@ -650,10 +650,9 @@ Schéma na následujícím obrázku \ref{fig:timer} znázorňuje základní stru
     \label{fig:timer}
 \end{figure}
 
-Výhodou takového způsobu je výhoda v granulaci času, je možné přizpůsobit časové rozlišení. Časové rozlišení lze ovlivnit volbou hodinového zdroje, hodnotou děličky kmitočtu (prescaleru) a nastavením mezní hodnoty MOD. Lze tak snadno generovat přerušení s periodou i v řadě jednotek mikrosekund, sekundách až po výrazně delší časové úseky. 
+Výhodou takového způsobu je výhoda v granulaci času, je možné přizpůsobit časové rozlišení. Časové rozlišení lze ovlivnit volbou hodinového zdroje, hodnotou děličky kmitočtu (prescaleru) a nastavením mezní hodnoty MOD. Lze tak snadno generovat přerušení s periodou i v řadě jednotek mikrosekund, sekundách až po výrazně delší časové úseky. V základní podobě poskytuje tento mechanismus měření relativního času, často od začátku běhu systému, pokud není použit doplňující prvek, který by umožňoval uchování či zjištění aktuálního času, jako je doplňující obvod reálného času nebo GPS modul. Právě skutečnost, že se jedná o relativní čas, přináší i určité výhody, odpadá totiž nutnost řešit komplexní problémy spojené s absolutním časem, jako jsou přechody mezi letním a zimním časem, nebo postupná odchylka interního časového základu od reálného času, která je přirozeným důsledkem výrobní tolerance oscilátorů a dalších časovacích prvků.
 
-Takovýto způsob zproje času je sám o sobě pro záznam relativního času, často od začátku běhu systému, pokud není použit doplňující prvek, který by umožňoval uchování či zjištění aktuálního času, jako je doplňující obvod reálného času nebo GPS modul. Tím, že nepracuje s absolutním časem tj. skutečným časem, přináší další výhodu, a tou je, že není třeba řešit pokročilé problémy, které vznikají při práci s aktuálním časem jako je nutnost řešit změny času z letního na zímní nebo třeba postupným rozjíždění času se kterým zařázení pracuje od reálného času, jelikož, časové prvky mají odchylku, jejichž význam bude časem narůstat.
-
+Takovýto způsob zproje času je sám o sobě pro záznam relativního času, často od začátku běhu systému, pokud není použit doplňující prvek, který by umožňoval uchování či zjištění aktuálního času, jako je doplňující obvod reálného času nebo GPS modul. Tím, že nepracuje s absolutním časem tj. skutečným časem, přináší další výhodu, a tou je, že není třeba řešit pokročilé problémy, které vznikají při práci s aktuálním časem, jako je nutnost řešit změny času z letního na zimní nebo třeba postupným rozjížděním času, se kterým zařízení pracuje od reálného času, jelikož časové prvky mají odchylku, jejíž význam bude časem narůstat.
 
 \subsection{Obvod reálného času}
 
