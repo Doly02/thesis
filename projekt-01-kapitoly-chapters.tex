@@ -621,17 +621,17 @@ Komunikace probíhá ve formě transakcí, přičemž role komunikujících zař
 MTP na rozdíl od USB Mass Storage, kde je médium připojeno přímo jako blokové zařízení a hostitel má přímý přístup k souborovému systému, zde u MTP k tomu nedochází. Iniciátor tedy není zodpovědný za přímé operace se souborovým systémem, ale pouze zasílá žádosti o přenos nebo manipulaci se soubory. To znamená, že data zde nejsou interpretována připojeným zařízením (iniciátorem), ale interpretaci má na starosti odpovídající zařízení, a připojenému iniciátoru předává jen celé soubory. To přináší výhodu, že obě zařízení mohou přistupovat k datům současně (najednou). Naopak to, ale vytváří nové problémy - přes počítač nelze opravit poškozené soubory uložené na zařízení, v případě úpravy souboru je třeba nejprve soubor stáhnout do počítače, zde upravit a následně přenést zpět do zařízení.
 
 \subsection{Human Interface Device}
-Další možností pro zajištění přístupu k datům uloženým na SD kartě je využití standardu USB Human Interface Device (HID). Tento standard byl navržen původně společností Microsoft a posléze přijat jako součást USB specifikace za účelem unifikace komunikace s periferiemi, jako je klávesnice či počítačová myš. HID na rozdíl od USB Mass Storage (MSC) a Media Transfer Protocol (MTP), neslouží primárně pro práci se soubory nebo blokovými zařízeními, ale slouží jako univerzální protokol pro výměnu malých datových paketů (tzv. HID reportů).
+Další možností pro zajištění přístupu k datům uloženým na SD kartě je využití standardu USB Human Interface Device (HID). Tento standard byl navržen původně společností Microsoft a posléze přijat jako součást USB specifikace za účelem unifikace komunikace s periferiemi, jako je klávesnice či počítačová myš. HID na rozdíl od USB Mass Storage (MSC) a Media Transfer Protocol (MTP), neslouží primárně pro práci se soubory nebo blokovými zařízeními, ale slouží jako univerzální protokol pro výměnu malých datových paketů (tzv. HID reportů). \cite{usb_standard_hid, silicon_labs_human_interface_device}
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.85\textwidth]{obrazky-figures/hid_communication.png}
     
-    \caption{HID komunikace \cite{silicon_labs_mass_storage_protocol}}
-    \label{fig:hid-communicatin}
+    \caption{HID komunikace \cite{usb_standard_hid}}
+    \label{fig:hid-communication}
 \end{figure}
 
-HID protokol definuje dvě základní role, prvním z nich je hostitelské zařízení (HID Host) a druhým je koncové zařízení (HID Device). Komunikace mezi těmito zařízeními probíhá primárně pomocí dvou typů přenosových kanálů (tzv. USB Pipe), které jsou pevně definovány standardem HID. Řídicí kanál (Control Pipe) slouží především pro inicializaci zařízení a konfiguraci přenosu dat. Přes tento kanál se přenáší tzv. HID Report Descriptor, což je struktura, která popisuje formát a význam jednotlivých HID reportů, které bude zařízení posílat hostitelskému zařízení. Řídicí kanál je taktéž využíván pro přístup ke zprávám o funkcích (Feature Reports), sloužící například k nastavování parametrů zařízení. Druhým z kanálů je přerušovací kanál (Interrupt Pipe), který slouží jako hlavní komunikační kanál pro pravidelný přenos datových rámců (reportů) mezi hostem a zařízením. Tento kanál je optimalizovaný pro malé datové pakety s nízkou latencí, typicky pro odesílání stavových informací, aktuálních měřených dat či událostí, jakým je třeba stisk tlačítka. Přerušovací přenosy probíhají periodicky, přičemž jejich frekvence je definována při enumeraci zařízení.
+HID protokol definuje dvě základní role, prvním z nich je hostitelské zařízení (HID Host) a druhým je koncové zařízení (HID Device). Komunikace mezi těmito zařízeními probíhá primárně pomocí dvou typů přenosových kanálů (tzv. USB Pipe), které jsou pevně definovány standardem HID. Řídicí kanál (Control Pipe) slouží především pro inicializaci zařízení a konfiguraci přenosu dat. Přes tento kanál se přenáší tzv. HID Report Descriptor, což je struktura, která popisuje formát a význam jednotlivých HID reportů, které bude zařízení posílat hostitelskému zařízení. Řídicí kanál je taktéž využíván pro přístup ke zprávám o funkcích (Feature Reports), sloužící například k nastavování parametrů zařízení. Druhým z kanálů je přerušovací kanál (Interrupt Pipe), který slouží jako hlavní komunikační kanál pro pravidelný přenos datových rámců (reportů) mezi hostem a zařízením. Tento kanál je optimalizovaný pro malé datové pakety s nízkou latencí, typicky pro odesílání stavových informací, aktuálních měřených dat či událostí, jakým je třeba stisk tlačítka. Přerušovací přenosy probíhají periodicky, přičemž jejich frekvence je definována při enumeraci zařízení. \cite{usb_standard_hid, silicon_labs_human_interface_device}
 
 % ----------------------------------------------------
 \section{Výběr zdroje času}
@@ -649,6 +649,10 @@ Schéma na následujícím obrázku \ref{fig:timer} znázorňuje základní stru
     \caption{Blokový diagram časovače}
     \label{fig:timer}
 \end{figure}
+
+Výhodou takového způsobu je výhoda v granulaci času, je možné přizpůsobit časové rozlišení. Časové rozlišení lze ovlivnit volbou hodinového zdroje, hodnotou děličky kmitočtu (prescaleru) a nastavením mezní hodnoty MOD. Lze tak snadno generovat přerušení s periodou i v řadě jednotek mikrosekund, sekundách až po výrazně delší časové úseky. 
+
+Takovýto způsob zproje času je sám o sobě pro záznam relativního času, často od začátku běhu systému, pokud není použit doplňující prvek, který by umožňoval uchování či zjištění aktuálního času, jako je doplňující obvod reálného času nebo GPS modul. Tím, že nepracuje s absolutním časem tj. skutečným časem, přináší další výhodu, a tou je, že není třeba řešit pokročilé problémy, které vznikají při práci s aktuálním časem jako je nutnost řešit změny času z letního na zímní nebo třeba postupným rozjíždění času se kterým zařázení pracuje od reálného času, jelikož, časové prvky mají odchylku, jejichž význam bude časem narůstat.
 
 
 \subsection{Obvod reálného času}
