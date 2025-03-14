@@ -279,16 +279,9 @@ Ve feroelektrické RAM paměti (FRAM/FeRAM) jsou data ukládána pomocí změny 
 
 FRAM lze v dedikovaném digitálním záznamníku využít jako takzvanou mezivrstvu neboli vyrovnávací paměť, pomocí které lze optimalizovat zápisy na konečné dlouhodobé úložiště. Jak jsou tedy data záznamníkem postupně sbírána, tak mohou být postupně či po blocích zapisována do této mezivrstvy. Pokud je následně vyrovnávací paměť FRAM dostatečně zaplněna, její obsah je dávkově přenesen na dohodnuté trvalé úložiště, a tento cyklus se opakuje. 
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.70\textwidth]{obrazky-figures/feram.png}
-    
-    \caption{Struktura feroelektrické RAM paměti (FeRAM) \cite{researchgate_nonvolatile_memory_technologies}}
-    \label{fig:feram-structure}
-\end{figure}
 
 % navíc nevolatilní, diky usporadanym dipolum, ktere bylo zajisteno aktivnim elektrickem poli 
-Použití FRAM jako vyrovnávací paměti přináší několik výhod. Jedním z hlavních přínosů je snížení opotřebení hlavního úložiště, eliminán je totiž častý zápis po malých blocích dat, který zbytečně opotřebovává koncová nevolatilní úložiště typu flash, která mají omezený počet přepisovacích cyklů. Další výhodou je velice rychlý zápis oproti flash pamětem, obvykle trvá zápis na FRAM v řádu nanosekund, což je řádově rychlejší než srovnávané flash paměti, na kterých zápis trvá typicky v řádu mikrosekund až milisekund. FRAM je navíc nevolatilní, což znamená, že i v případě výpadku napájecího napětí zůstávají zaznamenaná data na feroelektrickém uložišti zachována, čímž se eliminuje potřeba dodatečných opatření k ochraně dat, jako jsou záložní baterie nebo superkondenzátory.
+Použití FRAM jako vyrovnávací paměti přináší několik výhod. Jedním z hlavních přínosů je snížení opotřebení hlavního úložiště, eliminován je totiž častý zápis po malých blocích dat, který zbytečně opotřebovává koncová nevolatilní úložiště typu flash, která mají omezený počet přepisovacích cyklů. Další výhodou je velice rychlý zápis oproti flash pamětem, obvykle trvá zápis na FRAM v řádu nanosekund, což je řádově rychlejší než srovnávané flash paměti, na kterých zápis trvá typicky v řádu mikrosekund až milisekund. FRAM je navíc nevolatilní, což znamená, že i v případě výpadku napájecího napětí zůstávají zaznamenaná data na feroelektrickém uložišti zachována, čímž se eliminuje potřeba dodatečných opatření k ochraně dat, jako jsou záložní baterie nebo superkondenzátory.
 
 \subsection{Zápis na vzdálené uložiště}
 \label{zapis_na_vzdalene_uloziste}
@@ -460,7 +453,7 @@ Raspberry Pi existuje v několika verzích, proto bude následný text věnován
 
 Raspberry Pi tedy jako varianta pro implementaci digitálního záznamníku vypadá dobře, má ale i nějaké nevýhody? Hlavním omezením Raspberry Pi Zero 2 W je obecně nedostatek komunikačních periferií – tato platforma totiž disponuje pouze jedním modulem UART, jedním modulem SPI a jedním modulem I2C. Tento omezený počet periferií může značně limitovat další rozšiřování zařízení o senzory či externí moduly. Například, komplikace může nastat pouze při řešení vkládání časových razítek do záznamů, deska bohužel neobsahuje interní obvod reálného, nabízí se  tedy využít jako referenční zdroj času, časovač (Timer) se softwarovým přerušením, druhou variantou je připojení záznamníku k síti a získat čas pomocí NTP (Network Time Protocol). Alternativním řešením se nabízí dokoupit externí obvod reálného času, to by znamenalo, že už by nebylo možné rozšířit zařízení o další periferie komunikující pomocí rozhraní I2C, jelikož RTC moduly toto rozhraní většinou využívají, tedy sníží se možnost budoucích rozšíření.
 
-\subsection{Závěr výběru platformy}
+\subsection{Shrnutí výběru platformy}
 Jaká je tedy nejvhodnější platforma pro implementaci digitálního záznamníku ve formě dedikovaného zařízení? Vybral jsem FRDM-MCXN947 od společnosti NXP Semiconductors, jelikož poskytuje největší kompromis a nabízí nejvíce možností, z jakých komponent výsledný záznamník složit.
 
 Alternativa Arduino Due, za svoji cenu za mě dostatečný poměr cena/výkon, jak je vidno v tabulce \ref{tab:board-comparison}. Maximální taktovací frekvence jádra je pouze 84 MHz, navíc to je postaveno na starší architektuře Cortex-M3. Kapacita flash paměti je oproti svým konkurentům za nižší cenu pouze 512 KB. V základu deska také neposkytuje možnost prostého rozšíření o externí uložiště jako je třeba mikro SD karta, na které by mohly být získané záznamy uloženy. Také výběr z jakého je možné vybrat řešení pro detekci ztráty napájení je omezen.
@@ -657,7 +650,15 @@ Takovýto způsob zproje času je sám o sobě pro záznam relativního času, �
 Naopak mezi nevýhody použití interního časovače patří skutečnost, že takto získaný čas je pouze relativní, což v některých aplikacích nemusí být dostačující. Další nevýhodou je, že zpracování přerušení generovaných časovačem probíhá přímo v jádře systému, a tím odebírá výpočetní kapacitu, která by jinak mohla být věnována jiným úlohám. Platí přitom, že čím jemnější časové rozlišení je požadováno, tím vyšší je frekvence generovaných přerušení a tím větší je dopad na výpočetní výkon mikrokontroléru.
 
 \subsection{Obvod reálného času}
+Možné je také využít obvod reálného času (RTC - Real-Time Circuit), který je součástí většiny moderních mikrokontrolérů nebo dostupný jako samostatný externí integrovaný obvod. RTC je specializovaný časový modul navržený pro dlouhodobé uchování reálného času, tedy hodin, minut, sekund, ale často i datumu a dalších kalendářních informací.
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.00\textwidth]{obrazky-figures/real_time_circuit-2.png}
+    
+    \caption{Zapojení obvodu reálného času}
+    \label{fig:real-time-circuit}
+\end{figure}
 
 \subsection{Bezdrátová komunikace (GPS/NTP)}
 
