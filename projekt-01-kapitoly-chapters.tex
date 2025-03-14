@@ -14,9 +14,9 @@ Tato bakalářská práce je věnována návrhu a implementaci digitálního zá
 
 Zákazníci, kteří využívají referenční designy NXP, pocházejí z celého světa a dostávají téměř hotový produkt, který lze následně certifikovat v Qi certifikačních laboratořích. Nicméně i přesto, že jsou referenční designy navrženy podle nejnovějších standardů, často dochází k jejich úpravám podle specifických požadavků zákazníků, zejména s ohledem na konkrétní poptávku koncového zákazníka (OEM – Original Equipment Manufacturer). Tyto požadavky jsou obvykle shrnuty v RFP (Request for Proposal), kde zákazník specifikuje konkrétní požadavky na systém. Tyto úpravy mohou být například realizovány z důvodu snížení ceny nebo zlepšení výkonu, například EMC charakteristik a nebo speciální chování bezdrátové nabíječky v krajních situacích. 
 
-Při jakýchkoli úpravách však vznikají nové technické výzvy, a proto NXP poskytuje zákazníkům plnou technickou podporu až do úspěšné certifikace. Certifikace probíhá v různých laboratořích po celém světě, avšak ne vždy může být přítomen zaměstnanec NXP, který by dohlížel na celý proces a zajistil, že certifikace proběhne hladce. V těchto případech se momentálně tým pro bezdrátové napájení spoléhá pouze na záznamy poskytnuté operátorem certifikační laboratoře. Tyto záznamy však pocházejí pouze ze strany přijímače – tedy certifikačního zařízení, zpravidla od výrobců Nok9 nebo Granite River Labs (GRL). Ty poskytují některé z důležitých informací, bohužel tyto nabídnuté záznamy nezahrnují explicitní informace o chování vysílače. Pokud tedy bezdrátová nabíječka, tedy bezdrátový vysílač nějakým testem neprojde, což se občas stává, je často náročné zpětně identifikovat příčinu problému. \cite{nxp_wireless_charging_team}
+Při jakýchkoli úpravách však vznikají nové technické výzvy, a proto NXP poskytuje zákazníkům plnou technickou podporu až do úspěšné certifikace. Certifikace probíhá v různých laboratořích po celém světě, avšak ne vždy může být přítomen zaměstnanec NXP, který by dohlížel na celý proces a zajistil, že certifikace proběhne hladce. V těchto případech se momentálně tým pro bezdrátové napájení spoléhá pouze na záznamy poskytnuté operátorem certifikační laboratoře. Tyto záznamy však pocházejí pouze ze strany přijímače – tedy certifikačního zařízení, zpravidla od výrobců nok9 nebo Granite River Labs (GRL). Ty poskytují některé z důležitých informací, bohužel tyto nabídnuté záznamy nezahrnují explicitní informace o chování vysílače. Pokud tedy bezdrátová nabíječka, tedy bezdrátový vysílač, nějakým testem neprojde, je tak často náročné zpětně identifikovat příčinu problému. Proto je třeba záznamníku dat, aby mohla být data zaznamenávána ze strany bezdrátové nabíječky a následně porovnávána vůči datům z testovacího zařízení. \cite{nxp_wireless_charging_team}
 
-Nezbytným požadavkem na implementaci tohoto záznamníku je i jeho snadná obsluha, neboť zařízení bude poskytováno zákazníkům pro již zmíněné účely certifikace. V klasickém scénáři zákazník předá nabíječku i se záznamníkem operátorovi certifikační laboratoře, ten si ji připojí k testovanému zařízení. Po skončení testovacího dne operátor záznamník vrátí zákazníkovi, který jej následně připojí k počítači a odešle společnosti NXP Semiconductors získané záznamy.
+Návrh a implementace záznamníku musí reflektovat požadavky na snadnou obsluhu, neboť zařízení bude poskytováno zákazníkům pro již zmíněné účely certifikace. V klasickém scénáři zákazník předá nabíječku i se záznamníkem operátorovi certifikační laboratoře, ten si záznamník připojí k testovanému zařízení. Po skončení testovacího dne operátor záznamník vrátí zákazníkovi, který jej následně připojí k počítači a odešle společnosti NXP Semiconductors získané záznamy.
 
 
 \chapter{Záznam dat}
@@ -27,7 +27,11 @@ Nezbytným požadavkem na implementaci tohoto záznamníku je i jeho snadná obs
 Lidstvo již od svých počátků mělo potřebu zaznamenávat data, neboť člověk mnohdy dokáže datům přiřadit sémantiku - jejich význam, a proměnit je tak v informace. Právě díky nim se lidé mohou učit z minulých zkušeností, předávat znalosti dalším generacím, organizovat a podpořit tak neustálý lidský pokrok. 
 
 % Nicméně největším pokrokem ve zaznamenávání dat nastal s příchodem výpočetní techniky.
-Po staletí byl záznam dat výhradně manuální. Informace se uchovávaly v rukopisech, knihách či na papírových svitcích, ať už formou psaného textu, nebo ručně zapisovaným výsledků pozorování. Přesnost a dostupnost těchto dat byla však omezena kapacitou lidské obsluhy a možnostmi mechanických nástrojů.
+Po staletí byl záznam dat výhradně manuální. Informace se uchovávaly v rukopisech, knihách či na papírových svitcích, ať už formou psaného textu, nebo ručně zapisovanými výsledky pozorování. Přesnost a dostupnost těchto dat byla však omezena kapacitou lidské obsluhy a možnostmi mechanických nástrojů.
+
+
+% pripadne to upravit na: Stěžejní změna přišla ve 20. století s rozvojem automatických záznamníků
+Stěžejní změna přišla ve 20. století s rozvojem elektrotechniky a nástupem automatických záznamníků, které umožnily jednoduchý sběr dat bez nutnosti lidského zásahu. Namísto ručně zapisovaných měření začaly být hodnoty přenášeny přímo do záznamových zařízení, která je dokázala systematicky uchovávat. \cite{origin_of_chart_recorders}
 
 \begin{figure}[h] % obrazek patent
     \centering
@@ -35,9 +39,6 @@ Po staletí byl záznam dat výhradně manuální. Informace se uchovávaly v ru
     \caption{První skutečný grafický záznamník (Chart Recorder) patentovaný Williamem Henrym Bristolem v roce 1888 \cite{bristol_chart_recorders}}
     \label{fig:chart_recorder}
 \end{figure}
-
-% pripadne to upravit na: Stěžejní změna přišla ve 20. století s rozvojem automatických záznamníků
-Stěžejní změna přišla ve 20. století s rozvojem elektrotechniky a nástupem automatických záznamníků, které umožnily jednoduchý sběr dat bez nutnosti lidského zásahu. Namísto ručně zapisovaných měření začaly být hodnoty přenášeny přímo do záznamových zařízení, která je dokázala systematicky uchovávat. \cite{origin_of_chart_recorders}
 
 \section{Záznam dat v počátcích elektrotechniky}
 \label{zaznam}
