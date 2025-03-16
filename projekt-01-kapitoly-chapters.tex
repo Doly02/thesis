@@ -656,6 +656,8 @@ Možné je také využít obvod reálného času (RTC - Real-Time Circuit), kter
 
 Obvod reálného času je typicky taktován externím či integrovaným krystalem\footnote{Na obrázku \ref{fig:real-time-circuit} je krystal připojen pomocí vývodu X1 a X2 k RTC modulu.}, obvykle s rezonanční frekvencí 32,768 Hz. Tato hodnota není zvolena náhodně – odpovídá hodnotě $2^{15}$, tedy násobku dvou a umožňuje tak pomocí jednoduché děličky frekvence vydělit frekvenci na 1 Hz. Jeden kmit tak představuje jednu sekundu. Mnohé obvody reálného času také poskytují možnost připojení záložní baterie\footnote{Na obrázku \ref{fig:real-time-circuit} je baterie připojena pomocí vývodu VBAT a GND k RTC modulu.}, která slouží k udržení chodu interního časového obvodu i v případě, kdy je hlavní napájení zařízení odpojeno. Díky tomu může RTC kontinuálně uchovávat čas i po dlouhou dobu, kdy je zařízení neaktivní a není nutné čas nastavovat po každém startu zařízení. Jak již bylo zmíněno, RTC bývá často v podobě samostatných integrovaných obvodů nebo bývá integrován přímo v mikrokontroléru. Pro komunikaci mikrokontroléru s RTC jako samostatným integrovaným obvodem se obvykle využívá komunikační rozhraní I2C, popřípadě SPI. Naopak k RTC integrovanému přímo do mikrokontroléru se přistupuje přímo prostřednictvím speciálních systémových registrů.
 
+\newpage
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=1.00\textwidth]{obrazky-figures/real_time_circuit-2.png}
@@ -664,8 +666,14 @@ Obvod reálného času je typicky taktován externím či integrovaným krystale
     \label{fig:real-time-circuit}
 \end{figure}
 
-Obvod reálného času oproti běžnému časovači udržuje absolutní čas a dokáže jej udržovat dlouhodobě aktuální hodnotu času, a to i při přerušení napájení, pokud je RTC vybaveno záložním napájením (například pomocí knoflíkové baterie).
+Obvod reálného času oproti běžnému časovači udržuje absolutní čas a dokáže jej udržovat dlouhodobě, a to i při přerušení napájení, pokud je tedy RTC vybaveno záložním napájením (například pomocí knoflíkové baterie).
 
+Jedním z omezení je minimální časové rozlišení, které je typicky nastaveno na sekundy. Mnoho standardních RTC modulů tak neumožňuje měřit a zaznamenávat čas s vyšší přesností, například v řádu milisekund či setin sekundy, což může být problémem u aplikací vyžadujících jemnější časovou osu. Také operování s absolutním časem vznikají specifické situace, jako například přechod mezi letním a zimním časem, změny časových pásem, navíc čas měřený obvodem reálného času se bude odchylovat od reálného času s narůstající dobou svého běhu, přičemž tato nepřesnost je dáná konktétním obvodem reálného času. Může tedy nastat potřeba nějakým způsobem čas udržovaný v modulu synchronizovat s reálným časem.
+
+Nevýhodami RTC je, že nejde snížit časovou rezoluci, mnohé RTC moduly nejsou schopny zaznamenávat čas na setiny, milisekundy, nejmenší časová jednotka je pevně definována a u standardních RTC modulů to často bývají sekundy. Další nevýhodou je, vznikající problém při práci s absolutním časem, jako je přechod z letního času na zimní a naopak, změna časového pásma a čas udržovaný v RTC se bude po čase rozjíždět od skutečného času, v aplikacích, které potřebují kriticky přesný čas, je tedy třeba vymyslet jak čas odčas synchronizovat. Může se například nastat situace, kdy se krystal zastaví nebo nebo dojde baterie,  
+
+
+ minimální časové rozlišení, které je typicky nastaveno na sekundy
 \subsection{Bezdrátová komunikace (GPS/NTP)}
 
 % ----------------------------------------------------
