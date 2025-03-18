@@ -351,7 +351,7 @@ Dalším takovým řešením je AirDrive Serial Logger, vyvinutý společností 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.75\textwidth]{obrazky-figures/keeylog_airdrive_serial_logger-cz.pdf}
+    \includegraphics[width=0.90\textwidth]{obrazky-figures/keeylog_airdrive_serial_logger-cz.pdf}
     
     \caption{Keeylog AirDrive Serial Logger s přístupem k datům přes webové rozhraní \cite{keelog_airdrive_serial_datalogger, keelog_airdrive_serial_datalogger_scheme}}
     \label{fig:keelog-airdrive-serial-datalogger}
@@ -454,7 +454,7 @@ Tento omezený počet periferií může značně limitovat další rozšiřován
 \subsection{Shrnutí výběru platformy}
 Jaká je tedy nejvhodnější platforma pro implementaci digitálního záznamníku ve formě dedikovaného zařízení? Vybral jsem FRDM-MCXN947 od společnosti NXP Semiconductors, jelikož poskytuje největší kompromis a nabízí nejvíce možností, z jakých komponent výsledný záznamník složit.
 
-Alternativa Arduino Due, za svoji cenu za mě dostatečný poměr cena/výkon, jak je vidno v tabulce \ref{tab:board-comparison}. Maximální taktovací frekvence jádra je pouze 84 MHz, navíc to je postaveno na starší architektuře Cortex-M3. Kapacita flash paměti je oproti svým konkurentům za nižší cenu pouze 512 KB. V základu deska také neposkytuje možnost prostého rozšíření o externí uložiště jako je třeba mikro SD karta, na které by mohly být získané záznamy uloženy. Také výběr z jakého je možné vybrat řešení pro detekci ztráty napájení je omezen.
+Alternativa Arduino Due, za svoji cenu za mě dostatečný poměr cena/výkon, jak je vidno v tabulce \ref{tab:board-comparison}. Maximální taktovací frekvence jádra je pouze 84 MHz, navíc to je postaveno na starší architektuře Cortex-M3. Kapacita flash paměti je oproti svým konkurentům za nižší cenu pouze 512 KB. V základu deska také neposkytuje možnost prostého rozšíření o externí uložiště jako je třeba micro SD karta, na které by mohly být získané záznamy uloženy. Také výběr, z jakého je možné vybrat řešení pro detekci ztráty napájení, je omezen.
 
 Raspberry Pi Zero 2W naopak nabízí z vybraných možností velice dobrý poměr cena/výkon, obsahuje vysoce výkonný čip BCM2711 s taktem až 1.5 GHz a nabízí prostor, kde mohou být uloženy získané záznamy, a to konkrétně na micro SD kartě. Nicméně obtížněji by se řešilo vkládání časových značek a možná rozšíření v podobě doplňujících periferií.
 
@@ -504,7 +504,7 @@ Obecný popis, proč je potřeba externí uložiště, že by se data mohla ukl�
 \section{Možnosti správy dat - souborové systémy}
 V předchozí části práce byla vybrána základní deska NXP FRDM-MCXN947 s mikrokontrolérem MCXN947, který bude sbírat data pomocí vstupní periferie, a tato data také zpracovávat pomocí jádra. Taktéž je vybráno externí úložiště, na které budou získaná data uložena, tím bude SD karta, konkrétněji SDHC karta. Data na tomto externím úložišti je třeba nějak organizovat, spravovat, aby mohla být v budoucnu nějakým způsobem interpretována a také popřípadě je třeba zajistit konzistenci a perzistenci uložených dat. K tomu účelu lze využít například souborový systém, databázový systém nebo data uchovávat v surovém (raw) formátu. Každý z těchto přístupů má svá specifika, nicméně data, která budou zaznamenávaná vyvíjeným záznamníkem, budou nestrukturovaná, rozhodl jsem se vybrat souborový systém. Souborový systém organizuje data přirozeně do souborů a složek a hodí se zejména pro již zmíněné ukládání nestrukturovaných dat. Pod pojmem nestrukturovaná data rozumíme taková data, která nejsou organizována jednotně v tabulkách (relacích) nebo databázových strukturách, ale mohou být ukládána do více typů souborů v různých formátech a umístěna do různorodých adresářových struktur. Tento přístup přináší výhodu, lze například získané záznamy hierarchicky členit, a zároveň umožňuje snadné přizpůsobení implementované logiky záznamníku pro ukládání i jiných typů dat. Díky tomu je záznamník obecněji využitelný pro různé typy záznamu. \cite{weka_structured_unstructured_data, virginia_tech_file_database_systems}
 
-se  může proto existovat logika speciální pro danou aplikaci, jakou je třeba anebo lze využít již vytvořené komponenty k tomu určené, mezi které patří i souborové systémy (File Systems).
+se  může proto existovat logika speciální pro danou aplikaci, jakou je třeba, anebo lze využít již vytvořené komponenty k tomu určené, mezi které patří i souborové systémy (File Systems).
 
 Obecný popis, souborový systém je zodpovědný za organizaci, správu a přístup k datům na zvoleném úložném médiu.
 
