@@ -703,12 +703,17 @@ Program se obvykle skládá ze dvou hlavních fází. První fází je inicializ
     \label{fig:bare-metal}
 \end{figure}
 
-Výhodou programování na bázi bare-metal je, že vestavné softwarové programy lze podrobně naplánovat pro konkrétní případ použití na co nejmenší úrovni, aniž by bylo nutné akceptovat režii navíc a možné chyby operačního systému. V optimálním případě tak vzniká řešení na míru, které spolehlivě plní úkoly a šetří zdroje. To má smysl vždy, pokud jsou úlohy, které mají být prováděny, zvládnutelné, takže lze zajistit co největší míru deterministického chování systému.
+% The bare-metal programming paradigm allows for maximum control and optimisation because the software is customised to the precise requirements of the ev embedded hardware. 
+% https://medium.com/@ramjaju3737/concept-of-bare-metal-programming-in-embedded-systems-a8cd16422199
 
-Na druhou stranu, práce s holým systémem, se vyskytují obtíže s zvládáním vysoké úrovně složitosti. Pokud se již tak nemalé projekty v průběhu implementační fáze nečekaně zvětší, například pokud přibudou nové funkce, které nebyly při předběžném plánování zohledněny, může být obtížné udržet si přehled. Tato obtíž může ještě narůst pokud chybí hardwarová abstrakční vrstva nebo je navíc aplikace vyvíjená v assembleru a dokumentace k desce je nedostatečná, to může zkomplikovat vývoj i zkušeným programátorům. Nelze také opomenout, že manuální správa systémových prostředků, například ruční blokování prostředků pomocí semaforů, může být časově náročná a náchylná k chybám.
+Výhodou programování na bázi bare-metal je, že vestavné softwarové programy lze podrobně naplánovat pro konkrétní případ použití na co nejmenší úrovni, aniž by bylo nutné akceptovat režii navíc a možné chyby operačního systému. V optimálním případě tak vzniká řešení na míru, které spolehlivě plní úkoly a šetří zdroje. To má smysl vždy, pokud jsou úlohy, které mají být prováděny, zvládnutelné, takže lze zajistit co největší míru deterministického chování systému. \cite{sysgo_baremetal_vs_rtos}
+
+Na druhou stranu, práce s holým systémem, se vyskytují obtíže s zvládáním vysoké úrovně složitosti. Pokud se již tak nemalé projekty v průběhu implementační fáze nečekaně zvětší, například pokud přibudou nové funkce, které nebyly při předběžném plánování zohledněny, může být obtížné udržet si přehled. Tato obtíž může ještě narůst, pokud chybí hardwarová abstrakční vrstva nebo je navíc aplikace vyvíjená v assembleru a dokumentace k desce je nedostatečná, to může zkomplikovat vývoj i zkušeným programátorům. Nelze také opomenout, že manuální správa systémových prostředků, například ruční blokování prostředků pomocí semaforů, může být časově náročná a náchylná k chybám. \cite{sysgo_baremetal_vs_rtos}
 
 % TODO: Zde to asi spis rozdelit na Baremetal vs. RTOS a pak uvest priklady jako FreeRTOS a ZephyrRTOS
-\subsection{RTOS}
+\subsection{Operační systém reálného času}
+Operační systém reálného času (RTOS) je typ počítačového operačního systému, který je navržen tak, aby byl malý a deterministický, tedy opakování vstupu vede ke stejnému výstupu. Tyto operační systémy se běžně používají ve vestavěných systémech, jako jsou lékařské přístroje a automobilové řídicí jednotky, které musí reagovat na vnější události v přísně omezeném čase.
+
 
 Operačním systémům lze vyčítat režii a nedůvěřovat jejich funkčnosti, ale nepochybně snižují náročnost programování tím, že poskytují funkce pro správu paměti a také správu procesů a umožňují programování pomocí vysokoúrovňového jazyka, jako je C
 
@@ -719,8 +724,6 @@ Operačním systémům lze vyčítat režii a nedůvěřovat jejich funkčnosti,
     \caption{Graf znázorňující rozdělení výpočetního času, při řízení programu pomocí operačního systému reálného času s plánovačem úloh (scheduler)}
     \label{fig:rtos-scheduling}
 \end{figure}
-
-Determinismus: Opakování vstupu vede ke stejnému výstupu.
 
 Bezpečnost a zabezpečení: RTOS se často používají v kritických systémech, jejichž selhání může mít katastrofální následky, například v robotice nebo v řídicích systémech letadel. Aby ochránily své okolí, musí mít vyšší bezpečnostní standardy a spolehlivější bezpečnostní funkce.
 
