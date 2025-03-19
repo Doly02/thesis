@@ -687,23 +687,46 @@ Jedna z nevýhod globálního polohovacího systému může nastat u zařízení
 \newpage
 
 \section{Výber přístupu řízení běhu aplikace}
-Důležitou součástí, která bude určovat způsob, jakým bude výsledná aplikace implementována, je výběr způsobu řízení běhu aplikace. U aplikací vestavných zařízení se zpravidla rozhoduje mezi dvěma směry. Prvním z nich je implementace na holém železe, obvykle se pro tento způsob využívá anglický název bare-metal.
+Důležitou součástí, která bude určovat způsob, jakým bude výsledná aplikace implementována, je výběr způsobu řízení běhu aplikace. U aplikací vestavných zařízení se zpravidla rozhoduje mezi dvěma směry. Prvním z nich je implementace na holém železe, obvykle se pro tento způsob využívá anglický název bare-metal a druhou možností může být stavět program nad operačním systémem reálného času (Real-Time Operating System, zkráceně RTOS). Volba přístupu ovlivňuje výslednou architekturu. V následujících podkapitolách budou oba přístupy rozebrány, včetně jejich výhod a nevýhod. 
 
-Srovnání obecné bare-metal a RTOS.
+
+\subsection{Bare-Metal}
+Bare-metal přístup znamená přímé řízení programu bez operačního systému, typicky s hlavní smyčkou (tzv. \emph{superloop}). Celý systém je dedikován pouze jedné aplikaci, která tak získává přímou kontrolu nad hardwarem. Program tedy přímo přistupuje k hardwarovým registrům mikrokontrolérů. 
+
+Program se obvykle skládá ze dvou hlavních fází. První fází je inicializace, během které se nastavují systémové zdroje, konfiguruje se taktování, inicializují se periferie a případně se nastavují přerušení, nutné je podotknout, že tato fáze je provedena pouze jednou. Po dokončení inicializace přechází aplikace do hlavní smyčky, kde v nekonečném cyklu vykonává logiku programu, například zpracovává příchozí události a obsluhuje periferie. Řízení programu standardně probíhá sekvenčně, nicméně od tohoto sekvenčního provádění se odchýlí pouze tehdy, když dojde k události přerušení.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.00\textwidth]{obrazky-figures/bare_metal.pdf}
+    
+    \caption{Příklad vestavěnné aplikace využívající bare-metal přistup}
+    \label{fig:bare-metal}
+\end{figure}
+
+Výhodou programování na bázi bare-metal je, že vestavné softwarové programy lze podrobně naplánovat pro konkrétní případ použití na co nejmenší úrovni, aniž by bylo nutné akceptovat režii navíc a možné chyby operačního systému. V optimálním případě tak vzniká řešení na míru, které spolehlivě plní úkoly a šetří zdroje. To má smysl vždy, pokud jsou úlohy, které mají být prováděny, zvládnutelné, takže lze zajistit co největší míru deterministického chování systému.
+
+Na druhou stranu, práce s holým systémem, se vyskytuji obtíž
+
+Na druhou stranu programátoři, kteří pracují s holým systémem, se také potýkají s obtížemi při zvládání vysoké úrovně složitosti. Pokud se již tak nemalé projekty v průběhu implementační fáze nečekaně zvětší, například pokud přibudou nové funkce, které nebyly při předběžném plánování zohledněny, může být obtížné udržet si přehled. Pokud se navíc programuje v assembleru a dokumentace k desce je nedostatečná nebo chybí hardwarová abstrakční vrstva, může se i zkušený programátor začít potit. 
+Nemělo by se zastírat, že i to může být někdy namáhavé, např. nutností ručně blokovat prostředky pomocí semaforů.
+
+% TODO: Zde to asi spis rozdelit na Baremetal vs. RTOS a pak uvest priklady jako FreeRTOS a ZephyrRTOS
+\subsection{RTOS}
+
+Operačním systémům lze vyčítat režii a nedůvěřovat jejich funkčnosti, ale nepochybně snižují náročnost programování tím, že poskytují funkce pro správu paměti a také správu procesů a umožňují programování pomocí vysokoúrovňového jazyka, jako je C
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=1.00\textwidth]{obrazky-figures/rtos_scheduling.pdf}
     
-    \caption{Zapojení obvodu reálného času v podobě externího modulu připojeného k mikrokontroléru \cite{embed_journal_interfacing_rtc_with_microcontroler}}
-    \label{fig:real-time-circuit}
+    \caption{Graf znázorňující rozdělení výpočetního času, při řízení programu pomocí operačního systému reálného času s plánovačem úloh (scheduler)}
+    \label{fig:rtos-scheduling}
 \end{figure}
 
+Determinismus: Opakování vstupu vede ke stejnému výstupu.
 
-\subsection{Bare-Metal}
+Bezpečnost a zabezpečení: RTOS se často používají v kritických systémech, jejichž selhání může mít katastrofální následky, například v robotice nebo v řídicích systémech letadel. Aby ochránily své okolí, musí mít vyšší bezpečnostní standardy a spolehlivější bezpečnostní funkce.
 
-% TODO: Zde to asi spis rozdelit na Baremetal vs. RTOS a pak uvest priklady jako FreeRTOS a ZephyrRTOS
-\subsection{RTOS}
 \subsubsection{FreeRTOS}
 Konkrétní výhody a nevýhody FreeRTOS
 
@@ -769,7 +792,7 @@ Jak jsem měřil spotřebu, jak jsem spočítal hodnoty kondenzátorů
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.85\textwidth]{obrazky-figures/nxp_usb_device_application_structure.png}
+    \includegraphics[width=0.45\textwidth]{obrazky-figures/nxp_usb_device_application_structure.pdf}
     
     \caption{Vzorová struktura aplikace využívající NXP USB Stack \cite{silicon_labs_mass_storage_protocol}}
     \label{fig:usb-device-app-structure}
