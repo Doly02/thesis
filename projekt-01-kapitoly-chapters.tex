@@ -705,10 +705,7 @@ Program se obvykle skládá ze dvou hlavních fází. První fází je inicializ
 
 Výhodou programování na bázi bare-metal je, že vestavné softwarové programy lze podrobně naplánovat pro konkrétní případ použití na co nejmenší úrovni, aniž by bylo nutné akceptovat režii navíc a možné chyby operačního systému. V optimálním případě tak vzniká řešení na míru, které spolehlivě plní úkoly a šetří zdroje. To má smysl vždy, pokud jsou úlohy, které mají být prováděny, zvládnutelné, takže lze zajistit co největší míru deterministického chování systému.
 
-Na druhou stranu, práce s holým systémem, se vyskytuji obtíž
-
-Na druhou stranu programátoři, kteří pracují s holým systémem, se také potýkají s obtížemi při zvládání vysoké úrovně složitosti. Pokud se již tak nemalé projekty v průběhu implementační fáze nečekaně zvětší, například pokud přibudou nové funkce, které nebyly při předběžném plánování zohledněny, může být obtížné udržet si přehled. Pokud se navíc programuje v assembleru a dokumentace k desce je nedostatečná nebo chybí hardwarová abstrakční vrstva, může se i zkušený programátor začít potit. 
-Nemělo by se zastírat, že i to může být někdy namáhavé, např. nutností ručně blokovat prostředky pomocí semaforů.
+Na druhou stranu, práce s holým systémem, se vyskytují obtíže s zvládáním vysoké úrovně složitosti. Pokud se již tak nemalé projekty v průběhu implementační fáze nečekaně zvětší, například pokud přibudou nové funkce, které nebyly při předběžném plánování zohledněny, může být obtížné udržet si přehled. Tato obtíž může ještě narůst pokud chybí hardwarová abstrakční vrstva nebo je navíc aplikace vyvíjená v assembleru a dokumentace k desce je nedostatečná, to může zkomplikovat vývoj i zkušeným programátorům. Nelze také opomenout, že manuální správa systémových prostředků, například ruční blokování prostředků pomocí semaforů, může být časově náročná a náchylná k chybám.
 
 % TODO: Zde to asi spis rozdelit na Baremetal vs. RTOS a pak uvest priklady jako FreeRTOS a ZephyrRTOS
 \subsection{RTOS}
