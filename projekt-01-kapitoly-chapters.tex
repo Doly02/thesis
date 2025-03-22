@@ -715,9 +715,9 @@ Na rozdíl od jednoduchého sekvenčního provádění kódu v nekonečné smyč
 \subsection{Operační systém reálného času}
 Operační systém reálného času (RTOS) je typem počítačového operačního systému, který je navržen tak, aby byl malý a deterministický, tedy aby opakovaný vstup vedl ke stejnému výstupu. Tyto operační systémy se běžně používají ve vestavěných systémech, jako jsou lékařské přístroje a automobilové řídicí jednotky, které musí reagovat na vnější události v přísně omezeném čase. \cite{freertos_what_is_rtos}
 
-Nejmenší logická jednotka provádění pro scheduler, je obvykle vlákno (Thread) nebo úloha (Task) která soutěží o čas procesoru.
+RTOS podporuje multitasking, tedy schopnost spouštět více logických jednotek současně. Zmiňovanou nejmenší logickou jednotkou je obvykle vlákno (thread) nebo úloha (task), které soutěží o čas procesoru a jsou vykonávána schedulerem. Různé RTOS implementace mohou tyto jednotky spravovat odlišně – například FreeRTOS používá úlohy (tasks), zatímco Zephyr RTOS pracuje s vlákny (threads). Na rozdíl od obecných operačních systémů, jako je Linux, které obvykle využívají procesy oddělené pomocí virtuální paměti, RTOS často pracuje bez této vrstvy abstrakce. \cite{freertos_what_is_rtos}
 
-RTOS podporuje multitasking, tedy schopnost spouštět více výpočetních jednotek současně. Zmiňovanou nejmenší logickou jednotkou je obvykle vlákno (thread) nebo úloha (task), které soutěží o čas procesoru a jsou vykonávaná plánovačem (schedulerem). Různé RTOS implementace mohou tyto jednotky spravovat odlišně – například FreeRTOS používá úlohy (tasks), zatímco Zephyr RTOS pracuje s vlákny (threads). Na rozdíl od obecných operačních systémů, jako je Linux, které obvykle využívají procesy oddělené pomocí virtuální paměti, RTOS často pracuje bez této vrstvy abstrakce,
+Plánovač je součástí jádra (kernelu), které představuje centrální komponentu RTOS a má na starosti správu běhu jednotlivých úloh. Kromě samotného plánování a přepínání mezi úlohami (tzv. přepínání kontextu) zajišťuje jádro také podporu pro synchronizaci a komunikaci mezi úlohami (např. semafory, fronty, mutexy), správu systémového času a obsluhu přerušení. Díky těmto funkcím umožňuje RTOS deterministické a přesně načasované vykonávání úloh, což je klíčové pro vestavěné systémy s reálnými časovými požadavky.
 
 \begin{figure}[h]
     \centering
