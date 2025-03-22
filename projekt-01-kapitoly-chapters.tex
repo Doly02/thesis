@@ -737,11 +737,15 @@ Přestože operační systémy reálného času přinášejí řadu výhod, nelz
 \subsubsection{FreeRTOS}
 Jednou z možností je FreeRTOS, což je open-source operační systém reálného času. FreeRTOS podporuje mnoho různých architektur a kompilátorů a je navržen tak, aby byl „malý, jednoduchý a snadno použitelný“. Jeho jádro tvoří v základu tři oblasti - správa úloh, komunikace a propojení s hardwarem. Správa úloh se stará o vytváření úloh, jak statických, tak dynamických, tak i jejich plánování a správu životního cyklu. Dále FreeRTOS poskytuje oblast zaměřenou na komunikaci mezi jednotlivými úlohami, k tomu slouží fronty (Queue). Úlohy a přerušení používají fronty k vzájemnému odesílání dat a k signalizaci použití kritických prostředků pomocí semaforů a mutexů. Poslední oblast slouží jako mezistupeň mezi hardwarově nezávislým jádrem FreeRTOS a hardwarově závislým kódem.
 
-Mezi hlavní výhody FreeRTOS patří jeho nízké nároky na systémové prostředky, což jej činí vhodným pro mikrokontroléry s omezenou pamětí a výpočetním výkonem. FreeRTOS poskytuje základní mechanismy pro plánování úloh, a to včetně prioritního plánovače s preempcí, který umožňuje přerušení aktuálně běžící úlohy ve prospěch jiné úlohy s vyšší prioritou. Velkou výhodou FreeRTOS je také jeho historie trvající přes 20let, k dispozici rozsáhlá dokumentace, příklady použití, mnoho výrobců jako například NXP Semicoductors poskytují profesionální podporu.
+Mezi hlavní výhody FreeRTOS patří jeho nízké nároky na systémové prostředky, což jej činí vhodným pro mikrokontroléry s omezenou pamětí a výpočetním výkonem. FreeRTOS poskytuje základní mechanismy pro plánování úloh, a to včetně prioritního plánovače s preempcí, který umožňuje přerušení aktuálně běžící úlohy ve prospěch jiné úlohy s vyšší prioritou. Velkou výhodou FreeRTOS je také jeho historie trvající přes 20 let, k dispozici je rozsáhlá dokumentace, příklady použití, mnoho výrobců, jako například NXP Semiconductors, poskytuje profesionální podporu. Z hlediska bezpečnosti FreeRTOS dodržuje přísný standard psaní kódu v souladu s normou MISRA-C, prochází statickou analýzou pomocí nástroje Coverity. Vybrané knihovny FreeRTOS byly navíc formálně ověřeny z hlediska paměťové bezpečnosti pomocí nástroje CBMC (C Bounded Model Checker). Bezpečnost systému byla rovněž potvrzena prostřednictvím certifikací SESIP™ Level 2 a PSA Certified Level 1, které vycházejí z rámce Common Criteria a hodnotí zabezpečení IoT platforem z hlediska architektury, implementace a odolnosti vůči útokům. \cite{freertos_security}
 
-Konkrétní výhody a nevýhody FreeRTOS
+Přestože je FreeRTOS široce používán a oblíbený díky své jednoduchosti a nízké režii, nelze opomenout jeho omezení ve srovnání s robustnějšími RTOS, jakým je například Zephyr (viz. \ref{zephyr_rtos}). Nevýhodou může být omezená podpora knihoven a celkově nižší flexibilita. Není jednoduché jen tak přidat podporu na nový mikrokontrolér, jelikož portování je do značné míry jedinečné a velmi závislé na použitém procesoru a nástrojích. \cite{freertos_portability, freertos_vs_zephyr}
+
+% Naproti tomu Zephyr RTOS má modulární, konfigurovatelný design a nabízí bohatou sadu subsystémů a knihoven. Má širokou hardwarovou podporu s více než 450 podporovanými deskami. 
+% Konkrétní výhody a nevýhody FreeRTOS
 
 \subsubsection{ZephyrRTOS}
+\label{zephyr_rtos}
 Konkrétní výhody a nevýhody Zephyr RTOS
 
 A system thread is a type of thread that is spawned automatically by Zephyr RTOS during initialization. There are always two threads spawned by default, the main thread and the idle thread.
