@@ -746,7 +746,17 @@ Přestože je FreeRTOS široce používán a oblíbený díky své jednoduchosti
 
 \subsubsection{ZephyrRTOS}
 \label{zephyr_rtos}
-Konkrétní výhody a nevýhody Zephyr RTOS
+Zephyr RTOS je moderní open-source operační systém reálného času, který vznikl pod záštitou Linux Foundation a je aktivně vyvíjen komunitou i komerčními partnery. Zephyr je navržen jako modulární, bezpečný a škálovatelný systém, který lze přizpůsobit potřebám cílového zařízení pomocí nástroje Kconfig a popisu hardwaru ve formátu Devicetree. Typická aplikace postavena na operačním systému Zephyr, je tvořená Zephyr jádrem, Zephyr moduly, vlastními moduly a aplikací jak je možné vidět na obrázku \ref{fig:zephyr}. Zephyr moduly jsou poskytovány v rámci ekosystému operačního systému, zde patří například abstrakční vrstvy hardwarů poskytovaných různými výrobci čipů jako je NXP Semiconductors, někdy je nutné si přidat vlastní moduly, tím mohou být vlastní moduly a nakonec vlastní aplikace s logikou. Aplikaci je nutné nakonfigurovat, a jak již bylo zmíněno k tomu se využívají nástroje Kconfig a DeviceTree. Nástroj Kconfig se používá ke konfiguraci jádra, subsystémů a softwarových knihoven a umožňuje  definovat, které části systému mají být zapnuty, jaké funkce mají být dostupné. Pro popis hardwarové struktury se Zephyr spoléhá na Devicetree, který určuje, jaké periferie jsou k dispozici, jak jsou propojeny. Popis periferií může být dále upraven nebo rozšířen pomocí overlay souborů (např. app.overlay), které přidávají nebo přepisují specifické uzly. Ze souborů Kconfig a Devicetree jsou při kompilaci vygenerovány hlavičkové soubory, které lze využít v aplikaci pro vestavný systém.  
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.00\textwidth]{obrazky-figures/zephyr.pdf}
+    
+    \caption{Funkcionalita KConfig a Devicetree v Zephyr RTOS}
+    \label{fig:zephyr}
+\end{figure}
+
+Mezi hlavní výhody Zephyr RTOS patří jeho vysoká modularita a konfigurovatelnost, která umožňuje vývojářům sestavit jen ty části systému, které jejich aplikace skutečně potřebuje. Díky oddělení aplikační logiky od hardwarové vrstvy prostřednictvím abstrakcí v Devicetree a subsystémech jádra není aplikace pevně svázána s konkrétním mikrokontrolérem či deskou. To výrazně usnadňuje přenositelnost – pokud cílové zařízení disponuje požadovanými hardwarovými prostředky, lze aplikaci obvykle znovu zkompilovat s minimálními úpravami konfigurace.
 
 A system thread is a type of thread that is spawned automatically by Zephyr RTOS during initialization. There are always two threads spawned by default, the main thread and the idle thread.
 
