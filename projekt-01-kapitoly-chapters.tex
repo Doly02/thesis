@@ -22,7 +22,7 @@ Návrh a implementace záznamníku musí reflektovat požadavky na snadnou obslu
 \chapter{Záznam dat}
 \label{zaznam_dat}
 
-\section{Počátky záznamu dat}
+\section{Historické pozadí záznamu dat}
 \label{pocatky}
 Lidstvo již od svých počátků mělo potřebu zaznamenávat data, neboť člověk mnohdy dokáže datům přiřadit sémantiku - jejich význam, a proměnit je tak v informace. Právě díky nim se lidé mohou učit z minulých zkušeností, předávat znalosti dalším generacím, organizovat a podpořit tak neustálý lidský pokrok. 
 
@@ -161,7 +161,7 @@ Vstupní data jsou následně zpracována jádrem mikrořadiče, které může p
 Následně jsou digitální data ukládána do paměťového média. Zde jde zvolit obvykle dva přístupy s lokálním a nebo vzdáleným paměťovým uložištěm. Přístup s lokálním paměťovým uložištěm využívá sekundární uložiště, tedy nevolatilní úložiště, která zaručují perzistenci dat i po vypnutí záznamníku. Typickými zástupci těchto pamětí jsou například FRAM (Ferroelectric Random Access Memory), různé typy SD karet a další technologie. Volatilní paměti, jako je například RAM, se v těchto aplikacích rovněž využívají, avšak výhradně pro krátkodobé uchování dat. V některých případech, například pokud jsou nevolatilní paměti organizovány do bloků (viz. \ref{davkove_zpracovani}), je výhodné nejprve dočasně ukládat data do RAM a teprve po naplnění bloku provést hromadný zápis do nevolatilní paměti. Krom lokálního paměťového média je však možné zvolit přístup se vzdáleným uložištěm v podobě databáze či cloudového systému.
 
 
-\section{Koncepty využívané ke zpracování dat digitálních záznamníků} 
+\section{Klíčové koncepty digitálních záznamníku} 
 Digitální záznamníky mohou být implementovány v podobě dedikovaného zařízení na platformě MCU, jak již bylo zmíněno, které dokáže poskytnout dobrý kompromis mezi cenou a výkonem. Na rozdíl od záznamníků realizovaných na výkonnějších platformách, jako jsou osobní počítače nebo jednodeskové počítače, však záznamníky postavené na MCU čelí určitým omezením daným dostupnými hardwarovými prostředky. Proto lze využít některé z optimalizačních technik, zaměřených na vhodnější využití dostupných zdrojů zařízení, které mohou vést k vyššímu výkonu, lepšímu využití dostupného paměťového prostoru nebo například i k lepší spotřebě.
 
 \subsection{Vícenásobná vyrovnávací paměť (multiple-buffering)}
@@ -708,14 +708,16 @@ Program se obvykle skládá ze dvou hlavních fází. První fází je inicializ
 
 Výhodou programování na bázi bare-metal je, že vestavné softwarové programy lze podrobně naplánovat pro konkrétní případ použití na co nejmenší úrovni, aniž by bylo nutné akceptovat režii navíc a možné chyby operačního systému. V optimálním případě tak vzniká řešení na míru, které spolehlivě plní úkoly a šetří zdroje. To má smysl vždy, pokud jsou úlohy, které mají být prováděny, zvládnutelné, takže lze zajistit co největší míru deterministického chování systému. \cite{sysgo_baremetal_vs_rtos}
 
-Na druhou stranu, práce s holým systémem, se vyskytují obtíže s zvládáním vysoké úrovně složitosti. Pokud se již tak nemalé projekty v průběhu implementační fáze nečekaně zvětší, například pokud přibudou nové funkce, které nebyly při předběžném plánování zohledněny, může být obtížné udržet si přehled. Tato obtíž může ještě narůst, pokud chybí hardwarová abstrakční vrstva nebo je navíc aplikace vyvíjená v assembleru a dokumentace k desce je nedostatečná, to může zkomplikovat vývoj i zkušeným programátorům. Nelze také opomenout, že manuální správa systémových prostředků, například ruční blokování prostředků pomocí semaforů, může být časově náročná a náchylná k chybám. \cite{sysgo_baremetal_vs_rtos}
+Na druhou stranu, práce s holým systémem se vyskytují obtíže s zvládáním vysoké úrovně složitosti. Pokud se již tak nemalé projekty v průběhu implementační fáze nečekaně zvětší, například pokud přibudou nové funkce, které nebyly při předběžném plánování zohledněny, může být obtížné udržet si přehled. Tato obtíž může ještě narůst, pokud chybí hardwarová abstrakční vrstva nebo je navíc aplikace vyvíjená v assembleru a dokumentace k desce je nedostatečná, to může zkomplikovat vývoj i zkušeným programátorům. Nelze také opomenout, že manuální správa systémových prostředků, například ruční blokování prostředků pomocí semaforů, může být časově náročná a náchylná k chybám. \cite{sysgo_baremetal_vs_rtos}
 
+Na rozdíl od jednoduchého sekvenčního provádění kódu v nekonečné smyčce umožňuje RTOS rozdělit aplikaci do více úloh (tasks), které mohou běžet paralelně, a řídit jejich vykonávání prostřednictvím plánovače (scheduler). Ten rozhoduje, která úloha bude v daný moment vykonávána na základě priorit, časování a dalších parametrů.
 % TODO: Zde to asi spis rozdelit na Baremetal vs. RTOS a pak uvest priklady jako FreeRTOS a ZephyrRTOS
 \subsection{Operační systém reálného času}
-Operační systém reálného času (RTOS) je typ počítačového operačního systému, který je navržen tak, aby byl malý a deterministický, tedy opakování vstupu vede ke stejnému výstupu. Tyto operační systémy se běžně používají ve vestavěných systémech, jako jsou lékařské přístroje a automobilové řídicí jednotky, které musí reagovat na vnější události v přísně omezeném čase.
+Operační systém reálného času (RTOS) je typem počítačového operačního systému, který je navržen tak, aby byl malý a deterministický, tedy aby opakovaný vstup vedl ke stejnému výstupu. Tyto operační systémy se běžně používají ve vestavěných systémech, jako jsou lékařské přístroje a automobilové řídicí jednotky, které musí reagovat na vnější události v přísně omezeném čase. \cite{freertos_what_is_rtos}
 
+Nejmenší logická jednotka provádění pro scheduler, je obvykle vlákno (Thread) nebo úloha (Task) která soutěží o čas procesoru.
 
-Operačním systémům lze vyčítat režii a nedůvěřovat jejich funkčnosti, ale nepochybně snižují náročnost programování tím, že poskytují funkce pro správu paměti a také správu procesů a umožňují programování pomocí vysokoúrovňového jazyka, jako je C
+RTOS podporuje multitasking, tedy schopnost spouštět více výpočetních jednotek současně. Zmiňovanou nejmenší logickou jednotkou je obvykle vlákno (thread) nebo úloha (task), které soutěží o čas procesoru a jsou vykonávaná plánovačem (schedulerem). Různé RTOS implementace mohou tyto jednotky spravovat odlišně – například FreeRTOS používá úlohy (tasks), zatímco Zephyr RTOS pracuje s vlákny (threads). Na rozdíl od obecných operačních systémů, jako je Linux, které obvykle využívají procesy oddělené pomocí virtuální paměti, RTOS často pracuje bez této vrstvy abstrakce,
 
 \begin{figure}[h]
     \centering
@@ -725,6 +727,10 @@ Operačním systémům lze vyčítat režii a nedůvěřovat jejich funkčnosti,
     \label{fig:rtos-scheduling}
 \end{figure}
 
+Operačním systémům lze vyčítat režii a nedůvěřovat jejich funkčnosti, ale nepochybně snižují náročnost programování tím, že poskytují funkce pro správu paměti a také správu procesů a umožňují programování pomocí vysokoúrovňového jazyka, jako je C
+
+RTOS je obvykle menší a lehčí než operační systém pro všeobecné použití, takže je vhodný pro zařízení s omezenou pamětí, výpočetní kapacitou a spotřebou energie.
+
 Bezpečnost a zabezpečení: RTOS se často používají v kritických systémech, jejichž selhání může mít katastrofální následky, například v robotice nebo v řídicích systémech letadel. Aby ochránily své okolí, musí mít vyšší bezpečnostní standardy a spolehlivější bezpečnostní funkce.
 
 \subsubsection{FreeRTOS}
@@ -732,6 +738,12 @@ Konkrétní výhody a nevýhody FreeRTOS
 
 \subsubsection{ZephyrRTOS}
 Konkrétní výhody a nevýhody ZephyrRTOS
+
+A system thread is a type of thread that is spawned automatically by Zephyr RTOS during initialization. There are always two threads spawned by default, the main thread and the idle thread.
+
+The main thread executes the necessary RTOS initializations and calls the application’s main() function, if it exists. If no user-defined main() is supplied, the main thread will exit normally, though the system would be fully functional.
+
+The idle thread runs when there is no other work to do, either running an empty loop or, if supported, will activate power management to save power (this is the case for Nordic devices).
 
 % ----------------------------------------------------
 
