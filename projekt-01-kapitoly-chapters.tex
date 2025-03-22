@@ -710,14 +710,15 @@ Výhodou programování na bázi bare-metal je, že vestavné softwarové progra
 
 Na druhou stranu, práce s holým systémem se vyskytují obtíže s zvládáním vysoké úrovně složitosti. Pokud se již tak nemalé projekty v průběhu implementační fáze nečekaně zvětší, například pokud přibudou nové funkce, které nebyly při předběžném plánování zohledněny, může být obtížné udržet si přehled. Tato obtíž může ještě narůst, pokud chybí hardwarová abstrakční vrstva nebo je navíc aplikace vyvíjená v assembleru a dokumentace k desce je nedostatečná, to může zkomplikovat vývoj i zkušeným programátorům. Nelze také opomenout, že manuální správa systémových prostředků, například ruční blokování prostředků pomocí semaforů, může být časově náročná a náchylná k chybám. \cite{sysgo_baremetal_vs_rtos}
 
-Na rozdíl od jednoduchého sekvenčního provádění kódu v nekonečné smyčce umožňuje RTOS rozdělit aplikaci do více úloh (tasks), které mohou běžet paralelně, a řídit jejich vykonávání prostřednictvím plánovače (scheduler). Ten rozhoduje, která úloha bude v daný moment vykonávána na základě priorit, časování a dalších parametrů.
 % TODO: Zde to asi spis rozdelit na Baremetal vs. RTOS a pak uvest priklady jako FreeRTOS a ZephyrRTOS
 \subsection{Operační systém reálného času}
 Operační systém reálného času (RTOS) je typem počítačového operačního systému, který je navržen tak, aby byl malý a deterministický, tedy aby opakovaný vstup vedl ke stejnému výstupu. Tyto operační systémy se běžně používají ve vestavěných systémech, jako jsou lékařské přístroje a automobilové řídicí jednotky, které musí reagovat na vnější události v přísně omezeném čase. \cite{freertos_what_is_rtos}
 
 RTOS podporuje multitasking, tedy schopnost spouštět více logických jednotek současně. Zmiňovanou nejmenší logickou jednotkou je obvykle vlákno (thread) nebo úloha (task)\footnote{Zde záleží na konkrétní implementaci RTOS například FreeRTOS používá úlohy, zatímco Zephyr RTOS pracuje s vlákny.}, které soutěží o čas procesoru a jsou vykonávána schedulerem. Na rozdíl od obecných operačních systémů, jako je Linux, které typicky využívají procesy (složené z jednoho či více vláken) izolované pomocí virtuální paměti, mnoho RTOS, zejména těch určených pro malé vestavné systémy, pracuje bez této vrstvy abstrakce. V takovém případě všechny úlohy sdílejí stejný fyzický adresní prostor a nejsou mezi sebou paměťově izolovány. Existují však i výkonnější RTOS, jako například Zephyr RTOS, které virtuální paměť a izolaci procesů podporují. \cite{freertos_what_is_rtos}
 
-Plánovač je součástí jádra (kernelu), které představuje centrální komponentu RTOS a má na starosti správu běhu jednotlivých úloh. Kromě samotného plánování a přepínání mezi úlohami (tzv. přepínání kontextu) zajišťuje jádro také podporu pro synchronizaci a komunikaci mezi úlohami (např. semafory, fronty, mutexy), správu systémového času a obsluhu přerušení. Díky těmto funkcím umožňuje RTOS deterministické a přesně načasované vykonávání úloh.
+Plánovač je součástí jádra (kernelu), které představuje centrální komponentu RTOS a má na starosti správu běhu jednotlivých úloh (viz. obrázek \ref{fig:rtos-scheduling}) a přidělování procesorového času. Na rozdíl od jednoduchého sekvenčního provádění kódu v nekonečné smyčce mohou tyto úlohy běžet paralelně na základě priorit, časování a dalších parametrů. Kromě samotného plánování a přepínání mezi úlohami (tzv. přepínání kontextu) zajišťuje jádro také podporu pro synchronizaci a komunikaci mezi úlohami (např. semafory, fronty, mutexy), správu systémového času a obsluhu přerušení. Díky těmto funkcím umožňuje RTOS deterministické a přesně načasované vykonávání úloh.
+
+\newpage
 
 \begin{figure}[h]
     \centering
@@ -727,11 +728,11 @@ Plánovač je součástí jádra (kernelu), které představuje centrální komp
     \label{fig:rtos-scheduling}
 \end{figure}
 
+% RTOS je obvykle menší a lehčí než operační systém pro všeobecné použití, takže je vhodný pro zařízení s omezenou pamětí, výpočetní kapacitou a spotřebou energie.
+Základními technickými výhodami RTOS jsou především deterministické chování, tedy schopnost reagovat na události ve striktně definovaném čase, a přesné řízení časování jednotlivých operací. To umožňuje systémům garantovat, že kritické úlohy budou vykonány ve stanovených časových limitech, bez ohledu na zátěž systému. Dále již byly nastíněny oblasti, ve kterých se operační systémy reálného času běžně uplatňují, mohou jimi být kritické systémy, jejichž selhání může mít katastrofální následky, například v robotice nebo v řídicích systémech letadel. Proto různé standardizované RTOS garantují vyšší bezpečnostní standardy a spolehlivější bezpečnostní funkce.
+
 Operačním systémům lze vyčítat režii a nedůvěřovat jejich funkčnosti, ale nepochybně snižují náročnost programování tím, že poskytují funkce pro správu paměti a také správu procesů a umožňují programování pomocí vysokoúrovňového jazyka, jako je C
 
-RTOS je obvykle menší a lehčí než operační systém pro všeobecné použití, takže je vhodný pro zařízení s omezenou pamětí, výpočetní kapacitou a spotřebou energie.
-
-Bezpečnost a zabezpečení: RTOS se často používají v kritických systémech, jejichž selhání může mít katastrofální následky, například v robotice nebo v řídicích systémech letadel. Aby ochránily své okolí, musí mít vyšší bezpečnostní standardy a spolehlivější bezpečnostní funkce.
 
 \subsubsection{FreeRTOS}
 Konkrétní výhody a nevýhody FreeRTOS
