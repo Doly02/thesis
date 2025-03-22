@@ -705,6 +705,7 @@ Program se obvykle skládá ze dvou hlavních fází. První fází je inicializ
 
 % The bare-metal programming paradigm allows for maximum control and optimisation because the software is customised to the precise requirements of the ev embedded hardware. 
 % https://medium.com/@ramjaju3737/concept-of-bare-metal-programming-in-embedded-systems-a8cd16422199
+\newpage
 
 Výhodou programování na bázi bare-metal je, že vestavné softwarové programy lze podrobně naplánovat pro konkrétní případ použití na co nejmenší úrovni, aniž by bylo nutné akceptovat režii navíc a možné chyby operačního systému. V optimálním případě tak vzniká řešení na míru, které spolehlivě plní úkoly a šetří zdroje. To má smysl vždy, pokud jsou úlohy, které mají být prováděny, zvládnutelné, takže lze zajistit co největší míru deterministického chování systému. \cite{sysgo_baremetal_vs_rtos}
 
@@ -729,16 +730,19 @@ Plánovač je součástí jádra (kernelu), které představuje centrální komp
 \end{figure}
 
 % RTOS je obvykle menší a lehčí než operační systém pro všeobecné použití, takže je vhodný pro zařízení s omezenou pamětí, výpočetní kapacitou a spotřebou energie.
-Základními technickými výhodami RTOS jsou především deterministické chování, tedy schopnost reagovat na události ve striktně definovaném čase, a přesné řízení časování jednotlivých operací. To umožňuje systémům garantovat, že kritické úlohy budou vykonány ve stanovených časových limitech, bez ohledu na zátěž systému. Dále již byly nastíněny oblasti, ve kterých se operační systémy reálného času běžně uplatňují, mohou jimi být kritické systémy, jejichž selhání může mít katastrofální následky, například v robotice nebo v řídicích systémech letadel. Proto různé standardizované RTOS garantují vyšší bezpečnostní standardy a spolehlivější bezpečnostní funkce.
+Základními technickými výhodami RTOS jsou především deterministické chování, tedy schopnost reagovat na události ve striktně definovaném čase, a přesné řízení časování jednotlivých operací. To umožňuje systémům garantovat, že kritické úlohy budou vykonány ve stanovených časových limitech, bez ohledu na zátěž systému. Dále již byly nastíněny oblasti, ve kterých se operační systémy reálného času běžně uplatňují, mohou jimi být kritické systémy, jejichž selhání může mít katastrofální následky, například v robotice nebo v řídicích systémech letadel. Proto různé standardizované RTOS garantují vyšší bezpečnostní standardy a spolehlivější bezpečnostní funkce, například definované normami ISO 26262, DO-178C nebo IEC 61508.
 
-Operačním systémům lze vyčítat režii a nedůvěřovat jejich funkčnosti, ale nepochybně snižují náročnost programování tím, že poskytují funkce pro správu paměti a také správu procesů a umožňují programování pomocí vysokoúrovňového jazyka, jako je C
-
+Přestože operační systémy reálného času přinášejí řadu výhod, nelze opomenout ani jejich určitá omezení a nevýhody. Jedním z častých argumentů proti jejich použití je větší režie (overhead), která může snížit výkon a zvýšit paměťové nároky, čímž se zvyšují nároky na hardware. RTOS vnáší do systému složitost, která může ztížit jeho pochopení a ladění. Vývojáři musí být obeznámeni s rozhraním RTOS API a rozumět tomu, jak fungují úlohy, zdroje a komunikace mezi úlohami. Získání těchto znalostí může trvat delší dobu, což prodlužuje dobu vývoje a zvyšuje náklady. Použití RTOS může také zvýšit náklady na systém. Mnoho komerčních dodavatelů RTOS si účtuje licenční poplatky, které mohou být pro malé projekty nákladné.
 
 \subsubsection{FreeRTOS}
+Jednou z možností je FreeRTOS, což je open-source operační systém reálného času. FreeRTOS podporuje mnoho různých architektur a kompilátorů a je navržen tak, aby byl „malý, jednoduchý a snadno použitelný“. Jeho jádro tvoří v základu tři oblasti - správa úloh, komunikace a propojení s hardwarem. Správa úloh se stará o vytváření úloh, jak statických, tak dynamických, tak i jejich plánování a správu životního cyklu. Dále FreeRTOS poskytuje oblast zaměřenou na komunikaci mezi jednotlivými úlohami, k tomu slouží fronty (Queue). Úlohy a přerušení používají fronty k vzájemnému odesílání dat a k signalizaci použití kritických prostředků pomocí semaforů a mutexů. Poslední oblast slouží jako mezistupeň mezi hardwarově nezávislým jádrem FreeRTOS a hardwarově závislým kódem.
+
+Mezi hlavní výhody FreeRTOS patří jeho nízké nároky na systémové prostředky, což jej činí vhodným pro mikrokontroléry s omezenou pamětí a výpočetním výkonem. FreeRTOS poskytuje základní mechanismy pro plánování úloh, a to včetně prioritního plánovače s preempcí, který umožňuje přerušení aktuálně běžící úlohy ve prospěch jiné úlohy s vyšší prioritou. Velkou výhodou FreeRTOS je také jeho historie trvající přes 20let, k dispozici rozsáhlá dokumentace, příklady použití, mnoho výrobců jako například NXP Semicoductors poskytují profesionální podporu.
+
 Konkrétní výhody a nevýhody FreeRTOS
 
 \subsubsection{ZephyrRTOS}
-Konkrétní výhody a nevýhody ZephyrRTOS
+Konkrétní výhody a nevýhody Zephyr RTOS
 
 A system thread is a type of thread that is spawned automatically by Zephyr RTOS during initialization. There are always two threads spawned by default, the main thread and the idle thread.
 
