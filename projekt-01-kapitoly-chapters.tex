@@ -162,6 +162,7 @@ Následně jsou digitální data ukládána do paměťového média. Zde jde zvo
 
 
 \section{Klíčové koncepty digitálních záznamníku} 
+\label{klicove_koncepty_digitalnich_zaznamniku}
 Digitální záznamníky mohou být implementovány v podobě dedikovaného zařízení na platformě MCU, jak již bylo zmíněno, které dokáže poskytnout dobrý kompromis mezi cenou a výkonem. Na rozdíl od záznamníků realizovaných na výkonnějších platformách, jako jsou osobní počítače nebo jednodeskové počítače, však záznamníky postavené na MCU čelí určitým omezením daným dostupnými hardwarovými prostředky. Proto lze využít některé z optimalizačních technik, zaměřených na vhodnější využití dostupných zdrojů zařízení, které mohou vést k vyššímu výkonu, lepšímu využití dostupného paměťového prostoru nebo například i k lepší spotřebě.
 
 \subsection{Vícenásobná vyrovnávací paměť (multiple-buffering)}
@@ -767,15 +768,19 @@ Na druhou stranu má Zephyr i své nevýhody, které mohou ovlivnit jeho vhodnos
 
 
 % ----------------------------------------------------
+% Popis architektury na základě vybraných komponent. Popis blokového diagramu.
 
 \section{Architektura systému digitálního záznamníku}
+\label{architektura_systemu_digitalniho_zaznamniku}
 Předchozí kapitoly představily vybrané komponenty, které lze využít k sestavení digitálního záznamníku v podobě dedikovaného zařízení. Rozhodl jsem se, že jako základ, čili platformu, zvolím vývojovou desku FRDM-MCXN947 od společnosti NXP Semiconductors (viz. \ref{nxp_frdm_mcxn947}), poskytující dostatečný výkon, paměťový prostor a periferie, které lze využít k realizaci záznamníku. Následující text bude popisovat architekturu jednotlivých komponent, architektura je následně graficky vizualizována na obrázku \ref{fig:system-architecture}.
 
 Pro řízení činnosti záznamníku bude použit operační systém reálného času FreeRTOS, který umožní oddělit jednotlivé funkční části programu do samostatných paralelně běžících úloh. Architektura softwaru bude rozdělena do dvou hlavních úloh. Záznamová úloha bude zajišťovat průběžné získávání dat z UART periferie a jejich ukládání na paměťové médium. Komunikační úloha bude zodpovědná za zpřístupnění uložených dat prostřednictvím rozhraní USB ve standardu Mass Storage Class (MSC), čímž odpadá nutnost fyzického vyjímání paměťové karty ze zařízení. Pomocí tohoto přístupu lze dosáhnout vyšší modularity, přehlednosti a současného chodu obou činností bez vzájemného blokování.
 
 Systém bude koncipován tak, aby v každém okamžiku byla aktivní vždy pouze jedna z hlavních úloh, což minimalizuje riziko konfliktu při přístupu k paměťovému médiu. Přepínání mezi úlohami bude řízeno detekcí připojení nebo odpojení USB rozhraní. V běžném režimu bude systém pracovat v záznamovém režimu a uchovávat příchozí data. Jakmile dojde k připojení zařízení k hostitelskému počítači, záznamová úloha se zastaví a aktivuje se komunikační úloha, která zpřístupní obsah úložiště jako běžný USB disk. Po odpojení USB se systém automaticky vrátí do režimu záznamu.
 
-Popis architektury na základě vybraných komponent. Popis blokového diagramu.
+Po spuštění systému nejprve proběhne základní inicializace klíčových komponent, které budou aktivní po celou dobu běhu aplikace. V rámci této fáze se mimo jiné naváže komunikace s externím RTC modulem prostřednictvím sběrnice I2C, ze kterého si mikrořadič přečte aktuální čas. Zjištěný čas je následně uložen do interního RTC modulu, jenž je součástí samotného mikrořadiče. Práce s interním obvodem reálného času zrychlí přístup k systémovému času, jelikož další komunikace již neprobíhá přes I2C, ale přímo prostřednictvím registrů v rámci interní periferie.
+
+Po úspěšné inicializaci je jako výchozí a dominantní úloha spuštěna záznamová úloha, která zajišťuje příjem dat z externího zdroje. V rámci dané varianty digitálního záznamníku pro platformu NXP Semiconductors bude jako vstupní periferní rozhraní využit modul LP\_FLEXCOMM, nakonfigurovaný v režimu UART. Přijatá data budou dále zpracovávána a ukládána do paměťového úložiště s využitím postupů popsaných v kapitole~\ref{klicove_koncepty_digitalnich_zaznamniku}, přičemž bude kladen důraz na efektivní využití prostředků a minimalizaci ztráty dat i při vyšších přenosových rychlostech.
 
 \begin{figure}[h]
     \centering
