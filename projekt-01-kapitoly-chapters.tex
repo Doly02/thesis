@@ -693,27 +693,32 @@ Jedna z nevýhod globálního polohovacího systému může nastat u zařízení
 \subsubsection{Network Time Protocol (NTP)}
 Další široce používanou technologií pro získání přesného času je síťový protokol NTP (Network Time Protocol). Tento protokol slouží k synchronizaci systémového času počítačových zařízení s časovými servery prostřednictvím sítí TCP/IP. NTP servery jsou organizovány do hierarchického systému vrstev (stratum), přičemž servery s nejnižším číslem (např. stratum 1) jsou přímo napojeny na referenční časové zdroje, jako jsou atomové hodiny nebo GPS přijímače (stratum 0). Servery na vyšších úrovních (např. stratum 2 a vyšší) získávají čas z těchto primárních zdrojů a zpřístupňují ho dále v síti.
 
-Princip spočívá ve výměně časových značek mezi klientem a serverem. Klient odešle dotaz na NTP server ve chvíli $T_1$ a server tento dotaz přijme v čase $T_2$. Po zpracování server odešle odpověď v čase $T_3$, kterou klient přijme v čase $T_4$. Na základě těchto čtyř časových údajů lze vypočítat celkové síťové zpoždění $\delta$ a časový rozdíl (offset) $\theta$ mezi hodinami klienta a serveru. Zpoždění $\delta$ se určí jako 
+Princip spočívá ve výměně časových značek mezi klientem a serverem. Klient odešle dotaz na NTP server ve chvíli $T_1$ a server tento dotaz přijme v čase $T_2$. Po zpracování server odešle odpověď v čase $T_3$, kterou klient přijme v čase $T_4$. Na základě těchto čtyř časových údajů lze vypočítat celkové síťové zpoždění $\delta$ a časový rozdíl (offset) $\theta$ mezi hodinami klienta a serveru. Zpoždění $\delta$ se určí jako:
 
 \begin{equation}
-    \text{Delay} = (T_4 - T_1) - (T_3 - T_2)
+    \delta = (T_4 - T_1) - (T_3 - T_2)
     \label{eq:ntp_delay}
 \end{equation}
+    
+
+Zatímco rozdíl mezi klientským a serverovým časem čili offset ($\theta$), lze vypočítat dle vztahu:
 
 \begin{equation}
-    \text{Offset} = \frac{(T_2 - T_1) + (T_3 - T_4)}{2}
+    \theta = \frac{(T_2 - T_1) + (T_3 - T_4)}{2}
     \label{eq:ntp_offset}
 \end{equation}
+
+Získané hodnoty spoždění a rozdílu pak klientovi umožňují upravit systémový čas tak, aby co nejpřesněji odpovídal referenčnímu času. Protokol NTP navíc provádí více opakovaných měření a volí ty s nejnižším zpožděním, čímž zvyšuje stabilitu synchronizace i při kolísajícím síťovém připojení.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=1.00\textwidth]{obrazky-figures/network_time_protocol.pdf}
     
     \caption{Komunikace pomocí Network Time Protocol \cite{time_theory_gps}}
-    \label{fig:low-power-modes}
+    \label{fig:network-time-protocol}
 \end{figure}
 
-\newpage
+NTP poskytuje přesný čas, nicméně také není vhodný pro každé vestavné zařízení vyžadující absolutní čas. Pro jeho fungování je nutná přítomnost TCP/IP zásobníku a zároveň aktivní síťové připojení k dostupnému NTP serveru. V prostředí, kde není možné garantovat trvalou konektivitu (například v mobilních, autonomních nebo izolovaných systémech), může být použití NTP omezené nebo zcela nevhodné. V takových případech je výhodnější spolehnout se na jiné zdroje času, jako je například GPS modul, nebo využít NTP pouze pro počáteční jednorázovou synchronizaci času při startu systému, kdy je připojení k síti dostupné.
 
 % ----------------------------------------------------
 \section{Výber přístupu řízení běhu aplikace}
