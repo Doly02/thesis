@@ -782,6 +782,8 @@ Po spuštění systému nejprve proběhne základní inicializace klíčových k
 
 Po úspěšné inicializaci je jako výchozí a dominantní úloha spuštěna záznamová úloha, která zajišťuje příjem dat z externího zdroje. V rámci dané varianty digitálního záznamníku pro platformu NXP Semiconductors bude jako vstupní periferní rozhraní využit modul LP\_FLEXCOMM, nakonfigurovaný v režimu UART. Přijatá data budou dále zpracovávána a ukládána do paměťového úložiště s využitím postupů popsaných v kapitole~\ref{klicove_koncepty_digitalnich_zaznamniku}, přičemž bude kladen důraz na efektivní využití prostředků a minimalizaci ztráty dat i při vyšších přenosových rychlostech.
 
+Jakmile je detekováno připojení k hostitelskému počítači, systém pomocí mechanismu USB OTG (On-The-Go) ověří, že došlo ke skutečnému připojení a navázání komunikace. V reakci na tuto událost se zařízení automaticky přepne do režimu Mass Storage, ve kterém je vnitřní paměťové úložiště zpřístupněno jako běžný externí disk. Tento režim umožňuje uživateli pohodlný vzdálený přístup k uloženým datům bez nutnosti fyzické manipulace s paměťovou kartou či otevření zařízení. Data jsou tak přístupná bez nutnosti manipulovat se samotným zařízením nebo vyjímat paměťovou kartu.
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=1.00\textwidth]{obrazky-figures/system_architecture.pdf}
@@ -789,6 +791,9 @@ Po úspěšné inicializaci je jako výchozí a dominantní úloha spuštěna z�
     \caption{Výsledná architektura digitálního záznamníku}
     \label{fig:system-architecture}
 \end{figure}
+
+Důležitou součástí návrhu systému je rovněž detekce ztráty napájecího napětí, která umožňuje včasnou reakci na neočekávané odpojení napájení. K tomuto účelu bude využita periferie LPCMP (Low-Power Comparator), která je součástí čipu na vývojové desce FRDM-MCXN947. Jakmile napájecí napětí poklesne pod stanovenou prahovou hodnotu, komparátor tento stav vyhodnotí a generuje událost, která informuje aplikační vrstvu o hrozícím výpadku. Od tohoto okamžiku je úkolem aplikace zajistit uložení všech rozpracovaných dat, která dosud nebyla zapsána do paměťového média, a také korektní uzavření otevřených souborů, aby bylo možné systém bezpečně ukončit a předejít ztrátě nebo poškození dat.
+
 
 % ----------------------------------------------------
 
