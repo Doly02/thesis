@@ -773,6 +773,7 @@ Předchozí kapitoly představily vybrané komponenty, které lze využít k ses
 
 Pro řízení činnosti záznamníku bude použit operační systém reálného času FreeRTOS, který umožní oddělit jednotlivé funkční části programu do samostatných paralelně běžících úloh. Architektura softwaru bude rozdělena do dvou hlavních úloh. Záznamová úloha bude zajišťovat průběžné získávání dat z UART periferie a jejich ukládání na paměťové médium. Komunikační úloha bude zodpovědná za zpřístupnění uložených dat prostřednictvím rozhraní USB ve standardu Mass Storage Class (MSC), čímž odpadá nutnost fyzického vyjímání paměťové karty ze zařízení. Pomocí tohoto přístupu lze dosáhnout vyšší modularity, přehlednosti a současného chodu obou činností bez vzájemného blokování.
 
+Systém bude koncipován tak, aby v každém okamžiku byla aktivní vždy pouze jedna z hlavních úloh, což minimalizuje riziko konfliktu při přístupu k paměťovému médiu. Přepínání mezi úlohami bude řízeno detekcí připojení nebo odpojení USB rozhraní. V běžném režimu bude systém pracovat v záznamovém režimu a uchovávat příchozí data. Jakmile dojde k připojení zařízení k hostitelskému počítači, záznamová úloha se zastaví a aktivuje se komunikační úloha, která zpřístupní obsah úložiště jako běžný USB disk. Po odpojení USB se systém automaticky vrátí do režimu záznamu.
 
 Popis architektury na základě vybraných komponent. Popis blokového diagramu.
 
