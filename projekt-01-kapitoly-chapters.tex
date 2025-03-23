@@ -411,6 +411,7 @@ Po stránkách periferií čip poskytuje 4 moduly periferie USART, 2 moduly I2C 
 
 
 \subsection{NXP FRDM-MCXN947}
+\label{nxp_frdm_mcxn947}
 Alternativou k vývoji digitálního záznamníku na platformě Arduino je vývoj programu na vývojové desce s klasickým mikrokontrolérem pomocí C/C++ jazyků. Tento způsob umožňuje větší variabilitu a (případně i specializaci pro danou aplikaci) při vývoji, operace mikrokontroléru lze více zabezpečit, jak program, tak i samotnou paměť. Jen samotné zabezpečení není jedinou výhodou, program lze také více optimalizovat, ať už na rychlost běhu aplikace nebo na paměťovou náročnost, umožňuje přímý přístup k hardwarovým periferiím a rychlý přenos pomocí DMA a další výhody.
 
 Vhodný zástupce takovéto vývojové desky se jeví FRDM-MCXN947 od společnosti NXP Semiconductors s mikrokontrolerem MCXN947, která je navržena pro rychlé prototypování vestavných systémů. Tato deska obsahuje nespočet komponent usnadňujících vývoj široké škály aplikací, přítomna je například Q-SPI flash paměť s 8MB úložným prostorem, FRDM-MCXN947 obsahuje dedikovaný slot pro SD kartu, kterým lze paměťový prostor rozšířit o 32GB paměti. FRDM-MCXN947 je dále vybavena integrovaným digitálním teplotním senzorem P3T1755DP s přesností 0,5 teplotního stupně, kolíkovými lištami typu Arduino a microBus pro možné rozšíření v podobě expanzních desek plošných spojů. Významnou výhodou je přítomnost vestavěného debuggeru NXP LPC55569, který umožňuje krokové ladění kódu a sledování hodnot proměnných pomocí MCU LinkServer nebo pomocí J-Link programů. K dispozici jsou také dva porty USB typu C, první z nich MCU-Link USB port je určen pro již zmíněné debuggovací účely, nahrávání programů a sériovou komunikaci, a druhé z portů - MCU USB slouží pro aplikační účely a podporuje standardy USB Mass Storage, HID (Human Interface Device), USB CDC (Communications Device Class), USB MTP (Media Transfer Protocol) a dalšími standardy pro datový přenos. \cite{nxp_MCX_Nx4x_Reference_Manual, nxp_FRDM_MCXN947_getting_started}
@@ -509,6 +510,7 @@ se  může proto existovat logika speciální pro danou aplikaci, jakou je třeb
 Obecný popis, souborový systém je zodpovědný za organizaci, správu a přístup k datům na zvoleném úložném médiu.
 
 \subsection{FATFS}
+\label{fatfs}
 Prvním z představených souborových systémů je FAT File System (FATFS), který je implementován v podobě lehké softwarové knihovny pro mikrokontroléry a vestavěné systémy implementující podporu souborového systému FAT/exFAT. FATFS se řadí mezi hierarchické souborové systémy založené na alokační tabulce souborů (File Allocation Table – FAT), ve kterých jsou data organizována do logických jednotek označovaných jako shluky (clusters). Každý soubor uložený na úložném médiu se tak skládá z jednoho nebo více těchto shluků, přičemž informace o jejich návaznosti jsou uloženy právě v alokační tabulce FAT. \cite{recoverit_fat_filesystem, elm_fat_filesystem_docs}
 
 \begin{figure}[h]
@@ -567,12 +569,14 @@ Hlavními výhodami souborového systému LittleFS jsou tedy šetrnost k paměť
 % ----------------------------------------------------
 
 \section{Výběr řízení přístupu k získaným datům}
+\label{vyber_rizeni_pristupu_k_ziskanym_datum}
 Důležitým prvkem digitálního záznamníku je také přístup k získaným datům, jak již víme, že data budou ukládána na SD kartu, respektive SDHC kartu a budou organizována a spravována souborovým systémem FatFs. Nutné je také připomenout, že jedním z požadavků na realizaci zařízení v této bakalářské práci je přístup k zaznamenaným datům bez nutnosti vyjmutí fyzického média. V úvahu připadávají varianty využívající USB či Ethernet, které vývojová deska NXP FRDM-MCXN947 nabízí, nicméně vzhledem k bezpečnostním restrikcím společnosti NXP není možné zařízení připojit k síti pomocí Ethernetového rozhraní. Tato skutečnost tedy omezuje dostupné možnosti přenosu dat pouze na komunikační protokoly nad rozhraním USB. 
 
 % Mozna zde dopsat ze to uplne nezalezi na FS
 % A file system defines how the files are organized in the storage media. The USB mass storage class specification does not require any particular file system to be used on conforming devices. Instead, it provides a simple interface to read and write sectors of data using the Small Computer System Interface (SCSI) transparent command set. As such, operating systems may treat the USB drive like a hard drive, and can format it with any file system they like. https://docs.silabs.com/protocol-usb/1.3.0/protocol-usb-msc-scsi/
 
 \subsection{USB Mass Storage}
+\label{usb_mass_storage}
 První z možností pro zajištění přístupu k datům uloženým na SD kartě, respektive SDHC kartě, představuje použití standardu USB Mass Storage (MSC), vypracovaného v roce 1998 organizací USB-IF (USB Implementers Forum). Tento standard umožňuje, aby zařízení vystupovalo vůči hostitelskému systému jako standardní blokové zařízení (Block Device), host má tedy přímý přístup k celému uložišti. Protokol je dnes stále využíván a také podporován majoritní většinou moderních operačních systémů jako Microsoft Windows, operační systémy založené na Linuxu, tedy Ubuntu, Mint, Debian, ale také i Mac OS. Vyčíst data z SD karty či zapsat data na SD kartu lze tedy zvládnout téměř z kterékoliho osobního počítače.
 
 Tento protokol rozlišuje dva komunikační prvky, prvním z nich je Mass Storage host, tedy zařízení, které aktivně řídí přístup k úložišti a provádí operace čtení a zápisu dat, tím je typicky osobní počítač nebo jiný hostitelský systém. Druhým prvkem je Mass Storage zařízení (Device), které je koncovým zařízením vystupující jako externí paměťové médium, tím může být například zmíněný Flash Disk či Hard Disk.
@@ -646,6 +650,7 @@ Takovýto způsob zproje času je sám o sobě pro záznam relativního času, �
 Naopak mezi nevýhody použití interního časovače patří skutečnost, že takto získaný čas je pouze relativní, což v některých aplikacích nemusí být dostačující. Další nevýhodou je, že zpracování přerušení generovaných časovačem probíhá přímo v jádře systému, a tím odebírá výpočetní kapacitu, která by jinak mohla být věnována jiným úlohám. Platí přitom, že čím jemnější časové rozlišení je požadováno, tím vyšší je frekvence generovaných přerušení a tím větší je dopad na výpočetní výkon mikrokontroléru.
 
 \subsection{Obvod reálného času}
+\label{real_time_circuit}
 Možné je také využít obvod reálného času (RTC - Real-Time Circuit), který je součástí většiny moderních mikrokontrolérů nebo dostupný jako samostatný externí integrovaný obvod. RTC je specializovaný časový modul navržený pro dlouhodobé uchování reálného času, tedy hodin, minut, sekund, ale často i datumu a dalších kalendářních informací.
 
 Obvod reálného času je typicky taktován externím či integrovaným krystalem\footnote{Na obrázku \ref{fig:real-time-circuit} je krystal připojen pomocí vývodu X1 a X2 k RTC modulu.}, obvykle s rezonanční frekvencí 32,768 Hz. Tato hodnota není zvolena náhodně – odpovídá hodnotě $2^{15}$, tedy násobku dvou a umožňuje tak pomocí jednoduché děličky frekvence vydělit frekvenci na 1 Hz. Jeden kmit tak představuje jednu sekundu. Mnohé obvody reálného času také poskytují možnost připojení záložní baterie\footnote{Na obrázku \ref{fig:real-time-circuit} je baterie připojena pomocí vývodu VBAT a GND k RTC modulu.}, která slouží k udržení chodu interního časového obvodu i v případě, kdy je hlavní napájení zařízení odpojeno. Díky tomu může RTC kontinuálně uchovávat čas i po dlouhou dobu, kdy je zařízení neaktivní a není nutné čas nastavovat po každém startu zařízení. Jak již bylo zmíněno, RTC bývá často v podobě samostatných integrovaných obvodů nebo bývá integrován přímo v mikrokontroléru. Pro komunikaci mikrokontroléru s RTC jako samostatným integrovaným obvodem se obvykle využívá komunikační rozhraní I2C, popřípadě SPI. Naopak k RTC integrovanému přímo do mikrokontroléru se přistupuje přímo prostřednictvím speciálních systémových registrů. \cite{jameco_choosing_right_real_time_clock_chip_or_module, yxc_role_of_32768_freq_in_the_circuit, medium_rtc}
@@ -764,6 +769,11 @@ Na druhou stranu má Zephyr i své nevýhody, které mohou ovlivnit jeho vhodnos
 % ----------------------------------------------------
 
 \section{Architektura systému digitálního záznamníku}
+Předchozí kapitoly představily vybrané komponenty, které lze využít k sestavení digitálního záznamníku v podobě dedikovaného zařízení. Rozhodl jsem se, že jako základ, čili platformu, zvolím vývojovou desku FRDM-MCXN947 od společnosti NXP Semiconductors (viz. \ref{nxp_frdm_mcxn947}), poskytující dostatečný výkon, paměťový prostor a periferie, které lze využít k realizaci záznamníku. Následující text bude popisovat architekturu jednotlivých komponent, architektura je následně graficky vizualizována na obrázku \ref{fig:system-architecture}.
+
+Pro řízení činnosti záznamníku bude použit operační systém reálného času FreeRTOS, který umožní oddělit jednotlivé funkční části programu do samostatných paralelně běžících úloh. Architektura softwaru bude rozdělena do dvou hlavních úloh. Záznamová úloha bude zajišťovat průběžné získávání dat z UART periferie a jejich ukládání na paměťové médium. Komunikační úloha bude zodpovědná za zpřístupnění uložených dat prostřednictvím rozhraní USB ve standardu Mass Storage Class (MSC), čímž odpadá nutnost fyzického vyjímání paměťové karty ze zařízení. Pomocí tohoto přístupu lze dosáhnout vyšší modularity, přehlednosti a současného chodu obou činností bez vzájemného blokování.
+
+
 Popis architektury na základě vybraných komponent. Popis blokového diagramu.
 
 \begin{figure}[h]
@@ -771,7 +781,7 @@ Popis architektury na základě vybraných komponent. Popis blokového diagramu.
     \includegraphics[width=1.00\textwidth]{obrazky-figures/system_architecture.pdf}
     
     \caption{Výsledná architektura digitálního záznamníku}
-    \label{fig:low-power-modes}
+    \label{fig:system-architecture}
 \end{figure}
 
 % ----------------------------------------------------
