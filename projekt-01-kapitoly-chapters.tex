@@ -680,7 +680,7 @@ Hodnotu stratum 0 mají například satelity globálního polohovacího systému
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.50\textwidth]{obrazky-figures/gps.png}
+    \includegraphics[width=0.45\textwidth]{obrazky-figures/gps.png}
     
     \caption{Minimální nutná sestava čtyř GPS satelitů pro výpočet lokace a času přijímače \cite{time_theory_gps}}
     \label{fig:low-power-modes}
@@ -708,13 +708,13 @@ Zatímco rozdíl mezi klientským a serverovým časem čili offset ($\theta$), 
     \label{eq:ntp_offset}
 \end{equation}
 
-Získané hodnoty spoždění a rozdílu pak klientovi umožňují upravit systémový čas tak, aby co nejpřesněji odpovídal referenčnímu času. Protokol NTP navíc provádí více opakovaných měření a volí ty s nejnižším zpožděním, čímž zvyšuje stabilitu synchronizace i při kolísajícím síťovém připojení.
+Získané hodnoty spoždění a rozdílu pak klientovi umožňují upravit systémový čas tak, aby co nejpřesněji odpovídal referenčnímu času. Protokol NTP navíc provádí více opakovaných měření a volí ty s nejnižším zpožděním, čímž zvyšuje stabilitu synchronizace i při kolísajícím síťovém připojení. \cite{sookocheff_ntp}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.00\textwidth]{obrazky-figures/network_time_protocol.pdf}
+    \includegraphics[width=0.95\textwidth]{obrazky-figures/network_time_protocol.pdf}
     
-    \caption{Komunikace pomocí Network Time Protocol \cite{time_theory_gps}}
+    \caption{Komunikace pomocí Network Time Protocol \cite{sookocheff_ntp}}
     \label{fig:network-time-protocol}
 \end{figure}
 
@@ -758,7 +758,7 @@ Plánovač je součástí jádra (kernelu), které představuje centrální komp
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.00\textwidth]{obrazky-figures/rtos_scheduling.pdf}
+    \includegraphics[width=0.90\textwidth]{obrazky-figures/rtos_scheduling.pdf}
     
     \caption{Graf znázorňující rozdělení výpočetního času, při řízení programu operačním systémem reálného času se schedulerem}
     \label{fig:rtos-scheduling}
