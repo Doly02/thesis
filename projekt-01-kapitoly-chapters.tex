@@ -10,7 +10,7 @@
 
 \chapter{Úvod}
 \label{uvod}
-Tato bakalářská práce je věnována návrhu a implementaci digitálního záznamníku s autonomním dokončením záznamu dat při výpadku napájecího napětí. Požadavek na zařízení vznikl od firmy NXP Semiconductors, konkrétně od týmu zaměřeného věnující se bezdrátovému nabíjení, ve kterém pracuji. Tento tým působí v České republice, jak v Rožnově pod Radhoštěm tak i v Brně a zároveň má své zastoupení v Asii a Severní Americe. NXP Semiconductors je jedním z předních členů WPC (Wireless Power Consortium), organizace zodpovědné za definování standardu Qi pro bezdrátové nabíjení. Primární zaměření NXP v této oblasti spočívá ve vývoji referenčních designů pro automotive sektor, kde zákazníkům poskytuje řešení určená pro integraci do vozidel.
+Tato bakalářská práce je věnována návrhu a implementaci digitálního záznamníku s autonomním dokončením záznamu dat při výpadku napájecího napětí. Požadavek na zařízení vznikl od firmy NXP Semiconductors, konkrétně od týmu zaměřeného na bezdrátové nabíjení, ve kterém pracuji. Tento tým působí v České republice, jak v Rožnově pod Radhoštěm, tak i v Brně, a zároveň má své zastoupení v Asii a Severní Americe. NXP Semiconductors je jedním z předních členů WPC (Wireless Power Consortium), organizace zodpovědné za definování standardu Qi pro bezdrátové nabíjení. Primární zaměření NXP v této oblasti spočívá ve vývoji referenčních designů pro automotive sektor, kde zákazníkům poskytuje řešení určená pro integraci do vozidel.
 
 Zákazníci, kteří využívají referenční designy NXP, pocházejí z celého světa a dostávají téměř hotový produkt, který lze následně certifikovat v Qi certifikačních laboratořích. Nicméně i přesto, že jsou referenční designy navrženy podle nejnovějších standardů, často dochází k jejich úpravám podle specifických požadavků zákazníků, zejména s ohledem na konkrétní poptávku koncového zákazníka (OEM – Original Equipment Manufacturer). Tyto požadavky jsou obvykle shrnuty v RFP (Request for Proposal), kde zákazník specifikuje konkrétní požadavky na systém. Tyto úpravy mohou být například realizovány z důvodu snížení ceny nebo zlepšení výkonu, například EMC charakteristik a nebo speciální chování bezdrátové nabíječky v krajních situacích. 
 
@@ -18,6 +18,19 @@ Při jakýchkoli úpravách však vznikají nové technické výzvy, a proto NXP
 
 Návrh a implementace záznamníku musí reflektovat požadavky na snadnou obsluhu, neboť zařízení bude poskytováno zákazníkům pro již zmíněné účely certifikace. V klasickém scénáři zákazník předá nabíječku i se záznamníkem operátorovi certifikační laboratoře, ten si záznamník připojí k testovanému zařízení. Po skončení testovacího dne operátor záznamník vrátí zákazníkovi, který jej následně připojí k počítači a odešle společnosti NXP Semiconductors získané záznamy.
 
+Kapitola~\ref{zaznam_dat} se zabývá problematikou záznamu dat z historického i technického hlediska. Popisuje vývoj záznamových systémů od mechanických a analogových zařízení až po moderní digitální řešení. Dále se zaměřuje na principy digitálního záznamu, popisuje základní architekturu digitálních záznamníků a klíčové koncepty, které se uplatňují při jejich návrhu a implementaci.
+
+Kapitola~\ref{navrh_digitalniho_zaznamniku}  je věnována procesu návrhu digitálního záznamníku. V úvodu kapitoly jsou rozebrána existující řešení z oblasti záznamu dat, která jsou podobná zařízení vyvíjenému v této bakalářské práci, a zároveň poskytují přehled o jejich výhodách a omezeních. Následně jsou představeny jednotlivé hardwarové a softwarové komponenty, které připadají v úvahu pro implementaci digitálního záznamníku, přičemž u každé části systému je uvedeno vícero alternativ (byť nejde o jediná možná řešení). V závěru kapitoly je pak popsána výsledná architektura záznamníku, která prezentuje konkrétní komponenty vybrané ze širšího spektra možností.
+
+% Tato deska doplňuje funkcionalitu základové vývojové platformy o prvky nezbytné pro spolehlivý provoz záznamníku, zejména o detekci výpadku napájecího napětí, zálohované napájení pomocí superkondenzátorů a generování stavových signálů pro uživatele. Součástí expanzní desky jsou také externí komponenty, jako je reálný časový obvod (RTC), nezbytný pro přesné časové značky v uložených datech. Celkově tato deska výrazně rozšiřuje schopnosti základní desky a tvoří nezbytný předpoklad pro správnou funkčnost celého systému.
+Kapitola~\ref{realizace_hardwaru} se zaměřuje na realizaci hardwarové části digitálního záznamníku v podobě dedikovaného zařízení. Klíčovým prvkem této části je vývoj rozšiřující (expanzní) desky, která byla navržena speciálně pro potřeby tohoto projektu. Závěrečná část kapitoly je věnována mechanickému návrhu zařízení, konkrétně popisu návrhu ochranného krytu.
+% chranici proti kontaktu s zivymi castmi zaznamniku
+
+Kapitola~\ref{softwarova_implementace} je věnována softwarové implementaci digitálního záznamníku. Kapitola popisuje návrh a realizaci jednotlivých částí firmwaru, který zajišťuje funkci zařízení jako autonomního záznamového systému. První část kapitoly se zaměřuje na samotný mechanismus záznamu dat, tedy příjem, zpracování a ukládání zaznamenaných dat. Následuje popis implementace mechanismu pro zpřístupnění uložených dat uživateli bez nutnosti fyzického vyjmutí paměťového média. V závěrečné části je popsána logika signalizace stavu zařízení vůči uživateli.
+
+Kapitola~\ref{testovani_systemu} popisuje proces, jakým bylo zařízení testováno a validováno. Primárně se zaměřuje na funkcionální testování zařízení, tj. ověření, že systém vykazuje správné chování. Další část je věnována kontrole bezpečnosti a spolehlivosti implementovaného kódu.
+
+V závěru v kapitole~\ref{zaver} jsou zmíněná možná rozšíření digitálního záznamníku a zhodnocení práce.
 
 \chapter{Záznam dat}
 \label{zaznam_dat}
@@ -158,7 +171,7 @@ I tyto záznamníky také obvykle obsahují tři základní části obecného z�
 
 Vstupní data jsou následně zpracována jádrem mikrořadiče, které může provádět základní operace, jako je například převod číslicové hodnoty z ADC na teplotu, filtrování signálu, doplňování časových značek, nebo provádět i obtížnější operace, jako je výpočet tepu v případě měření srdečních aktivit a další.
 
-Následně jsou digitální data ukládána do paměťového média. Zde jde zvolit obvykle dva přístupy s lokálním a nebo vzdáleným paměťovým uložištěm. Přístup s lokálním paměťovým uložištěm využívá sekundární uložiště, tedy nevolatilní úložiště, která zaručují perzistenci dat i po vypnutí záznamníku. Typickými zástupci těchto pamětí jsou například FRAM (Ferroelectric Random Access Memory), různé typy SD karet a další technologie. Volatilní paměti, jako je například RAM, se v těchto aplikacích rovněž využívají, avšak výhradně pro krátkodobé uchování dat. V některých případech, například pokud jsou nevolatilní paměti organizovány do bloků (viz. \ref{davkove_zpracovani}), je výhodné nejprve dočasně ukládat data do RAM a teprve po naplnění bloku provést hromadný zápis do nevolatilní paměti. Krom lokálního paměťového média je však možné zvolit přístup se vzdáleným uložištěm v podobě databáze či cloudového systému.
+Následně jsou digitální data ukládána do paměťového média. Zde jde zvolit obvykle dva přístupy s lokálním a nebo vzdáleným paměťovým uložištěm. Přístup s lokálním paměťovým uložištěm využívá sekundární uložiště, tedy nevolatilní úložiště, která zaručují perzistenci dat i po vypnutí záznamníku. Typickými zástupci těchto pamětí jsou například různé typy SD karet, USB Flash disky a další technologie využívající například technologie NAND a NOR flash paměti. Volatilní paměti, jako je například RAM, se v těchto aplikacích rovněž využívají, avšak výhradně pro krátkodobé uchování dat. V některých případech, například pokud jsou nevolatilní paměti organizovány do bloků (viz. \ref{davkove_zpracovani}), je výhodné nejprve dočasně ukládat data do RAM a teprve po naplnění bloku provést hromadný zápis do nevolatilní paměti, jelikož ukládání do nevolatilních uložišť přináší nové limitace, jakou je například rychlost zápisu,  omezený počet přepisovacích cyklů. Některá úložiště navíc vyžadují mazání celých bloků před opětovným zápisem. Krom lokálního paměťového média je však možné zvolit přístup se vzdáleným uložištěm v podobě databáze či cloudového systému, která však také mají své omezení.
 
 
 \section{Klíčové koncepty digitálních záznamníku} 
@@ -315,7 +328,7 @@ Tento přístup se hodí pro digitální záznamníky operující ve známých p
 
 
 \chapter{Návrh digitálního záznamníku}
-
+\label{navrh_digitalniho_zaznamniku}
 
 \section{Existující řešení digitálních záznamníku}
 Jak již bylo zmíněno v předchozích kapitolách, problematika záznamu dat provází lidstvo od nepaměti. Stejně tak samotné záznamníky dat nejsou novým tématem a v praxi již existuje celá řada produkčních řešení zaměřených na záznam různých typů dat. Tato kapitola je věnována popisu některých dostupných řešení, konkrétně záznamníkům zaměřeným na záznam datových toků zmíněných v kapitole \ref{digitalni_zaznam_dat}, mezi které se bude řadit i výsledné zařízení, které jsem navrhl, implementoval a popsal v této bakalářské práci. 
@@ -768,7 +781,7 @@ Základními technickými výhodami RTOS jsou především deterministické chov
 Přestože operační systémy reálného času přinášejí řadu výhod, nelze opomenout ani jejich určitá omezení a nevýhody. Jedním z častých argumentů proti jejich použití je větší režie (overhead), která může snížit výkon a zvýšit paměťové nároky, čímž se zvyšují nároky na hardware. RTOS vnáší do systému složitost, která může ztížit jeho pochopení a ladění. Vývojáři musí být obeznámeni s rozhraním RTOS API a rozumět tomu, jak fungují úlohy, zdroje a komunikace mezi úlohami. Získání těchto znalostí může trvat delší dobu, což prodlužuje dobu vývoje a zvyšuje náklady. Použití RTOS může také zvýšit náklady na systém. Mnoho komerčních dodavatelů RTOS si účtuje licenční poplatky, které mohou být pro malé projekty nákladné.
 
 \subsubsection{FreeRTOS}
-Jednou z možností je FreeRTOS, což je open-source operační systém reálného času, který je podobný vývoji s bare-metal přístupem. FreeRTOS podporuje mnoho různých architektur a kompilátorů a je navržen tak, aby byl „malý, jednoduchý a snadno použitelný“. Jeho jádro tvoří v základu tři oblasti - správa úloh, komunikace a propojení s hardwarem. Správa úloh se stará o vytváření úloh, jak statických, tak dynamických, tak i jejich plánování a správu životního cyklu. Dále FreeRTOS poskytuje oblast zaměřenou na komunikaci mezi jednotlivými úlohami, k tomu slouží fronty (Queue). Úlohy a přerušení používají fronty k vzájemnému odesílání dat a k signalizaci použití kritických prostředků pomocí semaforů a mutexů. Poslední oblast slouží jako mezistupeň mezi hardwarově nezávislým jádrem FreeRTOS a hardwarově závislým kódem.
+Jednou z možností je FreeRTOS, což je open-source operační systém reálného času, který je podobný vývoji s bare-metal přístupem. FreeRTOS podporuje mnoho různých architektur a kompilátorů a je navržen tak, aby byl „malý, jednoduchý a snadno použitelný“. Jeho jádro tvoří v základu tři oblasti - správa úloh, komunikace a propojení s hardwarem. Správa úloh se stará o vytváření úloh, jak statických, tak dynamických, tak i jejich plánování a správu životního cyklu. Dále FreeRTOS poskytuje oblast zaměřenou na komunikaci mezi jednotlivými úlohami, k tomu slouží fronty (Queue). Úlohy a přerušení používají fronty k vzájemnému odesílání dat a k signalizaci použití kritických prostředků pomocí semaforů a mutexů. Poslední oblast slouží jako mezistupeň mezi hardwarově nezávislým jádrem FreeRTOS a hardwarově závislým kódem. \cite{the_architecture_of_open_source_applications}
 
 Mezi hlavní výhody FreeRTOS patří jeho nízké nároky na systémové prostředky, což jej činí vhodným pro mikrokontroléry s omezenou pamětí a výpočetním výkonem. FreeRTOS poskytuje základní mechanismy pro plánování úloh, a to včetně prioritního plánovače s preempcí, který umožňuje přerušení aktuálně běžící úlohy ve prospěch jiné úlohy s vyšší prioritou. Velkou výhodou FreeRTOS je také jeho historie trvající přes 20 let, k dispozici je rozsáhlá dokumentace, příklady použití, mnoho výrobců, jako například NXP Semiconductors, poskytuje profesionální podporu. Z hlediska bezpečnosti FreeRTOS dodržuje přísný standard psaní kódu v souladu s normou MISRA-C, prochází statickou analýzou pomocí nástroje Coverity. Vybrané knihovny FreeRTOS byly navíc formálně ověřeny z hlediska paměťové bezpečnosti pomocí nástroje CBMC (C Bounded Model Checker). Bezpečnost systému byla rovněž potvrzena prostřednictvím certifikací SESIP™ Level 2 a PSA Certified Level 1, které vycházejí z rámce Common Criteria a hodnotí zabezpečení IoT platforem z hlediska architektury, implementace a odolnosti vůči útokům. \cite{freertos_security}
 
@@ -860,7 +873,8 @@ kde \(V_{\text{out}}\) je 3,3 V a \(V_{\text{do}}\) je dropout napětí daného 
 \section{Mechanická část}
 Jak jsem měřil spotřebu, jak jsem spočítal hodnoty kondenzátorů
 
-\chapter{Softwárová implementace}
+\chapter{Přístup k realizaci obslužného firmware}
+\label{softwarova_implementace}
 
 \section{Záznamové vlákno}
 
@@ -879,6 +893,7 @@ Jak jsem měřil spotřebu, jak jsem spočítal hodnoty kondenzátorů
 
 % ==================================================== 
 \chapter{Testování systému}
+\label{testovani_systemu}
 Obecne proc je potreba testovat, jake jsou moznost testovani a validace vestavenych systemu
 
 % ----------------------------------------------------
@@ -902,7 +917,7 @@ MISRA
 \label{mozne_rozsireni}
 
 \chapter{Závěr}
-\label{zaverPrace}
+\label{zaver}
 
 
 %===============================================================================
