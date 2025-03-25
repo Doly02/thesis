@@ -872,18 +872,17 @@ Z tohoto důvodu bylo třeba vybrat superkondenzátor, který bude vyhovovat par
     \label{fig:power-consumption}
 \end{figure}
 
-Jako vhodný kondenzátor byl tedy vybrán model SCMR14G334SRBB0 od společnosti KYOCERA AVX s kapacitou 0.33F, jmenovitým napětím 7.5 V při stejnosměrněrném proudu a nízkým ESR, které má konkrétního hodnotu 450 mOhm. Vzhledem k relativně nízké ceně této komponenty bylo třeba jej nejprve experimentálně ověřit v provizorním zapojení na nepájivém poli. Kondenzátor byl v tomto testu nejprve nabíjen z laboratorního zdroje nastaveného na 5V – tedy napětí odpovídající reálným provozním podmínkám v cílovém zařízení. Po jeho odpojení byla sledována vybíjecí křivka sledována pomocí osciloskopu.
+Jako vhodný kondenzátor byl tedy vybrán model SCMR14G334SRBB0 od společnosti KYOCERA AVX s kapacitou 0.33F, jmenovitým napětím 7.5 V při stejnosměrněrném proudu a nízkým ESR, které má konkrétního hodnotu 450 mOhm. Vzhledem k relativně nízké ceně této komponenty bylo třeba jej nejprve experimentálně ověřit v provizorním zapojení na nepájivém poli zobrazeného na následujícím obrázku \ref{fig:test-capacitors}. Kondenzátor byl v tomto testu nejprve nabíjen z laboratorního zdroje nastaveného na 5V – tedy napětí odpovídající reálným provozním podmínkám v cílovém zařízení. Po jeho odpojení byla sledována vybíjecí křivka sledována pomocí osciloskopu.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.65\textwidth]{obrazky-figures/test_capacitors.png}
+    \includegraphics[width=0.440\textwidth]{obrazky-figures/test_capacitors.pdf}
     
     \caption{Obvod pro testování kondenzátoru}
     \label{fig:test-capacitors}
 \end{figure}
 
-
-
+Zde je třeba si vysvětlit pár základních skutečností či vlastností desky, která bude napájená z výše popsaného kondenzátoru.
 Na diodě je úbytek napětí 0.4V. Měření intervalu od 4.6V do 3.5V, jelikož ztráta napětí na diodě je 0.4V, tedy 4.6V (tedy 5V - 0.4V = 4.6V) a výstupní napětí z LDO je 3.3V a dropout napětí je 0.2V (tedy 3.3V + 0.2V = 3.5V).
 
 \[
@@ -891,6 +890,14 @@ V_{\text{in min}} = V_{\text{out}} + V_{\text{do}}
 \]
 
 kde \(V_{\text{out}}\) je 3,3 V a \(V_{\text{do}}\) je dropout napětí daného LDO regulátoru.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.00\textwidth]{obrazky-figures/capacitor-test-osciloscope.png}
+    
+    \caption{Obvod pro testování kondenzátoru}
+    \label{fig:test-capacitors}
+\end{figure}
 
 
 \section{Mechanická část}
