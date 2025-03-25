@@ -858,15 +858,21 @@ Popis, co všechno je již na platformě FRDM MCXN947, z toho ti vyplyne, co vš
 Vybraná základová deska tedy neobsahuje všechny potřebné komponenty, které byly představeny v kapitole \ref{architektura_systemu_digitalniho_zaznamniku}. Pro zajištění kompletní funkcionality je proto nutné doplnit celý systém o expanzní desku plošných spojů, která umožní integraci všech klíčových externích komponent a rozšíří tak funkcionalitu základové desky. Tato kapitola představí realizovanou expanzní desku a její jednotlivé prvky.
 
 \section{Zálohované napájení}
-Důležitou součástí realizovaného digitálního záznamníku je zálohované napájení s detekcí ztráty napájecího napětí. Zálohované napájení lze realizovat několika způsoby, nejčastěji pomocí dobíjecí baterie (např. Li-Po nebo knoflíkového článku) nebo pomocí superkondenzátoru. Nejschůdnější variantou pro danou aplikaci se ukázal být superkondenzátor. Na rozdíl od baterií je schopen okamžitě dodat relativně vysoký vybíjecí proud (řádově stovky miliampérů), který byl naměřen při testování spotřeby pomocí zařízení Power Profiler Kit II od společnosti Nordic Semiconductors (viz. obrázek \ref{fig:power-consumption}), při kterém se ukázalo, že vstupní proud může dosáhnout hodnot až 250 mA. 
+Důležitou součástí realizovaného digitálního záznamníku je zálohované napájení s detekcí ztráty napájecího napětí. Zálohované napájení lze realizovat několika způsoby, nejčastěji pomocí dobíjecí baterie (např. Li-Po nebo knoflíkového článku) nebo pomocí superkondenzátoru. Nejschůdnější variantou pro danou aplikaci se ukázal být superkondenzátor. Na rozdíl od baterií je schopen okamžitě dodat relativně vysoký vybíjecí proud (řádově stovky miliampérů), který byl naměřen při testování spotřeby pomocí zařízení Power Profiler Kit II od společnosti Nordic Semiconductors (viz. obrázek \ref{fig:power-consumption}), při kterém se ukázalo, že vstupní proud může dosáhnout hodnot až 250 mA. Běžné knoflíkové články nebo malé Li-Po baterie by v tomto ohledu nemusely zajistit dostatečný proud, nebo by vyžadovaly složitější obvody pro řízení nabíjení a ochranu. \cite{nordic_semi_ppk2}
+
+% Zaroven musi byt jmennovite napeti vyssi z duvodu
+Z tohoto důvodu bylo třeba vybrat superkondenzátor, který bude vyhovovat parametrům pro využití v digitálním záznamníkům. Mezi takové parametry patří zejména kapacita, která určuje, jak dlouho je zařízení schopno fungovat po ztrátě napájení. Dále bylo nutné zohlednit jmenovité napětí, které musí být vyšší než maximální napájecí napětí systému, aby nedošlo k poškození součástky.\footnote{Běžně je doporučováno volit dvojnásobek či dokonce trojnásobek napětí při kterém bude kondenzátor operovat.} Dalším důležitým faktorem je ekvivalentní sériový odpor (ESR), jenž ovlivňuje schopnost superkondenzátoru dodávat vysoký proud bez výrazného poklesu napětí – čím nižší ESR, tím lépe je tedy kondenzátor schopen poskytovat vyšší proud. Vzhledem k omezenému prostoru na expanzní desce bylo zároveň nezbytné zohlednit fyzické rozměry kondenzátoru tak, aby jej bylo možné snadno integrovat a popřípadě umožnit aby bylo možné využít dva kondenzáry paralelně, pro zvýšení spolehlivosti systému v případě selhání jednoho z kondenzátorů. \cite{cadence_capacitor_size}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.00\textwidth]{obrazky-figures/power-consumption.png}
+    \includegraphics[width=0.80\textwidth]{obrazky-figures/power-consumption-2.png}
     
-    \caption{Měření spotřeba implementovaného záznamníku pomocí Power Profiler Kit II}
+    \caption{Výsledek měření spotřeba implementovaného záznamníku pomocí Power Profiler Kit II 
+    \cite{nordic_semi_ppk2}}
     \label{fig:power-consumption}
 \end{figure}
+
+Jako vhodný kondenzátor byl tedy vybrán model SCMR14G334SRBB0 od společnosti KYOCERA AVX s kapacitou 0.33F, jmenovitým napětím 7.5 V při stejnosměrněrném proudu a nízkým ESR, které má konkrétního hodnotu 450 mOhm. Vzhledem k relativně nízké ceně této komponenty bylo třeba jej nejprve experimentálně ověřit v provizorním zapojení na nepájivém poli. Kondenzátor byl v tomto testu nejprve nabíjen z laboratorního zdroje nastaveného na 5V – tedy napětí odpovídající reálným provozním podmínkám v cílovém zařízení. Po jeho odpojení byla sledována vybíjecí křivka sledována pomocí osciloskopu.
 
 \begin{figure}[h]
     \centering
@@ -875,6 +881,8 @@ Důležitou součástí realizovaného digitálního záznamníku je zálohovan�
     \caption{Obvod pro testování kondenzátoru}
     \label{fig:test-capacitors}
 \end{figure}
+
+
 
 Na diodě je úbytek napětí 0.4V. Měření intervalu od 4.6V do 3.5V, jelikož ztráta napětí na diodě je 0.4V, tedy 4.6V (tedy 5V - 0.4V = 4.6V) a výstupní napětí z LDO je 3.3V a dropout napětí je 0.2V (tedy 3.3V + 0.2V = 3.5V).
 
