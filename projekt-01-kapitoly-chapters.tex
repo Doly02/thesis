@@ -900,6 +900,15 @@ Na následujícím obrázku \ref{fig:test-capacitors}, zachycujícím průběh n
     \label{fig:test-capacitors}
 \end{figure}
 
+Na následujícím obrázku \ref{fig:backup-power} je znázorněno výsledné schéma obvodu určeného k realizaci zálohovaného napájení včetně detekce ztráty hlavního napájecího napětí. Tento obvod zahrnuje mimo jiné Schottkyho diodu, která zabraňuje zpětnému toku proudu z kondenzátoru, a odpor použitý pro řízené nabíjení superkondenzátoru. Hodnota tohoto odporu byla zvolena tak, aby byl proud při nabíjení omezen na bezpečnou úroveň, a zároveň aby nabíjení probíhalo v přiměřeném čase.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.00\textwidth]{obrazky-figures/backup-power.png}
+    
+    \caption{Obvod pro detekci ztráty napájení a zálohované napájení}
+    \label{fig:backup-power}
+\end{figure}
 
 \section{Mechanická část}
 Jak jsem měřil spotřebu, jak jsem spočítal hodnoty kondenzátorů
