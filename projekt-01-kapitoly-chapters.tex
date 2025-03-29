@@ -858,7 +858,7 @@ Popis, co všechno je již na platformě FRDM MCXN947, z toho ti vyplyne, co vš
 Vybraná základová deska tedy neobsahuje všechny potřebné komponenty, které byly představeny v kapitole \ref{architektura_systemu_digitalniho_zaznamniku}. Pro zajištění kompletní funkcionality je proto nutné doplnit celý systém o expanzní desku plošných spojů, která umožní integraci všech klíčových externích komponent a rozšíří tak funkcionalitu základové desky. Tato kapitola představí realizovanou expanzní desku a její jednotlivé prvky.
 
 \section{Zálohované napájení}
-Důležitou součástí realizovaného digitálního záznamníku je zálohované napájení s detekcí ztráty napájecího napětí. Zálohované napájení lze realizovat několika způsoby, nejčastěji pomocí dobíjecí baterie (např. Li-Po nebo knoflíkového článku) nebo pomocí superkondenzátoru. Nejschůdnější variantou pro danou aplikaci se ukázal být superkondenzátor. Na rozdíl od baterií je schopen okamžitě dodat relativně vysoký vybíjecí proud (řádově stovky miliampérů), který byl naměřen při testování spotřeby pomocí zařízení Power Profiler Kit II od společnosti Nordic Semiconductors (viz. obrázek \ref{fig:power-consumption}), při kterém se ukázalo, že vstupní proud může dosáhnout hodnot až 250 mA. Běžné knoflíkové články nebo malé Li-Po baterie by v tomto ohledu nemusely zajistit dostatečný proud, nebo by vyžadovaly složitější obvody pro řízení nabíjení a ochranu. \cite{nordic_semi_ppk2}
+Důležitou součástí realizovaného digitálního záznamníku je zálohované napájení s detekcí ztráty napájecího napětí. Zálohované napájení lze realizovat několika způsoby, nejčastěji pomocí dobíjecí baterie (např. Li-Po nebo knoflíkového článku) nebo pomocí superkondenzátoru. Nejschůdnější variantou pro danou aplikaci se ukázal být superkondenzátor. Na rozdíl od baterií je schopen okamžitě dodat relativně vysoký vybíjecí proud (řádově stovky miliampérů), který byl naměřen při testování spotřeby pomocí zařízení Power Profiler Kit II od společnosti Nordic Semiconductors (viz. obrázek \ref{fig:power-consumption}), při kterém se ukázalo, že vstupní proud může dosáhnout hodnot až \SI{250}{\milli\ampere}. Běžné knoflíkové články nebo malé Li-Po baterie by v tomto ohledu nemusely zajistit dostatečný proud, nebo by vyžadovaly složitější obvody pro řízení nabíjení a ochranu. \cite{nordic_semi_ppk2}
 
 % Zaroven musi byt jmennovite napeti vyssi z duvodu
 Z tohoto důvodu bylo třeba vybrat superkondenzátor, který bude vyhovovat parametrům pro využití v digitálním záznamníku. Mezi takové parametry patří zejména kapacita, která určuje, jak dlouho je zařízení schopno fungovat po ztrátě napájení. Dále bylo nutné zohlednit jmenovité napětí, které musí být vyšší než maximální napájecí napětí systému, aby nedošlo k poškození součástky.\footnote{Běžně je doporučováno volit dvojnásobek či dokonce trojnásobek napětí při kterém bude kondenzátor operovat.} Dalším důležitým faktorem je ekvivalentní sériový odpor (ESR), jenž ovlivňuje schopnost superkondenzátoru dodávat vysoký proud bez výrazného poklesu napětí – čím nižší ESR, tím lépe je tedy kondenzátor schopen poskytovat vyšší proud. Vzhledem k omezenému prostoru na expanzní desce bylo zároveň nezbytné zohlednit fyzické rozměry kondenzátoru tak, aby jej bylo možné snadno integrovat a popřípadě umožnit, aby bylo možné využít dva kondenzátory paralelně, pro zvýšení spolehlivosti systému v případě selhání jednoho z kondenzátorů. \cite{cadence_capacitor_size}
@@ -872,7 +872,7 @@ Z tohoto důvodu bylo třeba vybrat superkondenzátor, který bude vyhovovat par
     \label{fig:power-consumption}
 \end{figure}
 
-Jako vhodný kondenzátor byl tedy vybrán model SCMR14G334SRBB0 od společnosti KYOCERA AVX s kapacitou 0.33 F, jmenovitým napětím 7.5 V při stejnosměrném proudu a nízkým ESR, které má konkrétní hodnotu 450 mOhm. Vzhledem k relativně nízké ceně této komponenty bylo třeba jej nejprve experimentálně ověřit v provizorním zapojení na nepájivém poli zobrazeném na následujícím obrázku \ref{fig:test-capacitors}. Kondenzátor byl v tomto testu nejprve nabíjen z laboratorního zdroje nastaveného na 5V – tedy napětí odpovídající reálným provozním podmínkám v cílovém zařízení. Po jeho odpojení byla sledována vybíjecí křivka sledována pomocí osciloskopu.
+Jako vhodný kondenzátor byl tedy vybrán model SCMR14G334SRBB0 od společnosti KYOCERA AVX s kapacitou \SI{0.33}{\farad}, jmenovitým napětím \SI{7.5}{\volt} při stejnosměrném proudu a nízkým ESR, které má konkrétní hodnotu \SI{450}{\milli\ohm}. Vzhledem k relativně nízké ceně této komponenty bylo třeba jej nejprve experimentálně ověřit v provizorním zapojení na nepájivém poli zobrazeném na následujícím obrázku \ref{fig:test-capacitors}. Kondenzátor byl v tomto testu nejprve nabíjen z laboratorního zdroje nastaveného na \SI{5}{\volt} – tedy napětí odpovídající reálným provozním podmínkám v cílovém zařízení. Po jeho odpojení byla sledována vybíjecí křivka sledována pomocí osciloskopu.
 
 \begin{figure}[h]
     \centering
@@ -882,15 +882,15 @@ Jako vhodný kondenzátor byl tedy vybrán model SCMR14G334SRBB0 od společnosti
     \label{fig:test-capacitors}
 \end{figure}
 
-Zapojení využívá Schottkyho diodu, na které vzniká úbytek napětí – konkrétně u použité součástky činí tento úbytek přibližně 0.4V. Aby bylo možné přesně vyhodnotit, jak dlouho dokáže záznamník fungovat při napájení ze superkondenzátoru, je třeba nejprve vysvětlit několik základních skutečností souvisejících s vývojovou deskou FRDM-MCXN947, která bude napájená z výše popsaného kondenzátoru. Vstupní napětí 5V jde přes LDO (Low-Dropout Regulator), které upravuje napětí na 3V3 zásobující čip. LDO však ke své funkci vyžaduje minimální rozdíl mezi vstupním a výstupním napětím, tzv. Dropout Voltage, při kterém je tento integrovaný obvod ještě schopen pracovat. Minimální vstupní napětí potřebné pro stabilní výstup 3.3V je dáno vztahem:
+Zapojení využívá Schottkyho diodu, na které vzniká úbytek napětí – konkrétně u použité součástky činí tento úbytek přibližně \SI{0.4}{\volt}. Aby bylo možné přesně vyhodnotit, jak dlouho dokáže záznamník fungovat při napájení ze superkondenzátoru, je třeba nejprve vysvětlit několik základních skutečností souvisejících s vývojovou deskou FRDM-MCXN947, která bude napájená z výše popsaného kondenzátoru. Vstupní napětí \SI{5}{\volt} jde přes LDO (Low-Dropout Regulator), které upravuje napětí na 3V3 zásobující čip. LDO však ke své funkci vyžaduje minimální rozdíl mezi vstupním a výstupním napětím, tzv. Dropout Voltage, při kterém je tento integrovaný obvod ještě schopen pracovat. Minimální vstupní napětí potřebné pro stabilní výstup 3.3V je dáno vztahem:
 
 \[
 V_{\text{LDO Min}} = V_{\text{LDO Out}} + V_{\text{Dropout}}
 \]
 
-V případě použitého stabilizátoru, který je využit na vývojové desce FRDM-MCXN947, je hodnota Dropout Voltage rovna 0.2V a minimální napětí, kterým tedy tato deska musí být napájena, činí 3.5V. Je tedy nutné sledovat napětí vybíjejícího se kondenzátoru v intervalu od 4.6V do 3.5V, které definuje časový interval, ve kterém je provoz vývojové desky stabilní.
+V případě použitého stabilizátoru, který je využit na vývojové desce FRDM-MCXN947, je hodnota Dropout Voltage rovna \SI{0.2}{\volt} a minimální napětí, kterým tedy tato deska musí být napájena, činí \SI{3.5}{\volt}. Je tedy nutné sledovat napětí vybíjejícího se kondenzátoru v intervalu od \SI{4.6}{\volt} do \SI{3.5}{\volt}, které definuje časový interval, ve kterém je provoz vývojové desky stabilní.
 
-Na následujícím obrázku \ref{fig:test-capacitors}, zachycujícím průběh napětí z výše zmíněného testu, zaznamenaného pomocí osciloskopu, ze kterého je patrné chování napájecího napětí v čase. Z naměřených dat vyplývá, že napětí na kondenzátoru zůstává v požadovaném funkčním rozsahu od 4.6V do 3.5V po dobu přibližně 1.3 sekundy. Pokud tedy dojde ke včasné detekci ztráty napájejícího napětí, může dojít k bezpečnému ukončení programu a korektnímu uložení všech potřebných dat, která jsou dočasně uložena ve volatilní paměti RAM, což potvrzuje vhodnost zvoleného superkondenzátoru pro danou aplikaci zálohovaného napájení.
+Na následujícím obrázku \ref{fig:test-capacitors}, zachycujícím průběh napětí z výše zmíněného testu, zaznamenaného pomocí osciloskopu, ze kterého je patrné chování napájecího napětí v čase. Z naměřených dat vyplývá, že napětí na kondenzátoru zůstává v požadovaném funkčním rozsahu od \SI{4.6}{\volt} do \SI{3.5}{\volt} po dobu přibližně 1.3 sekundy. Pokud tedy dojde ke včasné detekci ztráty napájejícího napětí, může dojít k bezpečnému ukončení programu a korektnímu uložení všech potřebných dat, která jsou dočasně uložena ve volatilní paměti RAM, což potvrzuje vhodnost zvoleného superkondenzátoru pro danou aplikaci zálohovaného napájení.
 
 \begin{figure}[h]
     \centering
@@ -917,7 +917,7 @@ Součástí navrženého obvodu zálohovaného napájení je rovněž detekce zt
 \end{figure}
 
 \section{Mechanická část}
-Jak jsem měřil spotřebu, jak jsem spočítal hodnoty kondenzátorů
+Jak jsem měřil spotřebu, jak jsem spočítal hodnoty kondenzátorů 
 
 \chapter{Přístup k realizaci obslužného firmware}
 \label{softwarova_implementace}
