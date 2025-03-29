@@ -900,7 +900,13 @@ Na následujícím obrázku \ref{fig:test-capacitors}, zachycujícím průběh n
     \label{fig:test-capacitors}
 \end{figure}
 
-Na následujícím obrázku \ref{fig:backup-power} je znázorněno výsledné schéma obvodu určeného k realizaci zálohovaného napájení včetně detekce ztráty hlavního napájecího napětí. Tento obvod zahrnuje mimo jiné Schottkyho diodu, která zabraňuje zpětnému toku proudu z kondenzátoru, a odpor použitý pro řízené nabíjení superkondenzátoru. Hodnota tohoto odporu byla zvolena tak, aby byl proud při nabíjení omezen na bezpečnou úroveň, a zároveň aby nabíjení probíhalo v přiměřeném čase.
+Na následujícím obrázku \ref{fig:backup-power} je znázorněno výsledné schéma obvodu určeného k realizaci zálohovaného napájení včetně detekce ztráty hlavního napájecího napětí. Obvod zahrnuje zmíněnou Schottkyho diodu, která zabraňuje zpětnému toku proudu z kondenzátoru, a nabíjecí odpor s hodnotou 10 ohm, která byla zvolena tak, aby byl proud při nabíjení omezen na bezpečnou úroveň, a zároveň aby nabíjení probíhalo v přiměřeném čase. Pro výpočet doby nabíjení je klíčovým parametrem časová konstanta~$\tau$, která je definována jako součin odporu~$R$ a kapacity~$C$:
+
+\[
+\tau = R \cdot C
+\]
+
+V tomto případě je kapacita kondenzátoru~$C = \SI{0.33}{\farad}$ a odpor~$R = \SI{10}{\ohm}$, což dává časovou konstantu~$\tau = \SI{3.3}{\second}$. Platí, že po uplynutí pěti časových konstant ($5\tau$) se kondenzátor nabije přibližně na 99~\% cílového napětí. To v našem případě znamená, že plné nabití kondenzátoru proběhne zhruba za:
 
 \begin{figure}[h]
     \centering
