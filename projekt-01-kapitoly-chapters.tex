@@ -882,15 +882,17 @@ Jako vhodný kondenzátor byl tedy vybrán model SCMR14G334SRBB0 od společnosti
     \label{fig:test-capacitors}
 \end{figure}
 
-Zapojení obsahuje dioda, konktétně schottky dioda, na které vzniká úbytek napětí - na té konkrétně použíté 0.4V. 
-Zde je třeba si vysvětlit pár základních skutečností obvodu, zde je přítomna  Dále je třeba či vlastností desky FRDM-MCXN947, která bude napájená z výše popsaného kondenzátoru. Vstupní napětí 5V jde přes LDO, které upravuje napětí na 3V3 zásobující čip
-Na diodě je úbytek napětí 0.4V. Měření intervalu od 4.6V do 3.5V, jelikož ztráta napětí na diodě je 0.4V, tedy 4.6V (tedy 5V - 0.4V = 4.6V) a výstupní napětí z LDO je 3.3V a dropout napětí je 0.2V (tedy 3.3V + 0.2V = 3.5V).
+Zapojení využívá Schottkyho diodu, na které vzniká úbytek napětí – konkrétně u použité součástky činí tento úbytek přibližně 0.4V. Aby bylo možné přesně vyhodnotit, jak dlouho dokáže záznamník fungovat při napájení ze superkondenzátoru, je třeba nejprve vysvětlit několik základních skutečností souvisejících s vývojovou deskou FRDM-MCXN947, která bude napájená z výše popsaného kondenzátoru. Vstupní napětí 5V jde přes LDO (Low-Dropout Regulator), které upravuje napětí na 3V3 zásobující čip. LDO však ke své funkci vyžaduje minimální rozdíl mezi vstupním a výstupním napětím, tzv. Dropout Voltage, při kterém je tento integrovaný obvod ještě schopen pracovat. Minimální vstupní napětí potřebné pro stabilní výstup 3.3 V je dáno vztahem:
 
 \[
-V_{\text{in min}} = V_{\text{out}} + V_{\text{do}}
+V_{\text{LDO Min}} = V_{\text{LDO Out}} + V_{\text{Dropout}}
 \]
 
-kde \(V_{\text{out}}\) je 3,3 V a \(V_{\text{do}}\) je dropout napětí daného LDO regulátoru.
+V případě použitého stabilizátoru, který je využit na vývojové desce FRDM MCXN947 je hodnota Dropout Voltage rovna 0.2V a minimální napětí, kterým tedy tato desku musí být napájena, činí 3.5V. Je tedy nutné sledovat napětí vybíjejícího se kondenzátoru v intervalu od 4.6V do 3.5V, který definuje časový interval ve kterém je provoz vývojové desky stabilní.
+
+Na následujícím obrázku \ref{fig:test-capacitors}, pořízeného z osciloskopu, je možné vidět výsledek výše zmíněného testu, ze kterého vyplývá že doba mezi intervaly počínaje hodnotou 4.6V po 3.5V odpovídá vhodnoti parametrů, čímž bylo ověřeno, že kondenzátor je vhodný pro využití v zálohovaném napájením.
+
+Na následujícím obrázku \ref{fig:test-capacitors}, zachycujícím průběh napětí zaznamenaný pomocí osciloskopu, je patrné chování napájecího napětí v čase. Z naměřených dat vyplývá, že napětí na kondenzátoru zůstává v požadovaném funkčním rozsahu od 4.6V do 3.5V po dobu přibližně 1.3 sekundy. Pokud tedy dojde ke včasné detekci ztráty napájejícího napětí, došlo k bezpečnému ukončení programu a korektnímu uložení všech potřebných dat, což potvrzuje vhodnost zvoleného superkondenzátoru pro danou aplikaci zálohovaného napájení.
 
 \begin{figure}[h]
     \centering
