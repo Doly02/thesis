@@ -906,13 +906,7 @@ Na následujícím obrázku \ref{fig:backup-power} je znázorněno výsledné sc
 \tau = R \cdot C
 \]
 
-V tomto případě je kapacita kondenzátoru~$C = \SI{0.33}{\farad}$ a odpor~$R = \SI{10}{\ohm}$, což dává časovou konstantu~$\tau = \SI{3.3}{\second}$. Platí, že po uplynutí pěti časových konstant ($5\tau$) se kondenzátor nabije přibližně na 99~\% napětí kondenzátoru. To v případě zálohovaného napájení znamená, že plné nabití kondenzátoru proběhne zhruba za  $t = 16.5$ sekundy.
-
-Při návrhu zálohovaného napájení je třeba zohlednit maximální nabíjecí proud nejen s ohledem na vlastnosti samotného kondenzátoru, ale i s ohledem na způsob, jakým bude záznamník standardně napájen, jelikož nabíjení zmíněného kondenzátoru bude mít velký vliv na maximální odběr proudu. Například zmíněný Power Profiler 2 zvládne poskytnout až \SI{1}{\ampere}, USB-C naopak dle standardu zvládne minimálně \SI{3}{\ampere}. Maximální nabíjecí proud do kondenzátoru je při počátečním napětí kondenzátoru blízkém nule dán Ohmovým zákonem jako:
-
-\begin{equation}
-    I = \frac{V}{R} \label{eq:ohms_law_current}
-\end{equation}
+Součástí navrženého obvodu zálohovaného napájení je rovněž detekce ztráty napájecího napětí, jelikož je monitorována \SI{5}{\volt} větev, která překračuje maximální přípustné napětí pro přímé připojení na vstupy mikrokontroléru pracujícího s logikou \SI{3.3}{\volt}, je zapotřebí využít napěťový dělič, který upravuje napěťový signál, aby mohl být zpracován periferiemi pracujícími s digitálními signály, jako jsou GPIO, nebo analogovými periferiemi, jako je komparátor (CMP) či analogově-digitální převodník (ADC).
 
 \begin{figure}[h]
     \centering
