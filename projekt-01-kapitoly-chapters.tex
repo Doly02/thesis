@@ -890,9 +890,7 @@ V_{\text{LDO Min}} = V_{\text{LDO Out}} + V_{\text{Dropout}}
 
 V případě použitého stabilizátoru, který je využit na vývojové desce FRDM-MCXN947, je hodnota Dropout Voltage rovna 0.2V a minimální napětí, kterým tedy tato deska musí být napájena, činí 3.5V. Je tedy nutné sledovat napětí vybíjejícího se kondenzátoru v intervalu od 4.6V do 3.5V, které definuje časový interval, ve kterém je provoz vývojové desky stabilní.
 
-Na následujícím obrázku \ref{fig:test-capacitors}, pořízeném z osciloskopu, je možné vidět výsledek výše zmíněného testu, ze kterého vyplývá, že doba mezi intervaly počínaje hodnotou 4.6V po 3.5V odpovídá vhodnosti parametrů, čímž bylo ověřeno, že kondenzátor je vhodný pro využití v zálohovaném napájení.
-
-Na následujícím obrázku \ref{fig:test-capacitors}, zachycujícím průběh napětí zaznamenaný pomocí osciloskopu, je patrné chování napájecího napětí v čase. Z naměřených dat vyplývá, že napětí na kondenzátoru zůstává v požadovaném funkčním rozsahu od 4.6V do 3.5V po dobu přibližně 1.3 sekundy. Pokud tedy dojde ke včasné detekci ztráty napájejícího napětí, může dojít k bezpečnému ukončení programu a korektnímu uložení všech potřebných dat, která jsou dočasně uložena ve volatilní paměti RAM, což potvrzuje vhodnost zvoleného superkondenzátoru pro danou aplikaci zálohovaného napájení.
+Na následujícím obrázku \ref{fig:test-capacitors}, zachycujícím průběh napětí z výše zmíněného testu, zaznamenaného pomocí osciloskopu, ze kterého je patrné chování napájecího napětí v čase. Z naměřených dat vyplývá, že napětí na kondenzátoru zůstává v požadovaném funkčním rozsahu od 4.6V do 3.5V po dobu přibližně 1.3 sekundy. Pokud tedy dojde ke včasné detekci ztráty napájejícího napětí, může dojít k bezpečnému ukončení programu a korektnímu uložení všech potřebných dat, která jsou dočasně uložena ve volatilní paměti RAM, což potvrzuje vhodnost zvoleného superkondenzátoru pro danou aplikaci zálohovaného napájení.
 
 \begin{figure}[h]
     \centering
