@@ -954,10 +954,18 @@ Jak jsem měřil spotřebu, jak jsem spočítal hodnoty kondenzátorů
 
 \chapter{Přístup k realizaci obslužného firmware}
 \label{softwarova_implementace}
+Obslužný firmware digitálního záznamníku je postaven na operačním systému reálného času FreeRTOS, který zajišťuje deterministické plánování jednotlivých úloh, které budou následně popsány v této kapitole.
+
+% staticka alokace
+Na začátek je nutné uvést, že pro zvýšení spolehlivosti a predikovatelnosti systému jsem rozhodl, že veškeré úlohy budou vytvářeny staticky, tedy každá úloha má předem definovanou velikost zásobníku a je vytvořena již při startu systému bez použití dynamické alokace paměti během běhu programu. K tomuto bylo třeba využít mechanismus statické alokace úloh, front a dalších synchronizačních objektů, které FreeRTOS podporuje.
+
+% obecna moznost konfigurace firmwaru
+
+
+\section{USB Mass Storage vlákno}
 
 \section{Záznamové vlákno}
 
-\section{USB Mass Storage vlákno}
 
 \begin{figure}[h]
     \centering
