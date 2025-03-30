@@ -404,6 +404,7 @@ Hlavním společným problémem všech třech představených řešení je probl
 Rozhodl jsem se tedy navrhnout a implementovat vlastní řešení digitálního záznamníku, které bude možné využít pro záznam digitálních dat z bezdrátových nabíječek a nebude mít výše zmíněné nedostatky.
 
 \section{Výběr vhodné platformy}
+\label{vyber_vhodne_platformy}
 Shrnutím poznatků z předchozí kapitoly \ref{zaznam_dat} vyplývá, že pro realizaci digitálního záznamníku se jako nejvhodnější jeví mikrořadič, jelikož požadavkem na koncový systém ze strany NXP Semiconductors je přenosnost, jednoduchost použití a nízká cena. K dispozici je široká škála platforem, které lze pro tento účel využít, přičemž každá z nich nabízí různé výhody a omezení.
 
 
@@ -853,7 +854,10 @@ Důležitou součástí návrhu systému je rovněž detekce ztráty napájecíh
 \label{realizace_hardwaru}
 Popis, co všechno je již na platformě FRDM MCXN947, z toho ti vyplyne, co všechno bude ještě muset nabízet expanzní deska.
 
-\section{Základová deska}
+\section{Základová deska} 
+V kapitole~\ref{vyber_vhodne_platformy} byl popsán proces výběru vhodné platformy pro běh firmwaru digitálního záznamníku. Jako nejvhodnější řešení se ukázalo využití vývojové desky FRDM-MCXN947 od společnosti NXP Semiconductors. Čip MCXN947 poskytuje mnoho různých periferií, které mohou být využity k realizaci digitálního záznamníku.
+
+Samotný čip poskytuje, časovače v podobě CTIMER a CSTIMER, které mohou být využity pro měření časových intervalů nebo generování periodických událostí. Dále je k dispozici flexibilní komunikační blok LP\_FLEXCOMM, který umožňuje konfiguraci až osmi nezávislých instancí komunikačních rozhraní (například I\textsuperscript{2}C, UART nebo SPI) podle aktuálních požadavků aplikace.
 
 \section{Expanzní deska}
 Vybraná základová deska tedy neobsahuje všechny potřebné komponenty, které byly představeny v kapitole \ref{architektura_systemu_digitalniho_zaznamniku}. Pro zajištění kompletní funkcionality je proto nutné doplnit celý systém o expanzní desku plošných spojů, která umožní integraci všech klíčových externích komponent a rozšíří tak funkcionalitu základové desky. Tato kapitola představí realizovanou expanzní desku a její jednotlivé prvky.
