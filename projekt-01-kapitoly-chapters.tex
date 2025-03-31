@@ -957,18 +957,23 @@ Jak jsem měřil spotřebu, jak jsem spočítal hodnoty kondenzátorů
 Obslužný firmware digitálního záznamníku je postaven na operačním systému reálného času FreeRTOS, který zajišťuje deterministické plánování jednotlivých úloh, které budou následně popsány v této kapitole.
 
 % staticka alokace
-Na začátek je nutné uvést, že pro zvýšení spolehlivosti a predikovatelnosti systému jsem rozhodl, že veškeré úlohy budou vytvářeny staticky, tedy každá úloha má předem definovanou velikost zásobníku a je vytvořena již při startu systému bez použití dynamické alokace paměti během běhu programu. K tomuto bylo třeba využít mechanismus statické alokace úloh, front a dalších synchronizačních objektů, které FreeRTOS podporuje.
+Na začátek je nutné uvést, že pro zvýšení spolehlivosti a predikovatelnosti systému jsem rozhodl, že veškeré úlohy budou vytvářeny staticky, tedy každá úloha má předem definovanou velikost zásobníku a je vytvořena již při startu systému bez    použití dynamické alokace paměti během běhu programu. K tomuto bylo třeba využít mechanismus statické alokace úloh, front a dalších synchronizačních objektů, které FreeRTOS podporuje.
 
 % obecna moznost konfigurace firmwaru
 Firmware digitálního záznamníku je navržen modulárně a je tedy rozdělen do několika funkčních celků (například logika záznamu, vyčtení zaznamenaných dat pomocí Mass Storage, detekce ztráty napájení, signalizace stavu systému a další), které je možné podle potřeby samostatně aktivovat či deaktivovat. Tohoto chování je dosaženo pomocí podmíněného překladu v jazyce C, kdy jsou jednotlivé části kódu překládány pouze v případě, že jsou odpovídajícím způsobem povoleny. K centrální správě těchto voleb slouží aplikační konfigurační soubor 
 \textit{defs.h}.
 
-% konfigurace za behu
-Dále je možné ovlivnit chování firmwaru také za běhu zařízení prostřednictvím konfiguračního souboru \textit{config.txt}, který je očekáván v kořenovém adresáři souborového systému přímo na SDHC kartě digitálního záznamníku. Tato konfigurace slouží primárně ke specifikaci parametrů záznamu a je načítána při inicializaci systému. Jak již bylo zmíněno, zařízení je určeno pro záznam sériových dat přenášených prostřednictvím rozhraní UART, přičemž právě toto rozhraní je možné skrze konfiguraci upravit primárně rychlost přenosu. Kromě toho je možné upravit maximální velikost záznamu (záznamového souboru), tato velikost musí být násobkem 512 bajtů, neboť data jsou ukládána po blocích, nicméně je možné zvolit i jinou hodnotu, přičemž firmware ji automaticky zaokrouhlí směrem nahoru na nejbližší přípustný násobek. Pro zpracování konfiguračního souboru slouží vlastní parser, který lze snadno rozšířit o podporu dalších parametrů.
+Po inicializaci firmwaru jsou vytvořeny dvě hlavní úlohy, kterými jsou \textit{record\_task} sloužící pro záznam dat  a \textit{mass\_storage\_task} pro vyčtění zaznamenaných dat pomocí Mass Storage. Tyto úlohy jsou vzájemně přepínány na základě binárního semaforu. Po startu systému je jako výchozí úloha aktivována záznamová úloha, která získá semafor a přebírá tak výpočetní čas. V případě připojení zařízení k počítači prostřednictvím USB dojde k vyvolání přerušení (konkrétně USB1\_HS\_IRQn), které je zpracováno příslušnou obsluhou přerušení. V rámci této rutiny je pomocí stavových registrů USB OTG řadiče ověřeno, že skutečně došlo k připojení. Jeli připojení potvrzeno semafor je přepnut ve prospěch mass\_storage\_task úlohy, která následně zpřístupní obsah paměťové karty jako externí úložiště ve formátu USB Mass Storage. Během této doby je záznamová úloha upozaděna a čeká na opětovné získání semaforu, ke kterému dojde v případě vyvolání opět od USB1\_HS a je-li ztráta potvrzena opět pomocí USB OTG řadiče. 
 
-\section{USB Mass Storage vlákno}
+\newpage
 
 \section{Záznamové vlákno}
+Tento režim zajišťuje, že zařízení primárně plní svou hlavní funkci – kontinuální záznam dat z UART rozhraní a je zvolen jako dominantní úloha po inicializaci digitálního záznamníku.
+
+% konfigurace za behu
+Dále je možné ovlivnit chování firmwaru také během běhu zařízení prostřednictvím konfiguračního souboru \textit{config.txt}, který je očekáván v kořenovém adresáři souborového systému přímo na SDHC kartě digitálního záznamníku. Tato konfigurace slouží primárně ke specifikaci parametrů záznamu a je načítána při inicializaci systému. Jak již bylo zmíněno, zařízení je určeno pro záznam sériových dat přenášených prostřednictvím rozhraní UART, přičemž právě toto rozhraní je možné skrze konfiguraci upravit primárně rychlost přenosu. Kromě toho je možné upravit maximální velikost záznamu (záznamového souboru), tato velikost musí být násobkem 512 bajtů, neboť data jsou ukládána po blocích, nicméně je možné zvolit i jinou hodnotu, přičemž firmware ji automaticky zaokrouhlí směrem nahoru na nejbližší přípustný násobek. Pro zpracování konfiguračního souboru slouží vlastní parser, který lze snadno rozšířit o podporu dalších parametrů.
+
+\section{USB Mass Storage vlákno}
 
 
 \begin{figure}[h]
@@ -979,6 +984,7 @@ Dále je možné ovlivnit chování firmwaru také za běhu zařízení prostře
     \label{fig:usb-device-app-structure}
 \end{figure}
 
+\section{Detekce ztráty napájejícího napětí}
 
 \section{Signalizace stavu systému}
 
