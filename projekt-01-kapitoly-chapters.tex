@@ -960,7 +960,11 @@ Obslužný firmware digitálního záznamníku je postaven na operačním systé
 Na začátek je nutné uvést, že pro zvýšení spolehlivosti a predikovatelnosti systému jsem rozhodl, že veškeré úlohy budou vytvářeny staticky, tedy každá úloha má předem definovanou velikost zásobníku a je vytvořena již při startu systému bez použití dynamické alokace paměti během běhu programu. K tomuto bylo třeba využít mechanismus statické alokace úloh, front a dalších synchronizačních objektů, které FreeRTOS podporuje.
 
 % obecna moznost konfigurace firmwaru
-Firmware digitálního záznamníku je navržen modulárně a je tedy rozdělen do několika funkčních celků (například logika záznamu, vyčtení zaznamenaných dat pomocí Mass Storage, detekce ztráty napájení či signalizace stavu systému).
+Firmware digitálního záznamníku je navržen modulárně a je tedy rozdělen do několika funkčních celků (například logika záznamu, vyčtení zaznamenaných dat pomocí Mass Storage, detekce ztráty napájení, signalizace stavu systému a další), které je možné podle potřeby samostatně aktivovat či deaktivovat. Tohoto chování je dosaženo pomocí podmíněného překladu v jazyce C, kdy jsou jednotlivé části kódu překládány pouze v případě, že jsou odpovídajícím způsobem povoleny. K centrální správě těchto voleb slouží aplikační konfigurační soubor 
+\textit{defs.h}.
+
+% konfigurace za behu
+Dále je možné ovlivnit chování firmwaru také za běhu zařízení prostřednictvím konfiguračního souboru \textit{config.txt}, který je očekáván v kořenovém adresáři souborového systému přímo na SDHC kartě digitálního záznamníku. Tato konfigurace slouží primárně ke specifikaci parametrů záznamu a je načítána při inicializaci systému. Jak již bylo zmíněno, zařízení je určeno pro záznam sériových dat přenášených prostřednictvím rozhraní UART, přičemž právě toto rozhraní je možné skrze konfiguraci upravit primárně rychlost přenosu. Kromě toho je možné upravit maximální velikost záznamu (záznamového souboru), tato velikost musí být násobkem 512 bajtů, neboť data jsou ukládána po blocích, nicméně je možné zvolit i jinou hodnotu, přičemž firmware ji automaticky zaokrouhlí směrem nahoru na nejbližší přípustný násobek. Pro zpracování konfiguračního souboru slouží vlastní parser, který lze snadno rozšířit o podporu dalších parametrů.
 
 \section{USB Mass Storage vlákno}
 
