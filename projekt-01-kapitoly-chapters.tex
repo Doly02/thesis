@@ -957,6 +957,7 @@ Jak jsem měřil spotřebu, jak jsem spočítal hodnoty kondenzátorů
 \label{softwarova_implementace}
 Obslužný firmware digitálního záznamníku je postaven na operačním systému reálného času FreeRTOS, který zajišťuje deterministické plánování jednotlivých úloh, které budou následně popsány v této kapitole.
 
+% Uved ze se zde prenasi cas z externiho RTC do interniho RTC
 % staticka alokace
 Na začátek je nutné uvést, že pro zvýšení spolehlivosti a predikovatelnosti systému jsem rozhodl, že veškeré úlohy budou vytvářeny staticky, tedy každá úloha má předem definovanou velikost zásobníku a je vytvořena již při startu systému bez    použití dynamické alokace paměti během běhu programu. K tomuto bylo třeba využít mechanismus statické alokace úloh, front a dalších synchronizačních objektů, které FreeRTOS podporuje.
 
@@ -971,15 +972,20 @@ Po inicializaci firmwaru jsou vytvořeny dvě hlavní úlohy, kterými jsou \tex
 \section{Záznamové vlákno}
 % uvod + konfigurace zaznamu za behu
 % upravit mluvi se dvakrat o UARTu!
+% uvest ze data jsou jednotlive znaky 
 Tento režim zajišťuje, že zařízení primárně plní svou hlavní funkci – kontinuální záznam dat z UART rozhraní a je zvolen jako dominantní úloha po inicializaci digitálního záznamníku. Chování záznamové úlohy je ovlivněno během inicializační fáze záznamové úlohy prostřednictvím konfiguračního souboru \textit{config.txt}, který je očekáván v kořenovém adresáři souborového systému přímo na SDHC kartě digitálního záznamníku. Tato konfigurace slouží primárně ke specifikaci parametrů záznamu. Jak již bylo zmíněno, zařízení je určeno pro záznam sériových dat přenášených prostřednictvím rozhraní UART, přičemž právě toto rozhraní je možné skrze konfiguraci upravit, primárně tedy rychlost přenosu neboli baudrate. Kromě toho je možné upravit maximální velikost záznamu (záznamového souboru), konkrétně u této velikosti se počítá s násobkem 512 bajtů, neboť data jsou ukládána po blocích, nicméně je možné zvolit i jinou hodnotu, přičemž firmware ji automaticky zaokrouhlí směrem nahoru na nejbližší přípustný násobek. Pro zpracování konfiguračního souboru slouží vlastní parser, který lze snadno rozšířit o podporu dalších parametrů.
 
 Po inicializaci, ve které je získáno nastavení záznamu, jsou tyto parametry nastaveny a inicializují se periferie potřebné k záznamu. Poté následuje hlavní smyčka úlohy, která zprostředkovává záznam dat, ukládání dat do SDHC karty a případně signalizuje stav záznamu uživateli.
 
 % V obsluze preruseni je take evidovan pocet tiku pri kterych byly data (bajt) zaznamenan
-Samotný záznam dat je založen na konceptech představených v kapitole \ref{klicove_koncepty_digitalnich_zaznamniku}. V prvé řadě se jako vstupní periférie, která slouží k získání dat, využívá periférie LP\_FLEXCOMM (Low-Power Flexible Communications Interface) s přerušením. Zaznamenaná data jsou v obslužné rutině přerušení vkládána do cirkulární vyrovnávací paměti, respektive softwarové FIFO fronty (viz. kapitola \ref{cirkularni_buffer}), se kterou je aktualizována hodnota zápisového ukazatele a také hodnota proměnné, která v sobě uchovává počet tiků, ve kterém data byla zaznamenána na základě systémového časového údaje vyjádřeného v tikách operačního systému.
+Samotný záznam dat je založen na konceptech představených v kapitole \ref{klicove_koncepty_digitalnich_zaznamniku}. V prvé řadě se jako vstupní periférie, která slouží k získání dat, využívá periférie LP\_FLEXCOMM (Low-Power Flexible Communications Interface) s přerušením. Zaznamenaná data čili jednotlivé znaky, jsou v obslužné rutině přerušení vkládána do cirkulární vyrovnávací paměti, respektive softwarové FIFO fronty (viz. kapitola \ref{cirkularni_buffer}), se kterou je aktualizována hodnota zápisového ukazatele a také hodnota proměnné, která v sobě uchovává počet tiků, ve kterém data byla zaznamenána na základě systémového časového údaje vyjádřeného v tikách operačního systému.
 
-Data jsou následně v běhu záznamové úlohy vkládána do jedné ze dvou vyrovnávacích pamětí, u kterých se využívá koncept vícenásobné vyrovnávací paměti (viz. \ref{vicenasobna_vyrovnavaci_pamet}).
+% je pojisteno ze kontrola CRLF probehne validne i v pripade ze je obsazeno ve dvou bufferech
+Data jsou následně v běhu záznamové úlohy vkládána do jedné ze dvou vyrovnávacích pamětí, u kterých se využívá koncept vícenásobné vyrovnávací paměti (viz. \ref{vicenasobna_vyrovnavaci_pamet}), přičemž jedna paměť vždy slouží ke sběru a předzpracování přicházejících dat, zatímco druhá slouží k jejich ukládání na paměťovou kartu prostřednictvím řadiče SDHC. Role těchto dvou pamětí jsou mezi sebou cyklicky prohazovány na základě jednoduché výměny ukazatelů. Znaky jsou tedy vkládány do sběrné vyrovnávací paměti a při vkládání je každý nový znak porovnáván s předchozím tak, aby bylo možné detekovat přítomnost znakové dvojice CR+LF z prostředí operačního systému Windows CR+LF (Carriage Return Line Feed, toto slovní spojení lze do českého jazyka přeložit jako posun o řádek a návrat vozíku). 
 
+která zaujímá roli pro sběr a zpracování dat, zde jsou jednotlivé znaky procházeny a kontrolovány společně s předešlým znakem, zda se nejedná o speciální bílý znak z prostředí operačního systému Windows CR+LF (Carriage Return Line Feed, toto slovní spojení lze do českého jazyka přeložit jako posun o řádek a návrat vozíku). 
+
+Při vkládání je každý nový znak porovnáván s předchozím tak, aby bylo možné detekovat přítomnost znakové dvojice CR+LF 
 
 \section{USB Mass Storage vlákno}
 
