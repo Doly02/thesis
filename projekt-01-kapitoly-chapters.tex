@@ -957,24 +957,29 @@ Jak jsem měřil spotřebu, jak jsem spočítal hodnoty kondenzátorů
 \label{softwarova_implementace}
 Obslužný firmware digitálního záznamníku je postaven na operačním systému reálného času FreeRTOS, který zajišťuje deterministické plánování jednotlivých úloh, které budou následně popsány v této kapitole.
 
+% TODO: Co vsechno lze zmenit v defs.h
 % Uved ze se zde prenasi cas z externiho RTC do interniho RTC
 % staticka alokace
-Na začátek je nutné uvést, že pro zvýšení spolehlivosti a predikovatelnosti systému jsem rozhodl, že veškeré úlohy budou vytvářeny staticky, tedy každá úloha má předem definovanou velikost zásobníku a je vytvořena již při startu systému bez    použití dynamické alokace paměti během běhu programu. K tomuto bylo třeba využít mechanismus statické alokace úloh, front a dalších synchronizačních objektů, které FreeRTOS podporuje.
+Na začátek je nutné uvést, že pro zvýšení spolehlivosti a predikovatelnosti systému jsem rozhodl, že veškeré úlohy budou vytvářeny staticky, tedy každá úloha má předem definovanou velikost zásobníku a je vytvořena již při startu systému bez použití dynamické alokace paměti během běhu programu. K tomuto bylo třeba využít mechanismus statické alokace úloh, front a dalších synchronizačních objektů, které FreeRTOS podporuje.
 
 % obecna moznost konfigurace firmwaru
 Firmware digitálního záznamníku je navržen modulárně a je tedy rozdělen do několika funkčních celků (například logika záznamu, vyčtení zaznamenaných dat pomocí Mass Storage, detekce ztráty napájení, signalizace stavu systému a další), které je možné podle potřeby samostatně aktivovat či deaktivovat. Tohoto chování je dosaženo pomocí podmíněného překladu v jazyce C, kdy jsou jednotlivé části kódu překládány pouze v případě, že jsou odpovídajícím způsobem povoleny. K centrální správě těchto voleb slouží aplikační konfigurační soubor 
-\textit{defs.h}.
+\textit{defs.h}. 
+
+Součástí konfiguračního souboru \textit{defs.h} je rovněž možnost zvolit si, jakou mírou informačního výstupu bude firmware komunikovat s uživatelem či vývojářem. Záznamník podporuje tři úrovně výstupu zpráv. První, nejnižší úrovní, jsou chybová hlášení (začínající řetězcem \texttt{ERR:}), která informují o kritických stavech. Tato vrstva je automaticky aktivní a nelze ji vypnout.
+
+Současně tento konfigurační soubor umožňuje konfigurovat velikost zásobníků statických úloh a případně upravit hodnoty záznamu
 
 Po inicializaci firmwaru jsou vytvořeny dvě hlavní úlohy, kterými jsou \textit{record\_task} sloužící pro záznam dat  a \textit{msc\_task} pro vyčtení zaznamenaných dat pomocí USB Mass Storage. Tyto úlohy jsou vzájemně přepínány na základě dvou binárních semaforů, respektive mutexů. Po startu systému je jako výchozí úloha aktivována záznamová úloha, která uvolní svůj mutex, čímž je umožněna její dominance, jelikož obě úlohy běží paralelně a žádná z úloh není explicitně uspávána. Záznamová úloha je dominantní až do situace připojení zařízení k hostitelskému počítači prostřednictvím USB, kdy dojde k vyvolání přerušení (konkrétně USB1\_HS\_IRQn), které je zpracováno příslušnou obsluhou přerušení. V rámci této rutiny je pomocí stavových registrů USB OTG řadiče ověřeno, že skutečně došlo k připojení k hostiteli. Jeli připojení potvrzeno, příslušný mutex je uvolněn ve prospěch msc\_task úlohy, která následně zpřístupní obsah paměťové karty jako externí úložiště ve formátu USB Mass Storage. Během této doby je záznamová úloha upozaděna a čeká na opětovné získání semaforu, ke kterému dojde v případě vyvolání přerušení opět od USB1\_HS a je-li odpojení potvrzeno opět pomocí USB OTG řadiče. 
-
-\newpage
 
 \section{Záznamové vlákno}
 % TODO: uvod + konfigurace zaznamu za behu
 % TODO: Napsat ze modul pro zaznam je ulozen v souboru record.c a record.h DONE
 % TODO: upravit mluvi se dvakrat o UARTu!
-% uvest ze data jsou jednotlive znaky 
-Modul zajišťující samotný záznam dat je implementován v souborech \textit{record.c} a \textit{record.h}, přičemž tento režim zajišťuje, že zařízení primárně plní svou hlavní funkci – kontinuální záznam dat a je zvolen jako dominantní úloha po inicializaci digitálního záznamníku. Chování záznamové úlohy je ovlivněno během inicializační fáze záznamové úlohy prostřednictvím konfiguračního souboru \textit{config.txt}, který je očekáván v kořenovém adresáři souborového systému přímo na SDHC kartě digitálního záznamníku. Tato konfigurace slouží primárně ke specifikaci parametrů záznamu. Jak již bylo zmíněno, zařízení je určeno pro záznam sériových dat (znaků) přenášených prostřednictvím rozhraní UART, přičemž právě toto rozhraní je možné skrze konfiguraci upravit, primárně tedy rychlost přenosu neboli baudrate. Kromě toho je možné upravit maximální velikost záznamu (záznamového souboru), konkrétně u této velikosti se počítá s násobkem 512 bajtů, neboť data jsou ukládána po blocích, nicméně je možné zvolit i jinou hodnotu, přičemž firmware ji automaticky zaokrouhlí směrem nahoru na nejbližší přípustný násobek. Pro zpracování konfiguračního souboru slouží vlastní parser, který lze snadno rozšířit o podporu dalších parametrů.
+% uvest ze data jsou jednotlive znaky
+% TODO: Default hodnoty zaznamu - baudrate a filesize zminit DONE
+
+Modul zajišťující samotný záznam dat je implementován v souborech \textit{record.c} a \textit{record.h}, přičemž tento režim zajišťuje, že zařízení primárně plní svou hlavní funkci – kontinuální záznam dat a je zvolen jako dominantní úloha po inicializaci digitálního záznamníku. Chování záznamové úlohy je ovlivněno během inicializační fáze záznamové úlohy prostřednictvím konfiguračního souboru \textit{config.txt}, který je očekáván v kořenovém adresáři souborového systému přímo na SDHC kartě digitálního záznamníku. Tato konfigurace slouží primárně ke specifikaci parametrů záznamu. Jak již bylo zmíněno, zařízení je určeno pro záznam sériových dat (znaků) přenášených prostřednictvím rozhraní UART, přičemž právě toto rozhraní je možné skrze konfiguraci upravit, primárně tedy rychlost přenosu neboli baudrate. Kromě toho je možné upravit maximální velikost záznamu (záznamového souboru), konkrétně u této velikosti se počítá s násobkem 512 bajtů, neboť data jsou ukládána po blocích, nicméně je možné zvolit i jinou hodnotu, přičemž firmware ji automaticky zaokrouhlí směrem nahoru na nejbližší přípustný násobek. V případě, že konfigurační soubor \textit{config.txt} není nalezen v kořenovém adresáři nebo se jeho obsah nepodaří záznamníku zpracovat, záznam zařízeni proběhne dle předdefinovaných parametrů \texttt{DEFAULT\_BAUDRATE} a \texttt{DEFAULT\_MAX\_FILESIZE} uvedených v souboru \textit{defs.h}. Pro zpracování konfiguračního souboru slouží vlastní parser, který lze snadno rozšířit o podporu dalších parametrů.
 
 Po inicializaci, ve které je získáno nastavení záznamu, jsou tyto parametry nastaveny a inicializují se periferie potřebné k záznamu. Poté následuje hlavní smyčka úlohy, která zprostředkovává záznam dat, ukládání dat do SDHC karty a případně signalizuje stav záznamu uživateli.
 
@@ -998,6 +1003,41 @@ Aktivní buffer je tímto způsobem postupně plněn záznamovými daty a doplň
 Součástí návrhu je také ošetření okrajových stavů, které by mohly ohrozit konzistenci vkládání časových značek do záznamu. Typickým případem je rozdělení sekvence znaků, kdy první speciální znak CR se může dostat na konec vyrovnávací paměti mající roli sběrné paměti, následně dojde k prohození vyrovnávacích pamětí a tedy speciální znak LF již na začátku druhého. V takové situaci by se mohlo stát, že začátek řádku by nebyl detekován a časová značka by nebyla vložena. Aby bylo této chybě zabráněno, jsou uchovávány jakékoliv po sobě jdoucí znaky a tedy k této situaci nedojde. Druhou situací je případ, kdy se sekvence \texttt{CR+LF} nachází na samotném konci aktivního bufferu a do dané paměti se již nevejde celá časová značka. Časová značka je v takovém případě rozdělena, část je uložena do konce původního bufferu a zbývající část je po výměně bufferů doplněna do nově aktivní paměti.
 
 Další specifickou situací je potřeba korektního ukončení záznamu, tu lze například řešit pomocí tlačítka, nicméně rozhodl jsem se tuto situaci řešit obdobně jako situaci, kdy dojde ke ztrátě spojení s monitorovaným zařízením, která je z pohledu popisovaného algoritmu kritická. V takovém případě, totiž když není aktivní vyrovnávací paměť plně zaplněna, tak není uložena do permanentního uložiště, ale uvázne ve volatilní paměti digitálního záznamníku. Pro obě zmíněné situace je využívána funkce \texttt{CONSOLELOG\_Flush()},  která je periodicky volána a zajišťuje pravidelnou kontrolu, zda od posledního příjmu dat neuběhla doba specifikována makrem \texttt{FLUSH\_TIMEOUT\_TICKS} které je v základě nastaveno na dobu tří sekund. Po uplynutí této doby je automaticky obsah aktivního bufferu doplňen o bílé znaky v podobě mezery a obsah je uložen na SD kartu.
+
+\begin{lstlisting}[language=C, caption={Pseudokód funkce \texttt{record\_task}}, label={lst:record_task}]
+void record_task(void *handle)
+{
+    uint32_t baudrate = 0;
+    uint32_t filesize = 0;
+
+    USB_DeviceModeInit();
+
+    CONSOLELOG_Init();
+
+    CONSOLELOG_ReadConfig() != ERROR_NONE) {
+        baudrate = DEFAULT_BAUDRATE;
+        filesize = DEFAULT_MAX_FILESIZE;
+    } else {
+        baudrate = CONSOLELOG_GetBaudrate();
+        filesize = CONSOLELOG_GetFileSize();
+    }
+
+    while (1) {
+        xSemaphoreTake(g_xSemRecord, portMAX_DELAY);
+
+        UART_Init(baudrate);
+        UART_Enable();
+
+        while (1) {
+            CONSOLELOG_Recording(filesize);
+            
+            LED_SignalRecording();
+
+            CONSOLELOG_Flush()
+        }
+    }
+}
+\end{lstlisting}
 
 
 \section{USB Mass Storage vlákno}
