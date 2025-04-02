@@ -861,6 +861,7 @@ V kapitole~\ref{vyber_vhodne_platformy} byl popsán proces výběru vhodné plat
 Samotný čip poskytuje, časovače v podobě CTIMER a CSTIMER, které mohou být využity pro měření časových intervalů nebo generování periodických událostí. Dále je k dispozici flexibilní komunikační blok LP\_FLEXCOMM, který umožňuje konfiguraci až osmi nezávislých instancí komunikačních rozhraní (například I\textsuperscript{2}C, UART nebo SPI) podle aktuálních požadavků aplikace.
 
 \section{Expanzní deska}
+% Jak jsem měřil spotřebu, jak jsem spočítal hodnoty kondenzátorů 
 Vybraná základová deska tedy neobsahuje všechny potřebné komponenty, které byly představeny v kapitole \ref{architektura_systemu_digitalniho_zaznamniku}. Pro zajištění kompletní funkcionality je proto nutné doplnit celý systém o expanzní desku plošných spojů, která umožní integraci všech klíčových externích komponent a rozšíří tak funkcionalitu základové desky. Tato kapitola představí realizovanou expanzní desku a její jednotlivé prvky.
 
 \subsection{Zálohované napájení}
@@ -950,29 +951,41 @@ Modul NEO-7M obsahuje integrovaný přijímač, pasivní keramickou anténu a an
     \label{fig:neo-7m}
 \end{figure}
 
+\subsection{Signalizace stavu systému}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.50\textwidth]{obrazky-figures/control-diodes.png}
+    
+    \caption{Ukázka zapojení jedné z kontrolních diod typu LED}
+    \label{fig:neo-7m}
+\end{figure}
+
+
 \section{Mechanická část}
-Jak jsem měřil spotřebu, jak jsem spočítal hodnoty kondenzátorů 
+Navrh krabicky
 
 \chapter{Přístup k realizaci obslužného firmware}
 \label{softwarova_implementace}
 Obslužný firmware digitálního záznamníku je postaven na operačním systému reálného času FreeRTOS, který zajišťuje deterministické plánování jednotlivých úloh, které budou následně popsány v této kapitole.
 
-% TODO: Co vsechno lze zmenit v defs.h
 % Uved ze se zde prenasi cas z externiho RTC do interniho RTC
 % staticka alokace
 Na začátek je nutné uvést, že pro zvýšení spolehlivosti a predikovatelnosti systému jsem rozhodl, že veškeré úlohy budou vytvářeny staticky, tedy každá úloha má předem definovanou velikost zásobníku a je vytvořena již při startu systému bez použití dynamické alokace paměti během běhu programu. K tomuto bylo třeba využít mechanismus statické alokace úloh, front a dalších synchronizačních objektů, které FreeRTOS podporuje.
 
+% TODO: Co vsechno lze zmenit v defs.h
 % obecna moznost konfigurace firmwaru
 Firmware digitálního záznamníku je navržen modulárně a je tedy rozdělen do několika funkčních celků (například logika záznamu, vyčtení zaznamenaných dat pomocí Mass Storage, detekce ztráty napájení, signalizace stavu systému a další), které je možné podle potřeby samostatně aktivovat či deaktivovat. Tohoto chování je dosaženo pomocí podmíněného překladu v jazyce C, kdy jsou jednotlivé části kódu překládány pouze v případě, že jsou odpovídajícím způsobem povoleny. K centrální správě těchto voleb slouží aplikační konfigurační soubor 
 \textit{defs.h}. 
 
-Součástí konfiguračního souboru \textit{defs.h} je rovněž možnost zvolit si, jakou mírou informačního výstupu bude firmware komunikovat s uživatelem či vývojářem. Záznamník podporuje tři úrovně výstupu zpráv. První, nejnižší úrovní, jsou chybová hlášení (zprávy začínající řetězcem \texttt{ERR:}), která informují o kritických stavech. Tato vrstva je automaticky aktivní a nelze ji vypnout.
+Součástí konfiguračního souboru \textit{defs.h} je rovněž možnost zvolit si, jakou mírou informačního výstupu bude firmware komunikovat k vývojáři.\footnote{Pro koncového uživatele je naopak stav zařízení signalizován jednoduše pomocí LED indikátorů.} Záznamník podporuje tři úrovně výstupu zpráv. První, nejnižší úrovní, jsou chybová hlášení (zprávy začínající řetězcem \texttt{ERR:}), která informují o kritických stavech. Tato vrstva je automaticky aktivní a nelze ji vypnout. Druhou vrstvou je informační režim (zprávy začínající řetězcem \texttt{INFO:}), ve kterém aplikace poskytuje podrobnější výpisy o právě probíhajících událostech, jako je například spuštění záznamu, nalezení konfiguračního souboru či inicializace periferií. Třetí, nejpodrobnější úrovní, je ladicí režim (zprávy začínající řetězcem \texttt{DEBUG:}), ve kterém aplikace rozšiřuje výstup o doplňující technické detaily, které mohou být užitečné zejména při ladění během vývoje. Veškeré tyto výstupy jsou poskytovány skrze sériové rozhraní UART. V rámci implementace digitálního záznamníku je k tomuto účelu využívána konkrétně instance periferie LP\_FLEXCOMM4, která je nakonfigurována na přenosovou rychlost 115200 baud. 
 
-Druhou vrstvou je informační režim (zprávy začínající řetězcem \texttt{INFO:}), ve kterém aplikace poskytuje podrobnější výpisy o právě probíhajících událostech, jako je například spuštění záznamu, nalezení konfiguračního souboru či inicializace periferií. Třetí, nejpodrobnější úrovní, je ladicí režim (zprávy začínající řetězcem \texttt{DEBUG:}), ve kterém aplikace rozšiřuje výstup o doplňující technické detaily, které mohou být užitečné zejména při ladění během vývoje. Veškeré tyto výstupy jsou poskytovány skrze sériové rozhraní UART, které zároveň slouží jako hlavní komunikační kanál pro vývoj a diagnostiku systému.
+Taktéž je možné nastavit pevné velikosti zásobníků jednotlivých statických úloh či konkrétně záznamu, jako je například výchozí parametru záznamu které budou dále rozvedeny v kapitole \ref{zaznamove_vlakno}. 
 
 Po inicializaci firmwaru jsou vytvořeny dvě hlavní úlohy, kterými jsou \textit{record\_task} sloužící pro záznam dat  a \textit{msc\_task} pro vyčtení zaznamenaných dat pomocí USB Mass Storage. Tyto úlohy jsou vzájemně přepínány na základě dvou binárních semaforů, respektive mutexů. Po startu systému je jako výchozí úloha aktivována záznamová úloha, která uvolní svůj mutex, čímž je umožněna její dominance, jelikož obě úlohy běží paralelně a žádná z úloh není explicitně uspávána. Záznamová úloha je dominantní až do situace připojení zařízení k hostitelskému počítači prostřednictvím USB, kdy dojde k vyvolání přerušení (konkrétně USB1\_HS\_IRQn), které je zpracováno příslušnou obsluhou přerušení. V rámci této rutiny je pomocí stavových registrů USB OTG řadiče ověřeno, že skutečně došlo k připojení k hostiteli. Jeli připojení potvrzeno, příslušný mutex je uvolněn ve prospěch msc\_task úlohy, která následně zpřístupní obsah paměťové karty jako externí úložiště ve formátu USB Mass Storage. Během této doby je záznamová úloha upozaděna a čeká na opětovné získání semaforu, ke kterému dojde v případě vyvolání přerušení opět od USB1\_HS a je-li odpojení potvrzeno opět pomocí USB OTG řadiče. 
 
 \section{Záznamové vlákno}
+\label{zaznamove_vlakno}
 % TODO: uvod + konfigurace zaznamu za behu
 % TODO: Napsat ze modul pro zaznam je ulozen v souboru record.c a record.h DONE
 % TODO: upravit mluvi se dvakrat o UARTu!
@@ -986,7 +999,7 @@ Po inicializaci, ve které je získáno nastavení záznamu, jsou tyto parametry
 % V obsluze preruseni je take evidovan pocet tiku pri kterych byly data (bajt) zaznamenan
 Samotný záznam dat je založen na konceptech představených v kapitole \ref{klicove_koncepty_digitalnich_zaznamniku}. V prvé řadě se jako vstupní periférie, která slouží k získání dat, využívá periférie LP\_FLEXCOMM (Low-Power Flexible Communications Interface) s přerušením. Zaznamenaná data čili jednotlivé znaky, jsou v obslužné rutině přerušení vkládána do cirkulární vyrovnávací paměti, respektive softwarové FIFO fronty (viz. kapitola \ref{cirkularni_buffer}), se kterou je aktualizována hodnota zápisového ukazatele a také hodnota proměnné, která v sobě uchovává počet tiků, ve kterém data byla zaznamenána na základě systémového časového údaje vyjádřeného v tikách operačního systému.
 
-Data jsou následně v běhu záznamové úlohy vkládána do jedné ze dvou vyrovnávacích pamětí, u kterých se využívá koncept vícenásobné vyrovnávací paměti (viz. \ref{vicenasobna_vyrovnavaci_pamet}), přičemž jedna paměť vždy slouží ke sběru a předzpracování přicházejících dat - aktivní buffer, zatímco druhá slouží k jejich ukládání na paměťovou kartu prostřednictvím řadiče SDHC. Role těchto dvou pamětí jsou mezi sebou cyklicky prohazovány na základě jednoduché výměny ukazatelů. Znaky jsou tedy vkládány do sběrné vyrovnávací paměti a při vkládání je každý nový znak porovnáván s předchozím tak, aby bylo možné detekovat přítomnost znakové dvojice \texttt{CR+LF} z prostředí operačního systému Windows CR+LF (Carriage Return Line Feed, toto slovní spojení lze do českého jazyka přeložit jako posun o řádek a návrat vozíku). Tento bílý znak je detekován z toho důvodu, že sledované zařízení používá znakové dvojice CR+LF pro ukončení řádku. Díky jeho rozpoznání je možné jednoznačně identifikovat začátek nového řádku. V případě, že je tato znaková sekvence zachycena, je z interního obvodu reálného času mikrokontroléru MCXN947 získán aktuální čas, který je následně vložen jako časová značka na začátek právě detekovaného řádku. Výsledný formát textu může vypadat například takto:
+Data jsou následně v běhu záznamové úlohy vkládána do jedné ze dvou vyrovnávacích pamětí, u kterých se využívá koncept vícenásobné vyrovnávací paměti (viz. \ref{vicenasobna_vyrovnavaci_pamet}), přičemž jedna paměť vždy slouží ke sběru a předzpracování přicházejících dat - aktivní buffer, zatímco druhá slouží k jejich ukládání na paměťovou kartu prostřednictvím řadiče SDHC. Role těchto dvou pamětí jsou mezi sebou cyklicky prohazovány na základě jednoduché výměny ukazatelů. Znaky jsou tedy vkládány do sběrné vyrovnávací paměti a při vkládání je každý nový znak porovnáván s předchozím tak, aby bylo možné detekovat přítomnost znakové dvojice \texttt{CR+LF} z prostředí operačního systému Windows CR+LF (Carriage Return Line Feed, toto slovní spojení lze do českého jazyka přeložit jako posun o řádek a návrat vozíku). Tento bílý znak je detekován z toho důvodu, že sledované zařízení používá znakové dvojice CR+LF pro ukončení řádku. Díky jeho rozpoznání je možné jednoznačně identifikovat začátek nového řádku. V případě, že je tato znaková sekvence zachycena, je z interního obvodu reálného času mikrokontroléru MCXN947 získán aktuální čas, který je následně vložen jako časová značka na začátek právě detekovaného řádku. Výsledný formát textu může vypadat následovně:
 
 \begin{verbatim}
 [12:34:56] Starting system diagnostics...
