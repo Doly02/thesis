@@ -952,15 +952,19 @@ Modul NEO-7M obsahuje integrovaný přijímač, pasivní keramickou anténu a an
 \end{figure}
 
 \subsection{Signalizace stavu systému}
+Důležitou součástí digitálního záznamníku je také informování uživatele o případných chybách, které mohou nastat, ale také o běžném stavu systému, například že digitální záznamník nahrává nebo dosažení bezpečného stavu pro odpojení zařízení. K tomuto účelu jsem se rozhodl využít pomocí pěti světelných LED diod.
+
+Každá LED dioda je připojena k tranzistoru typu NPN (konkrétně BC546 od společnosti ON Semi), který slouží jako spínací prvek. Tranzistor je ovládán mikrokontrolérem přes odpovídající GPIO pin. Pokud tedy bude na bázi tranzistoru přítomen signál, tranzistor se otevře a umožní průtok proudu skrze LED diodu a sériově zapojený omezovací rezistor, čímž dojde k jejímu rozsvícení. Toto zapojení je znázorněno na obrázku \ref{fig:control-diodes}, který ukazuje příklad zapojení jedné z pěti LED diod, které budou nápájeny z \SI{3.3}{\volt} a protékající proud bude omezen rezistory. Jednotlivé výstupy pro ovládání LED diod jsou přivedeny na pinovou lištu (Pin Header), do které budou diody zapojeny.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.50\textwidth]{obrazky-figures/control-diodes.png}
+    \includegraphics[width=0.90\textwidth]{obrazky-figures/control-diodes.png}
     
     \caption{Ukázka zapojení jedné z kontrolních diod typu LED}
-    \label{fig:neo-7m}
+    \label{fig:control-diodes}
 \end{figure}
 
+\newpage
 
 \section{Mechanická část}
 Navrh krabicky
@@ -1033,7 +1037,7 @@ Aktivní buffer je tímto způsobem postupně plněn záznamovými daty a doplň
 Jakmile je záznamový soubor zaplněn na jeho maximální definovanou velikost, je soubor uzavřen, a následně je vytvořen nový pomocí funkce \texttt{CONSOLELOG\_CreateFile()}. Tato funkce na základě aktuálního data a času vygeneruje unikátní název souboru ve formátu \texttt{YYYYMMDD\_HHMMSS\_X.txt}, kde \texttt{X} je inkrementální čítač a následně tento soubor otevře pro zápis a nastaví jeho metadata (čas vytvoření) pomocí dat z interního RTC a záznam tak může pokračovat.
 
 % je pojisteno ze kontrola CRLF probehne validne i v pripade ze je obsazeno ve dvou bufferech
-Součástí návrhu je také ošetření okrajových stavů, které by mohly ohrozit konzistenci vkládání časových značek do záznamu. Typickým případem je rozdělení sekvence znaků, kdy první speciální znak \texttt{CR} se může dostat na konec vyrovnávací paměti plnící roli aktivního bufferu, následně dojde k prohození vyrovnávacích paměťí a druhý speciální znak \texttt{LF} se ocitne již na začátku nového aktivního bufferu. V takové situaci by se mohlo stát, že začátek řádku by nebyl detekován a časová značka by nebyla vložena. Aby bylo této chybě zabráněno, jsou uchovávány jakékoliv po sobě jdoucí znaky a tedy k této situaci nedojde. Druhou situací je případ, kdy se sekvence \texttt{CR+LF} nachází na samotném konci aktivního bufferu a do dané paměti se již nevejde celá časová značka. Časová značka je v takovém případě rozdělena, část je uložena do konce původního bufferu a zbývající část je po výměně bufferů doplněna do nově aktivní paměti.
+Součástí návrhu je také ošetření okrajových stavů, které by mohly ohrozit konzistenci vkládání časových značek do záznamu. Typickým případem je rozdělení sekvence znaků, kdy první speciální znak \texttt{CR} se může dostat na konec vyrovnávací paměti plnící roli aktivního bufferu, následně dojde k prohození vyrovnávacích paměťí a druhý speciální znak \texttt{LF} se ocitne již na začátku nového aktivního bufferu. V takové situaci by se mohlo stát, že začátek řádku by nebyl detekován a časová značka by nebyla vložena. Aby bylo této chybě zabráněno, jsou uchovávány jakékoliv po sobě jdoucí znaky, a tedy k této situaci nedojde. Druhou situací je případ, kdy se sekvence \texttt{CR+LF} nachází na samotném konci aktivního bufferu a do dané paměti se již nevejde celá časová značka. Časová značka je v takovém případě rozdělena, část je uložena do konce původního bufferu a zbývající část je po výměně bufferů doplněna do nově aktivní paměti.
 
 Další specifickou situací je potřeba korektního ukončení záznamu, tu lze například řešit pomocí tlačítka, nicméně rozhodl jsem se tuto situaci řešit obdobně jako situaci, kdy dojde ke ztrátě spojení s monitorovaným zařízením, která je z pohledu popisovaného algoritmu kritická. V takovém případě, totiž když není aktivní vyrovnávací paměť plně zaplněna, tak není uložena do permanentního uložiště, ale uvázne ve volatilní paměti digitálního záznamníku. Pro obě zmíněné situace je využívána funkce \texttt{CONSOLELOG\_Flush()},  která je periodicky volána a zajišťuje pravidelnou kontrolu, zda od posledního příjmu dat neuběhla doba specifikována makrem \texttt{FLUSH\_TIMEOUT\_TICKS} které je v základě nastaveno na dobu tří sekund. Po uplynutí této doby je automaticky obsah aktivního bufferu doplňen o bílé znaky v podobě mezery a obsah je uložen na SD kartu.
 
