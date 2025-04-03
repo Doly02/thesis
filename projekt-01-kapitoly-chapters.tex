@@ -992,6 +992,8 @@ Po inicializaci firmwaru jsou vytvořeny dvě hlavní úlohy, kterými jsou \tex
 % uvest ze data jsou jednotlive znaky
 % TODO: Default hodnoty zaznamu - baudrate a filesize zminit DONE
 
+% TODO: Inicializace WHERE?
+
 Modul zajišťující samotný záznam dat je implementován v souborech \textit{record.c} a \textit{record.h}, přičemž tento režim zajišťuje, že zařízení primárně plní svou hlavní funkci – kontinuální záznam dat a je zvolen jako dominantní úloha po inicializaci digitálního záznamníku. Chování záznamové úlohy je ovlivněno během inicializační fáze záznamové úlohy prostřednictvím konfiguračního souboru \textit{config.txt}, který je očekáván v kořenovém adresáři souborového systému přímo na SDHC kartě digitálního záznamníku. Tato konfigurace slouží primárně ke specifikaci parametrů záznamu. Jak již bylo zmíněno, zařízení je určeno pro záznam sériových dat (znaků) přenášených prostřednictvím rozhraní UART, přičemž právě toto rozhraní je možné skrze konfiguraci upravit, primárně tedy rychlost přenosu neboli baudrate. Kromě toho je možné upravit maximální velikost záznamu (záznamového souboru), konkrétně u této velikosti se počítá s násobkem 512 bajtů, neboť data jsou ukládána po blocích, nicméně je možné zvolit i jinou hodnotu, přičemž firmware ji automaticky zaokrouhlí směrem nahoru na nejbližší přípustný násobek. V případě, že konfigurační soubor \textit{config.txt} není nalezen v kořenovém adresáři nebo se jeho obsah nepodaří záznamníku zpracovat, záznam zařízeni proběhne dle předdefinovaných parametrů \texttt{DEFAULT\_BAUDRATE} a \texttt{DEFAULT\_MAX\_FILESIZE} uvedených v souboru \textit{defs.h}. Pro zpracování konfiguračního souboru slouží vlastní parser, který lze snadno rozšířit o podporu dalších parametrů.
 
 Po inicializaci, ve které je získáno nastavení záznamu, jsou tyto parametry nastaveny a inicializují se periferie potřebné k záznamu. Poté následuje hlavní smyčka úlohy, která zprostředkovává záznam dat, ukládání dat do SDHC karty a případně signalizuje stav záznamu uživateli.
@@ -1017,6 +1019,13 @@ Součástí návrhu je také ošetření okrajových stavů, které by mohly ohr
 
 Další specifickou situací je potřeba korektního ukončení záznamu, tu lze například řešit pomocí tlačítka, nicméně rozhodl jsem se tuto situaci řešit obdobně jako situaci, kdy dojde ke ztrátě spojení s monitorovaným zařízením, která je z pohledu popisovaného algoritmu kritická. V takovém případě, totiž když není aktivní vyrovnávací paměť plně zaplněna, tak není uložena do permanentního uložiště, ale uvázne ve volatilní paměti digitálního záznamníku. Pro obě zmíněné situace je využívána funkce \texttt{CONSOLELOG\_Flush()},  která je periodicky volána a zajišťuje pravidelnou kontrolu, zda od posledního příjmu dat neuběhla doba specifikována makrem \texttt{FLUSH\_TIMEOUT\_TICKS} které je v základě nastaveno na dobu tří sekund. Po uplynutí této doby je automaticky obsah aktivního bufferu doplňen o bílé znaky v podobě mezery a obsah je uložen na SD kartu.
 
+\newpage
+% TODO: napsat jak vypada struktura logovani, vytvoreni slozky pro danou session, ....
+Krom samotných výše zmíněných funkcí modul poskytuje funkci \texttt{CONSOLELOG\_CreateFile()} slouží k vytvoření nového záznamového souboru. Na základě aktuálního data a času vygeneruje unikátní název souboru ve formátu \texttt{YYYYMMDD\_HHMMSS\_X.txt}, kde \texttt{X} je inkrementální čítač. Následně otevře tento soubor pro zápis a nastaví jeho metadata (čas vytvoření) pomocí aktuálního datumu a času z obvodu reálného času. V případě úspěchu je připraven pro další použití při záznamu dat.
+
+
+Struktura záznamové úlohy lze shrnout následujícím pseudokódem. V prvním kroku je pomocí funkce \texttt{USB\_DeviceModeInit()} inicializována SD karta a pokud je to nutné, tak SD kartu i zformátuje. Dále následuje volání funkce \texttt{CONSOLELOG\_Init()}, která  provede připojení (Mount) SD karty, nastaví aktuální pracovní jednotku a ověří existenci souborového systému. Pokud není souborový systém nalezen, automaticky provede jeho vytvoření. Následně vytvoří výchozí adresář pro ukládání záznamových souborů. V případě jakékoliv chyby během těchto kroků funkce vrací odpovídající chybový kód.
+
 \begin{lstlisting}[language=C, caption={Pseudokód funkce \texttt{record\_task}}, label={lst:record_task}]
 void record_task(void *handle)
 {
@@ -1027,7 +1036,7 @@ void record_task(void *handle)
 
     CONSOLELOG_Init();
 
-    CONSOLELOG_ReadConfig() != ERROR_NONE) {
+    if (CONSOLELOG_ReadConfig() != ERROR_NONE) {
         baudrate = DEFAULT_BAUDRATE;
         filesize = DEFAULT_MAX_FILESIZE;
     } else {
@@ -1051,7 +1060,6 @@ void record_task(void *handle)
     }
 }
 \end{lstlisting}
-
 
 \section{USB Mass Storage vlákno}
 
