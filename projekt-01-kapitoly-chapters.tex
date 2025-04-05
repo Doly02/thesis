@@ -977,6 +977,7 @@ Obslužný firmware digitálního záznamníku je postaven na operačním systé
 % staticka alokace
 Na začátek je nutné uvést, že pro zvýšení spolehlivosti a predikovatelnosti systému jsem rozhodl, že firmware bude  využívat výhradně statickou alokaci paměti. Veškeré úlohy, fronty i synchronizační objekty jsou vytvářeny staticky s předem definovanou velikostí zásobníků a řídicích struktur již při startu systému. Dynamická alokace paměti je zcela vypnuta i přímo v konfiguraci FreeRTOS.
 
+U vývoje firmwaru byl kladen rovněž důraz na dokumentovanost zdrojového kódu. Všechny funkce, globální proměnné a makra jsou opatřeny komentáři ve formátu \textit{Doxygen}, ze kterých lze snadno vygenerovat dokumentaci. Krom toho je samotný kód doplněn o kontextové komentáře, které objasňují klíčové části implementace.
 % TODO: Co vsechno lze zmenit v defs.h
 % obecna moznost konfigurace firmwaru
 Firmware digitálního záznamníku je navržen modulárně a je tedy rozdělen do několika funkčních celků (například logika záznamu, vyčtení zaznamenaných dat pomocí Mass Storage, detekce ztráty napájení, signalizace stavu systému a další), které je možné podle potřeby samostatně aktivovat či deaktivovat. Tohoto chování je dosaženo pomocí podmíněného překladu v jazyce C, kdy jsou jednotlivé části kódu překládány pouze v případě, že jsou odpovídajícím způsobem povoleny. K centrální správě těchto voleb slouží aplikační konfigurační soubor 
@@ -1021,7 +1022,7 @@ Po přípravné fázi následuje samotná logika záznamu, ta je složena ze dvo
 % V obsluze preruseni je take evidovan pocet tiku pri kterych byly data (bajt) zaznamenan
 Samotný záznam dat je založen na konceptech představených v kapitole \ref{klicove_koncepty_digitalnich_zaznamniku}. V prvé řadě se jako vstupní periférie, sloužící k získání dat, využívá periférie LP\_FLEXCOMM (Low-Power Flexible Communications Interface) s přerušením. Zaznamenané jednotlivé znaky jsou v obslužné rutině přerušení vkládány do cirkulární vyrovnávací paměti, respektive softwarové FIFO fronty (viz. kapitola \ref{cirkularni_buffer}), se kterou je aktualizována hodnota zápisového ukazatele a také hodnota proměnné, která v sobě uchovává počet tiků, ve kterém data byla zaznamenána na základě systémového časového údaje vyjádřeného v tikách operačního systému.
 
-Data jsou následně v běhu záznamové úlohy vkládána do jedné ze dvou vyrovnávacích pamětí, u kterých se využívá koncept vícenásobné vyrovnávací paměti (viz. kapitola \ref{vicenasobna_vyrovnavaci_pamet}), přičemž jedna paměť vždy slouží ke sběru a předzpracování přicházejících dat (tzv. aktivní buffer), zatímco druhá slouží k jejich ukládání na paměťovou kartu prostřednictvím řadiče SDHC. Role těchto dvou pamětí jsou mezi sebou cyklicky prohazovány na základě jednoduché výměny ukazatelů. Znaky jsou tedy vkládány do aktivního bufferu a při vkládání je každý nový znak porovnáván s předchozím tak, aby bylo možné detekovat přítomnost znakové dvojice \texttt{CR+LF} z prostředí operačního systému Windows CR+LF (Carriage Return Line Feed). Tento bílý znak je detekován z toho důvodu, že sledované zařízení používá znakové dvojice \texttt{CR+LF} pro ukončení řádku. Díky jeho rozpoznání je, tak možné jednoznačně identifikovat začátek nového řádku. V případě, že je tato znaková sekvence zachycena, je z interního obvodu reálného času mikrokontroléru MCXN947 získán aktuální čas, který je následně vložen jako časová značka na začátek právě detekovaného řádku. Výsledný formát textu může vypadat následovně:
+Data jsou následně v běhu záznamové úlohy vkládána do jedné ze dvou vyrovnávacích pamětí, u kterých se využívá koncept vícenásobné vyrovnávací paměti (viz. kapitola \ref{vicenasobna_vyrovnavaci_pamet}), přičemž jedna paměť vždy slouží ke sběru a předzpracování přicházejících dat (tzv. aktivní buffer), zatímco druhá slouží k jejich ukládání na paměťovou kartu prostřednictvím řadiče SDHC. Role těchto dvou pamětí jsou mezi sebou cyklicky prohazovány na základě jednoduché výměny ukazatelů. Znaky jsou tedy vkládány do aktivního bufferu a při vkládání je každý nový znak porovnáván s předchozím tak, aby bylo možné detekovat přítomnost znakové dvojice \texttt{CR+LF} z prostředí operačního systému Windows CR+LF (Carriage Return Line Feed). Tento bílý znak je detekován z toho důvodu, že sledované zařízení používá znakové dvojice \texttt{CR+LF} pro ukončení řádku. Díky jeho rozpoznání je tak možné jednoznačně identifikovat začátek nového řádku. V případě, že je tato znaková sekvence zachycena, je z interního obvodu reálného času mikrokontroléru MCXN947 získán aktuální čas, který je následně vložen jako časová značka na začátek právě detekovaného řádku. Výsledný formát textu může vypadat následovně:
 
 \begin{verbatim}
 [12:34:56] Starting system diagnostics...
@@ -1037,7 +1038,7 @@ Aktivní buffer je tímto způsobem postupně plněn záznamovými daty a doplň
 Jakmile je záznamový soubor zaplněn na jeho maximální definovanou velikost, je soubor uzavřen, a následně je vytvořen nový pomocí funkce \texttt{CONSOLELOG\_CreateFile()}. Tato funkce na základě aktuálního data a času vygeneruje unikátní název souboru ve formátu \texttt{YYYYMMDD\_HHMMSS\_X.txt}, kde \texttt{X} je inkrementální čítač a následně tento soubor otevře pro zápis a nastaví jeho metadata (čas vytvoření) pomocí dat z interního RTC a záznam tak může pokračovat.
 
 % je pojisteno ze kontrola CRLF probehne validne i v pripade ze je obsazeno ve dvou bufferech
-Součástí návrhu je také ošetření okrajových stavů, které by mohly ohrozit konzistenci vkládání časových značek do záznamu. Typickým případem je rozdělení sekvence znaků, kdy první speciální znak \texttt{CR} se může dostat na konec vyrovnávací paměti plnící roli aktivního bufferu, následně dojde k prohození vyrovnávacích paměťí a druhý speciální znak \texttt{LF} se ocitne již na začátku nového aktivního bufferu. V takové situaci by se mohlo stát, že začátek řádku by nebyl detekován a časová značka by nebyla vložena. Aby bylo této chybě zabráněno, jsou uchovávány jakékoliv po sobě jdoucí znaky, a tedy k této situaci nedojde. Druhou situací je případ, kdy se sekvence \texttt{CR+LF} nachází na samotném konci aktivního bufferu a do dané paměti se již nevejde celá časová značka. Časová značka je v takovém případě rozdělena, část je uložena do konce původního bufferu a zbývající část je po výměně bufferů doplněna do nově aktivní paměti.
+Součástí návrhu je také ošetření okrajových stavů, které by mohly ohrozit konzistenci vkládání časových značek do záznamu. Typickým případem je rozdělení sekvence znaků, kdy první speciální znak \texttt{CR} se může dostat na konec vyrovnávací paměti plnící roli aktivního bufferu, následně dojde k prohození vyrovnávacích pamětí a druhý speciální znak \texttt{LF} se ocitne již na začátku nového aktivního bufferu. V takové situaci by se mohlo stát, že začátek řádku by nebyl detekován a časová značka by nebyla vložena. Aby bylo této chybě zabráněno, jsou uchovávány jakékoliv po sobě jdoucí znaky, a tedy k této situaci nedojde. Druhou situací je případ, kdy se sekvence \texttt{CR+LF} nachází na samotném konci aktivního bufferu a do dané paměti se již nevejde celá časová značka. Časová značka je v takovém případě rozdělena, část je uložena do konce původního bufferu a zbývající část je po výměně bufferů doplněna do nově aktivní paměti.
 
 Další specifickou situací je potřeba korektního ukončení záznamu, tu lze například řešit pomocí tlačítka, nicméně rozhodl jsem se tuto situaci řešit obdobně jako situaci, kdy dojde ke ztrátě spojení s monitorovaným zařízením, která je z pohledu popisovaného algoritmu kritická. V takovém případě, totiž když není aktivní vyrovnávací paměť plně zaplněna, tak není uložena do permanentního uložiště, ale uvázne ve volatilní paměti digitálního záznamníku. Pro obě zmíněné situace je využívána funkce \texttt{CONSOLELOG\_Flush()},  která je periodicky volána a zajišťuje pravidelnou kontrolu, zda od posledního příjmu dat neuběhla doba specifikována makrem \texttt{FLUSH\_TIMEOUT\_TICKS} které je v základě nastaveno na dobu tří sekund. Po uplynutí této doby je automaticky obsah aktivního bufferu doplňen o bílé znaky v podobě mezery a obsah je uložen na SD kartu.
 
@@ -1078,6 +1079,23 @@ void record_task(void *handle)
 \end{lstlisting}
 
 \section{USB Mass Storage úloha}
+Druhou úlohou je USB Mass Storage, která slouží ke zpřístupnění obsahu paměťové karty SDHC připojenému hostitelskému zařízení prostřednictvím rozhraní USB. Tato úloha je aktivována tehdy, když dojde k připojení záznamníku k hostitelskému zařízení USB1\_HS.
+
+% zachovan pouze EHCI, z duvodu zjednodusseni projektu 
+Funkcionalita USB Mass Storage je mnohdy poskytována samotnými výrobci mikrokontrolérů jako součást vývojových balíků s cílem usnadnit vývojářům vývoj aplikací. Společnost NXP Semiconductors nabízí v rámci svého MCUXpresso SDK (Software Development Kit) USB Mass Storage se zpřístupněním obsahu SD karty připojenému hostitelskému zařízení.
+
+Bylo tedy třeba zaintegrovat USB Mass Storage do firmwaru digitálního záznamníku, který je v rámci projektu umístěn v adresáři \texttt{msc/}, dále je součástí v rámci složky \texttt{source/}, soubor \texttt{mass\_storage.c} obsahuje aplikaci USB Mass Storage, kterou je možné rozšířit. Z pohledu Mass Storage je také důležitá obslužná rutina přerušení \texttt{USB1\_Hs\_IRQHandler()}, která zprostředkovává komunikaci a přenos dat mezi hostitelským zařízením.
+
+
+Samotná implementace USB Mass Storage byla převzata z softwarového balíku MCUXpresso SDK (Software Development Kit), který poskytuje společnost NXP Semiconductors. Implementace USB Mass Storage z poskytnutého balíku je univerzální a navržená tak, aby podporovala širokou škálu mikrokontrolérů, z tohoto důvodu jsem modul optimalizoval. Například není potřeba rozsáhlá množina kódu podporující různé typy hostitelských rozhraní (Host Controller Interface - HCI) jakými jsou například EHCI, KHCI, či speciální řadiče určené pro čipy rodiny LPC.
+
+Portace USB Mass Storage do firmware digitálního záznamníku tedy spočívala 
+
+jejíž hlavní logika je spuštěna v případě, kdy je k digitálnímu záznamníku připojeno hostitelské zařízení pomocí USB1\_HS. USB Mass Storage je vcelku používané, i samotní výrobci čipů pro usnadnění času vývojářů poskytují tuto aplikaci, a právě to poskytuje NXP Semiconductors v rámci svého SDK (Software Development Kit). Tato implementace dokáže zpřístupnit SD kartu.
+
+Mým úkolem bylo tedy naportovat USB Mass Storage na vyvíjenou aplikaci digitálního záznamníku, zároveň poskytnutá implementace je obecná a vyvíjená se záměrem kompatibility s velkou řadou mikrokontrolérů, proto jsem její obsah pročistil. Například poskytnutý Mass Storage poskytuje vícero rozhraní hostitelských řadičů (Host Controller Interface - HCI) jakým je například EHCI, KHCI a speciální rozhraní pro rodinu LPC. Možnosti KHCI a rozhraní pro rodinu LPC byly odstraněny, jelikož jsou nekompatibilní, a v případě portace firmwaru na jiný mikrokontrolér v rámci výrobce NXP Semiconductors je lze snadno zpět přidat.  
+
+Kód realizující funkcionalitu USB Mass Storage je také organizován do externího modulu, proto má tento kód vlastní externí adresář \texttt{msc/}.
 
 \begin{figure}[h]
     \centering
@@ -1094,7 +1112,7 @@ void record_task(void *handle)
 % ==================================================== 
 \chapter{Testování systému}
 \label{testovani_systemu}
-Obecne proc je potreba testovat, jake jsou moznost testovani a validace vestavenych systemu
+Obecně proč je potřeba testovat, jaké jsou možnosti testování a validace vestavěných systémů
 
 % ----------------------------------------------------
 
@@ -1104,13 +1122,26 @@ Obecne proc je potreba testovat, jake jsou moznost testovani a validace vestaven
 Popis skriptů pro automatické testování, popis výsledků, atd, ...
 
 \subsection{Kontrola bezpečnosti kódu}
-MISRA
+
+
+\begin{lstlisting}[language=C, caption={Ukázka odůvodněného porušení pravidla MISRA}, label={lst:misra}]
+/* MISRA Deviation Note:
+ * Rule: MISRA 2012 Rule 10.3 [Required]
+ * Justification: The enum value is part of the NXP SDK
+ * and is intentionally used in this context as a bitmask flag for hardware 
+ *  status registers.
+ */
+
+/*lint -e9034 MISRA Deviation: conversion from enum to unsigned32 */
+CTIMER_ClearStatusFlags(CTIMER4, kCTIMER_Match0Flag);
+/*lint +e9034 */
+\end{lstlisting}
 
 % ----------------------------------------------------
 
 \section{Limitace systému}
 \label{limitace}
-
+    
 % ----------------------------------------------------
 
 \section{Možná rozšíření záznamníku}
