@@ -1105,14 +1105,12 @@ Nedílnou součástí vývoje vestavěnéných systémů by mělo být i testov�
 % ----------------------------------------------------
 
 \section{Funkcionální testování systému}
-Funkcionalita digitálního záznamníku, byla prověřena pomocí skriptu využívající objektově orintovaný přístup napsaném v jazyce Python, který simulovany monitorované zařízení a to tak, že na vstup dostal množinu souboru s testovacím textem a postupně jejich obsah odesílal v podobě sériovových dat z UARTu přes COM port do digitálního záznamníku. Zařízení bylo primárně testována s rychlostmi přenosu využívající zařízení které budou v reálném světě monitorované. Testy neprokázaly žádnou vadu systému. Testovací skript se nachází v adresáři \texttt{tests/} pod názvem \texttt{serial\_test.py} a pro jejich korektní funkcionalitu je potřeba správně nastavit hodnoty definicící TESTS_FOLDER    = 'test_files'  # Relative path to the test folder
-TEST_CASES      = ['test_1kb_one_line.txt','test_420b.txt','test_ahoj.txt']
+Funkcionalita digitálního záznamníku byla prověřena pomocí skriptu využívajícího objektově orientovaný přístup napsaném v jazyce Python. Tento skript simuluje monitorované zařízení tak, že načítá testovací textové soubory a jejich obsah postupně odesílá ve formě sériových dat přes COM port do digitálního záznamníku. Testovací skript se nachází v adresáři \texttt{tests/} pod názvem \texttt{serial\_test.py} a pro jejich korektní funkcionalitu je potřeba správně nastavit hodnoty definicící, určující COM port, sadu testovacích souborů a přenosovou rychlost.
 
-COM_PORT        = 'COM11'
-BAUD_RATE       = 230400 
+Testování bylo prováděno s různými přenosovými rychlostmi, přičemž primárně bylo zaměřeno na přenosové rychlosti odpovídající skutečným scénářům nasazení. Během funkcionálního testování nebylo pozorováva žadná ztráta dat.
 
 \section{Kontrola bezpečnosti kódu}
-
+Kromě funkcionálního testování byla provedena statická analýza zdrojového kódu pomocí pravidel specifikace MISRA C:2012. K tomu účelu byla využita nástroje PC-lint Plus ve verzi 2.2 od společnosti Vector s 14 denní licentí zdarma. Konfigurační soubory jsou společně s výstupy PC-lint Plus uloženy složce \texttt{test/static-analysis/}. Pozornost byla věnována primárně pravidlům spadající do kategorie Required a Mandatory.\footnote{Pravidla ze skupiny Advisory nebyly brány v potaz, tyto chyby nijak nenarušují fukcionalitu firmwaru.} Většina porušení pravidel byla opravena a nebo obhájena pomocí komentářu příčinu a důvod porušení pravidla (viz. ukázka~\ref{lst:misra}). Obhájená porušení se týkají zejména kvůli architektuře MCUXpresso SDK, FreeRTOSu či z důvodu, že PC-lint Plus nedokázal najít souvislosti mezi zdrojovými a hlavičkovými soubory.
 
 \begin{lstlisting}[language=C, caption={Ukázka odůvodněného porušení pravidla MISRA}, label={lst:misra}]
 /* MISRA Deviation Note:
