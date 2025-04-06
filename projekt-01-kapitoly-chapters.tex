@@ -1096,14 +1096,14 @@ Z důvodu prevence ztráty dat a minimalního rizika poškození souborového sy
 
 Analogový komparátor je přítomen na MCU MCXN947 v podobě periferie \texttt{LPCMP} (Low-Power Comparator), který bude porovnávat napětí na \SI{5}{\volt} větvi, na které bude respektive hodnota napětí \SI{4.6}{\volt}, z důvodu úbytku napětí na Schottky diodě (viz. kapitola~\ref{zalohovane_napajeni_hw}).
 
-oproti referenčnímu napětí. Jak již bylo zmíněno v kapitole~\ref{zalohovane_napajeni_hw}, důležitá je z pohledu detekce hodnota napětí \SI{4.6}{\volt}, která je z důvodu Schottky diody standardní hodnotou napětí, jelikož je však před vstup do komparátoru umístěná ještě napěťová dělička, pak je standardní vstupní napětí do komparátoru rovno hodnotě: 
+Důležité je také zmínit, že v případě, kdy je zařízení napájeno, je napětí na sledované \SI{5}{\volt} napájecí větvi reálně nižší, a to přibližně \SI{4.6}{\volt} (viz. kapitola~\ref{zalohovane_napajeni_hw}) z důvodu úbytku napětí na Schottkyho diodě. Napětí z této větve je následně přivedeno na vstup analogového komparátoru prostřednictvím napěťového děliče, a tedy výsledné napětí, které je skutečně porovnáváno komparátorem (při napájení), je rovno hodnotě:
 
 \begin{equation}
     V_{diff} = \SI{4.5}{\volt} * \frac{33}{18 + 33} = \SI{2.91176}{\volt} 
     \label{eq:trigger-cmp-val}
 \end{equation}
 
-Perifie \texttt{LPCMP} obsahuje interní DAC, díky kterému je možné porovnávat vstupní analogový signál s 256 respektive 255 úrovněmi referenčního napětí, kterým je signál \texttt{VDD\_ANA} s napětím \SI{3.3}{\volt}.  
+Perifie \texttt{LPCMP} obsahuje interní DAC (Digital-Analog Converter), díky kterému je možné porovnávat vstupní analogový signál s 256 respektive 255 úrovněmi referenčního napětí, kterým je signál \texttt{VDD\_ANA} s napětím \SI{3.3}{\volt}.  
 
 Komparátor musí reagovat co nejdříve, aby MCU dostalo co nejvíce času na uložení dat do SD karty, proto je jako hodnota napětí, při které bude komparátor reagovat, zvoleno napětí \SI{4.5}{\volt}, respektive \SI{2.91176}{\volt}. Z tohoto důvodu je hodnota v DAC, při které bude komparátor reagovat, nastavena na hexadecimální hodnotu 0xE1, jelikož:
 
