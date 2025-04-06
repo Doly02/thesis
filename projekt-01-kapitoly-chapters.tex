@@ -1096,25 +1096,24 @@ Z důvodu prevence ztráty dat a minimalního rizika poškození souborového sy
 
 Analogový komparátor je přítomen na MCU MCXN947 v podobě periferie \texttt{LPCMP} (Low-Power Comparator), který bude porovnávat napětí na \SI{5}{\volt} větvi, na které bude respektive hodnota napětí \SI{4.6}{\volt}, z důvodu úbytku napětí na Schottky diodě (viz. kapitola~\ref{zalohovane_napajeni_hw}).
 
-Důležité je také zmínit, že v případě, kdy je zařízení napájeno, je napětí na sledované \SI{5}{\volt} napájecí větvi reálně nižší, a to přibližně \SI{4.6}{\volt} (viz. kapitola~\ref{zalohovane_napajeni_hw}) z důvodu úbytku napětí na Schottkyho diodě. Napětí z této větve je následně přivedeno na vstup analogového komparátoru prostřednictvím napěťového děliče, a tedy výsledné napětí, které je skutečně porovnáváno komparátorem (při napájení), je rovno hodnotě:
+Důležité je také zmínit, že v případě, kdy je zařízení napájeno, je napětí na sledované \SI{5}{\volt} napájecí větvi reálně nižší, a to přibližně \SI{4.6}{\volt} (viz. kapitola~\ref{zalohovane_napajeni_hw}) z důvodu úbytku napětí na Schottkyho diodě. Napětí z této větve je následně přivedeno na vstup analogového komparátoru prostřednictvím napěťového děliče. Komparátor musí reagovat co nejdříve, aby MCU dostalo co nejvíce času na uložení dat do SD karty, proto je jako hodnota napětí, při které bude komparátor reagovat, zvoleno napětí \SI{4.5}{\volt}, pokud je tato hodnota přepočítána na hodnotu napětí, které je za napěťovým děličem, vyjde hodnota \SI{2.91176}{\volt}, jelikož:
 
 \begin{equation}
     V_{diff} = \SI{4.5}{\volt} * \frac{33}{18 + 33} = \SI{2.91176}{\volt} 
     \label{eq:trigger-cmp-val}
 \end{equation}
 
-Perifie \texttt{LPCMP} obsahuje interní DAC (Digital-Analog Converter), díky kterému je možné porovnávat vstupní analogový signál s 256 respektive 255 úrovněmi referenčního napětí, kterým je signál \texttt{VDD\_ANA} s napětím \SI{3.3}{\volt}.  
-
-Komparátor musí reagovat co nejdříve, aby MCU dostalo co nejvíce času na uložení dat do SD karty, proto je jako hodnota napětí, při které bude komparátor reagovat, zvoleno napětí \SI{4.5}{\volt}, respektive \SI{2.91176}{\volt}. Z tohoto důvodu je hodnota v DAC, při které bude komparátor reagovat, nastavena na hexadecimální hodnotu 0xE1, jelikož:
+Perifie \texttt{LPCMP} obsahuje interní DAC (Digital-Analog Converter), díky kterému je možné porovnávat vstupní analogový signál s 256 respektive 255 úrovněmi referenčního napětí, kterým je signál \texttt{VDD\_ANA} s napětím \SI{3.3}{\volt}. Z tohoto důvodu je hodnota v DAC, při které bude komparátor reagovat, nastavena na hexadecimální hodnotu 0xE1, jelikož:
 
 \begin{equation}
     DAC_{level} = 255 * \frac{2.91176}{3.3} = 225.125 = 0xE1
     \label{eq:dac-value}
 \end{equation}
 
-Reakce komparátoru je rovněž ovlivněna hysterézí nastavené na hodnotu \SI{20}{\milli\volt} aby byly omezeny falešné detekce. Jakmile je přerušení od komparátoru vyvoláno, obslužná rutina příslušného přerušení uloží všechna data, která jsou dočasně uložená ve volatilní paměti RAM, do SD karty pomocí funkce  \texttt{CONSOLELOG\_Flush()} a uzavře soubor, a systém je připraven k vypnutí.
+% 5 tau = 16.5 sekundy
+Reakce komparátoru je rovněž ovlivněna hysterézí nastavené na hodnotu \SI{20}{\milli\volt} aby byly omezeny falešné detekce. Krom samotného komparátoru je součástí detekce ztráty napájení ještě časovač, který za dobu 5 $\tau$ (čas, ve kterém bude kondenzátor pro zálohované napájení nabit na $99\%$) uvede komparátor do stavu, ve kterém je schopen detekovat korektně ztrátu napájení. Během testování se v ojedinělých případech objevily falešné detekce, pokud byl digitální záznamník napájen z měkkého zdroje a obvod pro zálohované napájení ještě nebyl dostatečně nabitý.\footnote{Stav, kdy je komparátor připraven k detekci, je signalizován pomocí LED (viz. kapitola \ref{signalizace_stavu_systemu}).}
 
-V systému je ještě přítomen časovač, který aktivuje detekci ztráty napájení, jelikož se v ojedinělých případech objevily falešné detekce, pokud byl digitální záznamník napájen z měkkého zdroje a obvod pro zálohované napájení ještě nebyl plně nabit, k uvede za dobu 5 tau komparátor do původního stavu. Stav, kdy je komparátor připraven k detekci, je signalizován pomocí LED (viz. kapitola \ref{signalizace_stavu_systemu}).
+Jakmile je záznamník připraven na bezpečné odpojení napájení, a k odpojení skutečně dojde, je pomocí komparátoru detekován pokles napětí pod stanovenou hranici a je vyvoláno přerušení od komparátoru s nejvyšší prioritou. Během obslužné rutiny přerušení jsou uložena všechna data, která jsou dočasně uložená ve volatilní paměti RAM, do souboru uloženém na SD kartě prostřednictvím funkce \texttt{CONSOLELOG\_Flush()}, která zajišťuje také korektní uzavření souboru. Následně se systém dostává do stavu, kdy je připraven na nedostatečné napětí, při kterém již není možný provoz záznamníku bez ohrožení integrity dat.
 
 \begin{figure}[h]
     \centering
