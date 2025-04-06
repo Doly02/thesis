@@ -1090,23 +1090,22 @@ Bylo tedy třeba zaintegrovat USB Mass Storage do firmwaru digitálního záznam
 USB Mass Storage využívá obecný USB modul implementovaný se záměrem kompatibility s velkou řadou mikrokontrolérů. z tohoto důvodu jsem se rozhodl modul optimalizovat. Poskytnutý Mass Storage poskytuje vícero rozhraní hostitelských řadičů (Host Controller Interface - HCI) jakým je například KHCI, a speciální rozhraní pro rodinu LPC, které jsou nekompatibilní s mikrokontrolérem MCXN947, proto byla odstraněna, a v případě přechodu na jiné MCU lze rozhraní zaměnit. 
 
 % Tato volba mi přijde jako vhodná, z tohoto důvodu, že není třeba periodicky kontrolovat napětí v systému (tzv. Polling), ale pouze pomocí přerušení, a lze tuto detekci upravovat pouze pomocí firmwaru.
+% implementována v samostatném modulu \texttt{pwrloss_det.c}.
 \section{Detekce ztráty napájejícího napětí}
 Z důvodu prevence ztráty dat a minimalního rizika poškození souborového systému v důsledku náhlého výpadku napájení je v systému implementován mechanismus pro detekci poklesu napájecího napětí, který je realizován pomocí analogového komparátoru a pomocného časovače.  
 
-Analogový komparátor je přítomen na MCU MCXN947 v podobě periferie \texttt{LPCMP} (Low-Power Comparator), který bude porovnávat napětí na vstupu (\SI{5}{\volt} větev) oproti referenčnímu napětí. Jak již bylo zmíněno v kapitole~\ref{zalohovane_napajeni_hw}, důležitá je z pohledu detekce hodnota napětí \SI{4.6}{\volt}, která je z důvodu Schottky diody standardní hodnotou napětí, jelikož je však před vstup do komparátoru umístěná ještě napěťová dělička, pak je standardní vstupní napětí do komparátoru rovno hodnotě: 
+Analogový komparátor je přítomen na MCU MCXN947 v podobě periferie \texttt{LPCMP} (Low-Power Comparator), který bude porovnávat napětí na \SI{5}{\volt} větvi, na které bude respektive hodnota napětí \SI{4.6}{\volt}, z důvodu úbytku napětí na Schottky diodě (viz. kapitola~\ref{zalohovane_napajeni_hw}).
+
+oproti referenčnímu napětí. Jak již bylo zmíněno v kapitole~\ref{zalohovane_napajeni_hw}, důležitá je z pohledu detekce hodnota napětí \SI{4.6}{\volt}, která je z důvodu Schottky diody standardní hodnotou napětí, jelikož je však před vstup do komparátoru umístěná ještě napěťová dělička, pak je standardní vstupní napětí do komparátoru rovno hodnotě: 
 
 \begin{equation}
     V_{diff} = \SI{4.5}{\volt} * \frac{33}{18 + 33} = \SI{2.91176}{\volt} 
     \label{eq:trigger-cmp-val}
 \end{equation}
 
-Perifie \texttt{LPCMP} obsahuje interní DAC, díky kterému je možné porovnávat vstupní analogový signál s 256 respektive 255 úrovněmi referenčního napětí. A tedy vzdálenost (krok) mezi jednotlivými úrovněmi činí \SI{0.01294}{\volt}, vzhledem k tomu, že jako referenční napětí je považována hodnota \SI{3.3}{\volt}.  
-\begin{equation}
-    Krok_{DAC} = \frac{\SI{3.3}{\volt}}{255} = \SI{0.01294}{\volt} 
-    \label{eq:dac-step}
-\end{equation}
+Perifie \texttt{LPCMP} obsahuje interní DAC, díky kterému je možné porovnávat vstupní analogový signál s 256 respektive 255 úrovněmi referenčního napětí, kterým je signál \texttt{VDD\_ANA} s napětím \SI{3.3}{\volt}.  
 
-Komparátor musí reagovat co nejdřív, aby MCU dostalo co nejvíce času na uložení dat do SD karty, proto jsem jako hodnotu napětí, při které bude komparátor reagovat, vybral \SI{4.5}{\volt}, respektive \SI{2.91176}{\volt}. Z tohoto důvodu je hodnota v DAC, při které bude komparátor reagovat, nastavena na hexadecimální hodnotu 0xE1, jelikož:
+Komparátor musí reagovat co nejdříve, aby MCU dostalo co nejvíce času na uložení dat do SD karty, proto je jako hodnota napětí, při které bude komparátor reagovat, zvoleno napětí \SI{4.5}{\volt}, respektive \SI{2.91176}{\volt}. Z tohoto důvodu je hodnota v DAC, při které bude komparátor reagovat, nastavena na hexadecimální hodnotu 0xE1, jelikož:
 
 \begin{equation}
     DAC_{level} = 255 * \frac{2.91176}{3.3} = 225.125 = 0xE1
@@ -1124,7 +1123,7 @@ V systému je ještě přítomen časovač, který aktivuje detekci ztráty nap�
     \caption{Zjednuduššený diagram běhu a přepínání úloh}
     \label{fig:run-wout-freertos}
 \end{figure}
- 
+
 \section{Signalizace stavu systému}
 \label{signalizace_stavu_systemu}
 
