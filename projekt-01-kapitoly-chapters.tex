@@ -978,7 +978,7 @@ Obslužný firmware digitálního záznamníku je postaven na operačním systé
 % staticka alokace
 Na začátek je nutné uvést, že pro zvýšení spolehlivosti a predikovatelnosti systému jsem rozhodl, že firmware bude  využívat výhradně statickou alokaci paměti. Veškeré úlohy, fronty i synchronizační objekty jsou vytvářeny staticky s předem definovanou velikostí zásobníků a řídicích struktur již při startu systému. Dynamická alokace paměti je zcela vypnuta i přímo v konfiguraci FreeRTOS.
 
-U vývoje firmwaru byl kladen rovněž důraz na dokumentovanost zdrojového kódu. Všechny funkce, globální proměnné a makra jsou opatřeny komentáři ve formátu \textit{Doxygen}, ze kterých lze snadno vygenerovat dokumentaci. Krom toho je samotný kód doplněn o kontextové komentáře, které objasňují klíčové části implementace.
+U vývoje firmwaru byl kladen rovněž důraz na dokumentovanost zdrojového kódu. Všechny funkce, globální proměnné a makra jsou opatřeny komentáři v anglickém jazyce ve formátu \textit{Doxygen}, ze kterých lze snadno vygenerovat dokumentaci. Krom toho je samotný kód doplněn o kontextové komentáře, které objasňují klíčové části implementace.
 % TODO: Co vsechno lze zmenit v defs.h
 % obecna moznost konfigurace firmwaru
 Firmware digitálního záznamníku je navržen modulárně a je tedy rozdělen do několika funkčních celků (například logika záznamu, vyčtení zaznamenaných dat pomocí Mass Storage, detekce ztráty napájení, signalizace stavu systému a další), které je možné podle potřeby samostatně aktivovat či deaktivovat. Tohoto chování je dosaženo pomocí podmíněného překladu v jazyce C, kdy jsou jednotlivé části kódu překládány pouze v případě, že jsou odpovídajícím způsobem povoleny. K centrální správě těchto voleb slouží aplikační konfigurační soubor 
@@ -1090,27 +1090,60 @@ Bylo tedy třeba zaintegrovat USB Mass Storage do firmwaru digitálního záznam
 USB Mass Storage využívá obecný USB modul implementovaný se záměrem kompatibility s velkou řadou mikrokontrolérů. z tohoto důvodu jsem se rozhodl modul optimalizovat. Poskytnutý Mass Storage poskytuje vícero rozhraní hostitelských řadičů (Host Controller Interface - HCI) jakým je například KHCI, a speciální rozhraní pro rodinu LPC, které jsou nekompatibilní s mikrokontrolérem MCXN947, proto byla odstraněna, a v případě přechodu na jiné MCU lze rozhraní zaměnit. 
 
 \section{Detekce ztráty napájejícího napětí}
-Z důvodu prevence ztráty dat, ale také z důvodu ochrany souborového systému, z důvodu náhlého výpadku napájení, je implementována detekce ztráty napájejícího napětí. Ta je realizována za pomoci komparátoru a časovače. Tato volba mi příjde jako vhodná z toho není třeba periodicky kontrolovat napětí v systému (tzv. Polling), ale pouze pomocí přerušení, a lze tuto detekci upravovat, pouze pomocí firmwaru.
+Z důvodu prevence ztráty dat, ale také z důvodu ochrany souborového systému, z důvodu náhlého výpadku napájení, je implementována detekce ztráty napájejícího napětí. Ta je realizována za pomoci komparátoru a časovače. Tato volba mi přijde jako vhodná, z tohoto důvodu, že není třeba periodicky kontrolovat napětí v systému (tzv. Polling), ale pouze pomocí přerušení, a lze tuto detekci upravovat pouze pomocí firmwaru.
 
-Konkrétně se pro detekci využívá periferie \texttt{LPCMP} (Low-Power Comparator), který porovnává napětí vstupu (\SI{5}{\volt} větev) oproti referenčnímu napětí, jak již bylo zmíněno v kapitole \ref{zalohovane_napajeni_hw}, důležitá je z pohledu dektekce hodnota napětí \SI{4.6}{\volt}, která je z důvodu Schottky diody, standardní hodnotou napětí, pokud je vše v pořádku, obvodu je ještě umístěna dělička napětí, díky které je možné aby MCU mohlo zpracovat signál. Perifie \texttt{LPCMP} obsahuje interní DAC, díky kterého je možné porovnávat vstupní analogový signál s 256 úrovněmi referenčního napětí. Komparátor je nastaven konkrétně na hodnotu 
+Konkrétně se pro detekci využívá periferie \texttt{LPCMP} (Low-Power Comparator), který porovnává napětí vstupu (\SI{5}{\volt} větev) oproti referenčnímu napětí, jak již bylo zmíněno v kapitole \ref{zalohovane_napajeni_hw}, důležitá je z pohledu detekce hodnota napětí \SI{4.6}{\volt}, která je z důvodu Schottky diody, standardní hodnotou napětí, pokud je vše v pořádku, obvodu je ještě umístěna dělička napětí, díky které je možné, aby MCU mohlo zpracovat signál. Perifie \texttt{LPCMP} obsahuje interní DAC, díky kterému je možné porovnávat vstupní analogový signál s 256 úrovněmi referenčního napětí. Komparátor je nastaven konkrétně na hodnotu 0xE1 a pokud je tato hodnota překročena padající hranou (Falling Edge) je vygenerováno přerušení, s nejvyšší prioritou v systému.
+
+Jakmile je přerušení od komparátoru vyvoláno, obslužná rutina příslušného přerušení uloží všechna data, která jsou dočasně uložená ve volatilní paměti RAM do SD karty pomocí funkce  \texttt{CONSOLELOG\_Flush()} a uzavře soubor, a systém je připraven k vypnutí.
 
 
 \section{Signalizace stavu systému}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.00\textwidth]{obrazky-figures/signal_diodes.pdf}
+    
+    \caption{Zjednuduššený diagram běhu a přepínání úloh}
+    \label{fig:run-wout-freertos}
+\end{figure}
+
+Pokud je monitorované zařízení odpojeno od záznamníku, rozsvítí se tato dioda, v případě opětovného připojení monitorovaného zařízení k záznamníku dioda zhasne.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Dioda} & \textbf{Význam} & \textbf{Režim indikace} \\
+        \hline
+        D1 & Bezpečné odpojení & Svítí trvale  \\
+        \hline
+        D2 & Chybový stav během záznamu & Svítí trvale \\
+        \hline
+        D3 & Ukončení záznamu dat\footnote & Svítí trvale \\
+        \hline
+        D4 & Záznam aktivní & Bliká při záznamu dat \\
+        \hline
+        D5 & Ukončený záznam / bezpečné odpojení & Bliká po bezpečném uložení dat \\
+        \hline
+    \end{tabular}
+    \caption{Přehled funkce jednotlivých signalizačních LED diod}
+    \label{tab:signal_leds}
+\end{table}
+
 % ==================================================== 
 \chapter{Testování systému}
 \label{testovani_systemu}
-Nedílnou součástí vývoje vestavěnéných systémů by mělo být i testování sloužící k ověření funkcionality, stability, spolehlivosti i bezpečnosti.
-
 % ----------------------------------------------------
 
 \section{Funkcionální testování systému}
-Funkcionalita digitálního záznamníku byla prověřena pomocí skriptu využívajícího objektově orientovaný přístup napsaném v jazyce Python. Tento skript simuluje monitorované zařízení tak, že načítá testovací textové soubory a jejich obsah postupně odesílá ve formě sériových dat přes COM port do digitálního záznamníku. Testovací skript se nachází v adresáři \texttt{tests/} pod názvem \texttt{serial\_test.py} a pro jejich korektní funkcionalitu je potřeba správně nastavit hodnoty definicící, určující COM port, sadu testovacích souborů a přenosovou rychlost.
+Funkcionalita digitálního záznamníku byla prověřena pomocí skriptu využívajícího objektově orientovaný přístup napsaném v jazyce Python. Tento skript simuluje monitorované zařízení tak, že načítá testovací textové soubory a jejich obsah postupně odesílá ve formě sériových dat přes COM port do digitálního záznamníku. Testovací skript se nachází v adresáři \texttt{tests/} pod názvem \texttt{serial\_test.py} a pro jejich korektní funkcionalitu je potřeba správně nastavit hodnoty definující, určující COM port, sadu testovacích souborů a přenosovou rychlost.
 
-Testování bylo prováděno s různými přenosovými rychlostmi, přičemž primárně bylo zaměřeno na přenosové rychlosti odpovídající skutečným scénářům nasazení. Během funkcionálního testování nebylo pozorováva žadná ztráta dat.
+Testování s pomocí skriptu bylo prováděno s různými přenosovými rychlostmi, přičemž primárně bylo zaměřeno na přenosové rychlosti odpovídající skutečným scénářům nasazení. Během funkcionálního testování nebyla pozorována žádná ztráta dat.
+
+Digitální záznamník byl rovněž testován spolu s reálným monitorovaným zařízením, 
 
 \section{Kontrola bezpečnosti kódu}
-Kromě funkcionálního testování byla provedena statická analýza zdrojového kódu pomocí pravidel specifikace MISRA C:2012. K tomu účelu byla využita nástroje PC-lint Plus ve verzi 2.2 od společnosti Vector s 14 denní licentí zdarma. Konfigurační soubory jsou společně s výstupy PC-lint Plus uloženy složce \texttt{test/static-analysis/}. Pozornost byla věnována primárně pravidlům spadající do kategorie Required a Mandatory.\footnote{Pravidla ze skupiny Advisory nebyly brány v potaz, tyto chyby nijak nenarušují fukcionalitu firmwaru.} Většina porušení pravidel byla opravena a nebo obhájena pomocí komentářu příčinu a důvod porušení pravidla (viz. ukázka~\ref{lst:misra}). Obhájená porušení se týkají zejména kvůli architektuře MCUXpresso SDK, FreeRTOSu či z důvodu, že PC-lint Plus nedokázal najít souvislosti mezi zdrojovými a hlavičkovými soubory.
+Kromě funkcionálního testování byla provedena statická analýza zdrojového kódu pomocí pravidel specifikace MISRA C:2012. K tomuto účelu byla využita nástroj PC-lint Plus ve verzi 2.2 od společnosti Vector s 14denní licencí zdarma. Konfigurační soubory jsou společně s výstupy PC-lint Plus uloženy v adresáři \texttt{test/static-analysis/}. Pozornost byla věnována primárně pravidlům spadajícím do kategorie Required a Mandatory.\footnote{Pravidla ze skupiny Advisory nebyly brány v potaz, tyto chyby nijak nenarušují fukcionalitu firmwaru.} Většina porušení pravidel byla opravena a nebo obhájena pomocí komentáře, příčinu a důvod porušení pravidla (viz. ukázka~\ref{lst:misra}). Obhájená porušení se týkají zejména kvůli architektuře MCUXpresso SDK, FreeRTOSu či z důvodu, že PC-lint Plus nedokázal najít souvislosti mezi zdrojovými a hlavičkovými soubory.
 
 \begin{lstlisting}[language=C, caption={Ukázka odůvodněného porušení pravidla MISRA}, label={lst:misra}]
 /* MISRA Deviation Note:
@@ -1119,7 +1152,6 @@ Kromě funkcionálního testování byla provedena statická analýza zdrojovéh
  * and is intentionally used in this context as a bitmask flag for hardware 
  *  status registers.
  */
-
 /*lint -e9034 MISRA Deviation: conversion from enum to unsigned32 */
 CTIMER_ClearStatusFlags(CTIMER4, kCTIMER_Match0Flag);
 /*lint +e9034 */
