@@ -1115,12 +1115,14 @@ Reakce komparátoru je rovněž ovlivněna hysterézí nastavené na hodnotu \SI
 
 Jakmile je záznamník připraven na bezpečné odpojení napájení, a k odpojení skutečně dojde, je pomocí komparátoru detekován pokles napětí pod stanovenou hranici a je vyvoláno přerušení od komparátoru s nejvyšší prioritou. Během obslužné rutiny přerušení jsou uložena všechna data, která jsou dočasně uložená ve volatilní paměti RAM, do souboru uloženém na SD kartě prostřednictvím funkce \texttt{CONSOLELOG\_Flush()}, která zajišťuje také korektní uzavření souboru. Následně se systém dostává do stavu, kdy je připraven na nedostatečné napětí, při kterém již není možný provoz záznamníku bez ohrožení integrity dat.
 
+Na následujícím obrázku \ref{fig:pwrloss-detection-saleae} je možné vidět, jak komparátor reaguje v případě odpojení napájejícího napětí. Vrchní průběh grafu reprezentuje stav komparátoru, prostřední průběh zobrazuje napětí na vstupu komparátoru a poslední (spodní) reprezentuje stav napětí na sledované \SI{5}{\volt} napájecí větvi.
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.95\textwidth]{obrazky-figures/pwrloss-detection-saleae.png}`
     
     \caption{Zjednuduššený diagram běhu a přepínání úloh}
-    \label{fig:run-wout-freertos}
+    \label{fig:pwrloss-detection-saleae}
 \end{figure}
 
 \section{Signalizace stavu systému}
