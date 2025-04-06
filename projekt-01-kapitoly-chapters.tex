@@ -1089,48 +1089,44 @@ Bylo tedy třeba zaintegrovat USB Mass Storage do firmwaru digitálního záznam
 
 USB Mass Storage využívá obecný USB modul implementovaný se záměrem kompatibility s velkou řadou mikrokontrolérů. z tohoto důvodu jsem se rozhodl modul optimalizovat. Poskytnutý Mass Storage poskytuje vícero rozhraní hostitelských řadičů (Host Controller Interface - HCI) jakým je například KHCI, a speciální rozhraní pro rodinu LPC, které jsou nekompatibilní s mikrokontrolérem MCXN947, proto byla odstraněna, a v případě přechodu na jiné MCU lze rozhraní zaměnit. 
 
+% Tato volba mi přijde jako vhodná, z tohoto důvodu, že není třeba periodicky kontrolovat napětí v systému (tzv. Polling), ale pouze pomocí přerušení, a lze tuto detekci upravovat pouze pomocí firmwaru.
 \section{Detekce ztráty napájejícího napětí}
-Z důvodu prevence ztráty dat, ale také z důvodu ochrany souborového systému, z důvodu náhlého výpadku napájení, je implementována detekce ztráty napájejícího napětí. Ta je realizována za pomoci komparátoru a časovače. Tato volba mi přijde jako vhodná, z tohoto důvodu, že není třeba periodicky kontrolovat napětí v systému (tzv. Polling), ale pouze pomocí přerušení, a lze tuto detekci upravovat pouze pomocí firmwaru.
+Z důvodu prevence ztráty dat a minimalního rizika poškození souborového systému v důsledku náhlého výpadku napájení je v systému implementován mechanismus pro detekci poklesu napájecího napětí, který je realizován pomocí analogového komparátoru a pomocného časovače.  
 
-Konkrétně se pro detekci využívá periferie \texttt{LPCMP} (Low-Power Comparator), který porovnává napětí vstupu (\SI{5}{\volt} větev) oproti referenčnímu napětí, jak již bylo zmíněno v kapitole \ref{zalohovane_napajeni_hw}, důležitá je z pohledu detekce hodnota napětí \SI{4.6}{\volt}, která je z důvodu Schottky diody standardní hodnotou napětí. Pokud je vše v pořádku, v obvodu je ještě umístěna dělička napětí, díky které je možné, aby MCU mohlo zpracovat signál. 
-
-Perifie \texttt{LPCMP} obsahuje interní DAC, díky kterému je možné porovnávat vstupní analogový signál s 256 respektive 255 úrovněmi referenčního napětí. Komparátor je nastaven konkrétně na hodnotu 0xE1 a pokud je tato hodnota překročena padající hranou (Falling Edge) je vygenerováno přerušení s nejvyšší prioritou v systému. Samotný komparátor je nastaven, aby reagoval v případě, že se v systému je napětí \SI{4.5}{\volt} to tedy znamená, že za děličkou napětí bude v tomto případě hodnota: 
+Analogový komparátor je přítomen na MCU MCXN947 v podobě periferie \texttt{LPCMP} (Low-Power Comparator), který bude porovnávat napětí na vstupu (\SI{5}{\volt} větev) oproti referenčnímu napětí. Jak již bylo zmíněno v kapitole~\ref{zalohovane_napajeni_hw}, důležitá je z pohledu detekce hodnota napětí \SI{4.6}{\volt}, která je z důvodu Schottky diody standardní hodnotou napětí, jelikož je však před vstup do komparátoru umístěná ještě napěťová dělička, pak je standardní vstupní napětí do komparátoru rovno hodnotě: 
 
 \begin{equation}
     V_{diff} = \SI{4.5}{\volt} * \frac{33}{18 + 33} = \SI{2.91176}{\volt} 
     \label{eq:trigger-cmp-val}
 \end{equation}
 
-Zároveň platí, že krok v rozlišení interního DAT komparátoru je:
-
+Perifie \texttt{LPCMP} obsahuje interní DAC, díky kterému je možné porovnávat vstupní analogový signál s 256 respektive 255 úrovněmi referenčního napětí. A tedy vzdálenost (krok) mezi jednotlivými úrovněmi činí \SI{0.01294}{\volt}, vzhledem k tomu, že jako referenční napětí je považována hodnota \SI{3.3}{\volt}.  
 \begin{equation}
     Krok_{DAC} = \frac{\SI{3.3}{\volt}}{255} = \SI{0.01294}{\volt} 
     \label{eq:dac-step}
 \end{equation}
 
-Jelikož chceme aby komparátor reagoval při překročení hraničního napětí \SI{4.5}{\volt} respektive \SI{2.91176}{\volt}, pak musí být nastavena hodnota v DAC na: 
+Komparátor musí reagovat co nejdřív, aby MCU dostalo co nejvíce času na uložení dat do SD karty, proto jsem jako hodnotu napětí, při které bude komparátor reagovat, vybral \SI{4.5}{\volt}, respektive \SI{2.91176}{\volt}. Z tohoto důvodu je hodnota v DAC, při které bude komparátor reagovat, nastavena na hexadecimální hodnotu 0xE1, jelikož:
 
 \begin{equation}
-    Hodnota_{DAC} = 3.3 * \frac{225}{255} = 0xE1
-    \label{eq:dac-step}
+    DAC_{level} = 255 * \frac{2.91176}{3.3} = 225.125 = 0xE1
+    \label{eq:dac-value}
 \end{equation}
 
-zajištěna ochrana dat a minimalizováno riziko poškození souborového systému v důsledku náhlého výpadku napájení, je v systému implementován mechanismus pro detekci poklesu napájecího napětí. 
+Reakce komparátoru je rovněž ovlivněna hysterézí nastavené na hodnotu \SI{20}{\milli\volt} aby byly omezeny falešné detekce. Jakmile je přerušení od komparátoru vyvoláno, obslužná rutina příslušného přerušení uloží všechna data, která jsou dočasně uložená ve volatilní paměti RAM, do SD karty pomocí funkce  \texttt{CONSOLELOG\_Flush()} a uzavře soubor, a systém je připraven k vypnutí.
 
-Pak tedy zároveň platí při rozlišení interního rozlišení DAC
-
-Jakmile je přerušení od komparátoru vyvoláno, obslužná rutina příslušného přerušení uloží všechna data, která jsou dočasně uložená ve volatilní paměti RAM do SD karty pomocí funkce  \texttt{CONSOLELOG\_Flush()} a uzavře soubor, a systém je připraven k vypnutí.
+V systému je ještě přítomen časovač, který aktivuje detekci ztráty napájení, jelikož se v ojedinělých případech objevily falešné detekce, pokud byl digitální záznamník napájen z měkkého zdroje a obvod pro zálohované napájení ještě nebyl plně nabit, k uvede za dobu 5 tau komparátor do původního stavu. Stav, kdy je komparátor připraven k detekci, je signalizován pomocí LED (viz. kapitola \ref{signalizace_stavu_systemu}).
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.00\textwidth]{obrazky-figures/pwrloss-detection-saleae.png}`
+    \includegraphics[width=0.95\textwidth]{obrazky-figures/pwrloss-detection-saleae.png}`
     
     \caption{Zjednuduššený diagram běhu a přepínání úloh}
     \label{fig:run-wout-freertos}
 \end{figure}
-
-
+ 
 \section{Signalizace stavu systému}
+\label{signalizace_stavu_systemu}
 
 \begin{figure}[h]
     \centering
