@@ -1092,9 +1092,42 @@ USB Mass Storage využívá obecný USB modul implementovaný se záměrem kompa
 \section{Detekce ztráty napájejícího napětí}
 Z důvodu prevence ztráty dat, ale také z důvodu ochrany souborového systému, z důvodu náhlého výpadku napájení, je implementována detekce ztráty napájejícího napětí. Ta je realizována za pomoci komparátoru a časovače. Tato volba mi přijde jako vhodná, z tohoto důvodu, že není třeba periodicky kontrolovat napětí v systému (tzv. Polling), ale pouze pomocí přerušení, a lze tuto detekci upravovat pouze pomocí firmwaru.
 
-Konkrétně se pro detekci využívá periferie \texttt{LPCMP} (Low-Power Comparator), který porovnává napětí vstupu (\SI{5}{\volt} větev) oproti referenčnímu napětí, jak již bylo zmíněno v kapitole \ref{zalohovane_napajeni_hw}, důležitá je z pohledu detekce hodnota napětí \SI{4.6}{\volt}, která je z důvodu Schottky diody, standardní hodnotou napětí, pokud je vše v pořádku, obvodu je ještě umístěna dělička napětí, díky které je možné, aby MCU mohlo zpracovat signál. Perifie \texttt{LPCMP} obsahuje interní DAC, díky kterému je možné porovnávat vstupní analogový signál s 256 úrovněmi referenčního napětí. Komparátor je nastaven konkrétně na hodnotu 0xE1 a pokud je tato hodnota překročena padající hranou (Falling Edge) je vygenerováno přerušení, s nejvyšší prioritou v systému.
+Konkrétně se pro detekci využívá periferie \texttt{LPCMP} (Low-Power Comparator), který porovnává napětí vstupu (\SI{5}{\volt} větev) oproti referenčnímu napětí, jak již bylo zmíněno v kapitole \ref{zalohovane_napajeni_hw}, důležitá je z pohledu detekce hodnota napětí \SI{4.6}{\volt}, která je z důvodu Schottky diody standardní hodnotou napětí. Pokud je vše v pořádku, v obvodu je ještě umístěna dělička napětí, díky které je možné, aby MCU mohlo zpracovat signál. 
+
+Perifie \texttt{LPCMP} obsahuje interní DAC, díky kterému je možné porovnávat vstupní analogový signál s 256 respektive 255 úrovněmi referenčního napětí. Komparátor je nastaven konkrétně na hodnotu 0xE1 a pokud je tato hodnota překročena padající hranou (Falling Edge) je vygenerováno přerušení s nejvyšší prioritou v systému. Samotný komparátor je nastaven, aby reagoval v případě, že se v systému je napětí \SI{4.5}{\volt} to tedy znamená, že za děličkou napětí bude v tomto případě hodnota: 
+
+\begin{equation}
+    V_{diff} = \SI{4.5}{\volt} * \frac{33}{18 + 33} = \SI{2.91176}{\volt} 
+    \label{eq:trigger-cmp-val}
+\end{equation}
+
+Zároveň platí, že krok v rozlišení interního DAT komparátoru je:
+
+\begin{equation}
+    Krok_{DAC} = \frac{\SI{3.3}{\volt}}{255} = \SI{0.01294}{\volt} 
+    \label{eq:dac-step}
+\end{equation}
+
+Jelikož chceme aby komparátor reagoval při překročení hraničního napětí \SI{4.5}{\volt} respektive \SI{2.91176}{\volt}, pak musí být nastavena hodnota v DAC na: 
+
+\begin{equation}
+    Hodnota_{DAC} = 3.3 * \frac{225}{255} = 0xE1
+    \label{eq:dac-step}
+\end{equation}
+
+zajištěna ochrana dat a minimalizováno riziko poškození souborového systému v důsledku náhlého výpadku napájení, je v systému implementován mechanismus pro detekci poklesu napájecího napětí. 
+
+Pak tedy zároveň platí při rozlišení interního rozlišení DAC
 
 Jakmile je přerušení od komparátoru vyvoláno, obslužná rutina příslušného přerušení uloží všechna data, která jsou dočasně uložená ve volatilní paměti RAM do SD karty pomocí funkce  \texttt{CONSOLELOG\_Flush()} a uzavře soubor, a systém je připraven k vypnutí.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.00\textwidth]{obrazky-figures/pwrloss-detection-saleae.png}`
+    
+    \caption{Zjednuduššený diagram běhu a přepínání úloh}
+    \label{fig:run-wout-freertos}
+\end{figure}
 
 
 \section{Signalizace stavu systému}
