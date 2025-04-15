@@ -18,29 +18,34 @@ Při jakýchkoli úpravách však vznikají nové technické výzvy, a proto NXP
 
 Návrh a implementace záznamníku musí reflektovat požadavky na snadnou obsluhu, neboť zařízení bude poskytováno zákazníkům pro již zmíněné účely certifikace. V klasickém scénáři zákazník předá nabíječku i se záznamníkem operátorovi certifikační laboratoře, ten si záznamník připojí k testovanému zařízení. Po skončení testovacího dne operátor záznamník vrátí zákazníkovi, který jej následně připojí k počítači a odešle společnosti NXP Semiconductors získané záznamy.
 
-Kapitola~\ref{zaznam_dat} se zabývá problematikou záznamu dat z historického i technického hlediska. Popisuje vývoj záznamových systémů od mechanických a analogových zařízení až po moderní digitální řešení. Dále se zaměřuje na principy digitálního záznamu, popisuje základní architekturu digitálních záznamníků a klíčové koncepty, které se uplatňují při jejich návrhu a implementaci.
+Z hlediska textové struktury se tato bakalářská práce, kapitola~\ref{zaznam_dat} se zabývá problematikou záznamu dat z historického i technického hlediska. Popisuje vývoj záznamových systémů od mechanických a analogových zařízení až po moderní digitální řešení. Dále se zaměřuje na principy digitálního záznamu, popisuje základní architekturu digitálních záznamníků a klíčové koncepty, které se uplatňují při jejich návrhu a implementaci.
 
-Kapitola~\ref{navrh_digitalniho_zaznamniku}  je věnována procesu návrhu digitálního záznamníku. V úvodu kapitoly jsou rozebrána existující řešení z oblasti záznamu dat, která jsou podobná zařízení vyvíjenému v této bakalářské práci, a zároveň poskytují přehled o jejich výhodách a omezeních. Následně jsou představeny jednotlivé hardwarové a softwarové komponenty, které připadají v úvahu pro implementaci digitálního záznamníku, přičemž u každé části systému je uvedeno vícero alternativ (byť nejde o jediná možná řešení). V závěru kapitoly je pak popsána výsledná architektura záznamníku, která prezentuje konkrétní komponenty vybrané ze širšího spektra možností.
+Kapitola~\ref{navrh_digitalniho_zaznamniku}  je věnována procesu návrhu digitálního záznamníku. V úvodu kapitoly jsou rozebrána existující řešení z oblasti záznamu dat, která jsou podobná zařízení vyvíjenému v této bakalářské práci, a zároveň poskytují přehled o jejich výhodách a omezeních. Následně jsou představeny jednotlivé hardwarové a softwarové komponenty, které byly brány v úvahu pro implementaci digitálního záznamníku, přičemž u každé části systému je uvedeno vícero alternativ (byť nejde o jediná možná řešení). V závěru kapitoly je pak popsána výsledná architektura záznamníku, která prezentuje konkrétní komponenty vybrané ze širšího spektra možností.
 
 % Tato deska doplňuje funkcionalitu základové vývojové platformy o prvky nezbytné pro spolehlivý provoz záznamníku, zejména o detekci výpadku napájecího napětí, zálohované napájení pomocí superkondenzátorů a generování stavových signálů pro uživatele. Součástí expanzní desky jsou také externí komponenty, jako je reálný časový obvod (RTC), nezbytný pro přesné časové značky v uložených datech. Celkově tato deska výrazně rozšiřuje schopnosti základní desky a tvoří nezbytný předpoklad pro správnou funkčnost celého systému.
-Kapitola~\ref{realizace_hardwaru} se zaměřuje na realizaci hardwarové části digitálního záznamníku v podobě dedikovaného zařízení. Klíčovým prvkem této části je vývoj rozšiřující (expanzní) desky, která byla navržena speciálně pro potřeby tohoto projektu. Závěrečná část kapitoly je věnována mechanickému návrhu zařízení, konkrétně popisu návrhu ochranného krytu.
+Kapitola~\ref{realizace_hardwaru} se zaměřuje na realizaci hardwarové části digitálního záznamníku v podobě dedikovaného zařízení. Klíčovým prvkem této části je návrh a realizace rozšiřující expanzní desky, která byla navržena speciálně pro potřeby tohoto projektu.
+
+% ... navržena speciálně pro potřeby tohoto projektu. Závěrečná část kapitoly je věnována mechanickému návrhu zařízení, konkrétně popisu návrhu ochranného krytu.
 % chranici proti kontaktu s zivymi castmi zaznamniku
 
-Kapitola~\ref{softwarova_implementace} je věnována softwarové implementaci digitálního záznamníku. Kapitola popisuje návrh a realizaci jednotlivých částí firmwaru, který zajišťuje funkci zařízení jako autonomního záznamového systému. První část kapitoly se zaměřuje na samotný mechanismus záznamu dat, tedy příjem, zpracování a ukládání zaznamenaných dat. Následuje popis implementace mechanismu pro zpřístupnění uložených dat uživateli bez nutnosti fyzického vyjmutí paměťového média. V závěrečné části je popsána logika signalizace stavu zařízení vůči uživateli.
+Kapitola~\ref{softwarova_implementace} je věnována implementaci firmwaru digitálního záznamníku. Kapitola popisuje návrh a realizaci jednotlivých částí firmwaru, který zajišťuje funkci zařízení jako autonomního záznamového systému. První část kapitoly se zaměřuje na samotný mechanismus záznamu dat, tedy příjem, zpracování a ukládání zaznamenaných dat. Následuje popis implementace mechanismu pro zpřístupnění uložených dat uživateli bez nutnosti fyzického vyjmutí paměťového média. V závěrečné části je popsána logika detekce ztráty napájecího napětí a logika signalizace stavu zařízení vůči uživateli.
 
 Kapitola~\ref{testovani_systemu} popisuje proces, jakým bylo zařízení testováno a validováno. Primárně se zaměřuje na funkcionální testování zařízení, tj. ověření, že systém vykazuje správné chování. Další část je věnována kontrole bezpečnosti a spolehlivosti implementovaného kódu.
 
-V závěru v kapitole~\ref{zaver} jsou zmíněná možná rozšíření digitálního záznamníku a zhodnocení práce.
+V závěru v kapitole~\ref{zaver} jsou zmíněna možná rozšíření digitálního záznamníku a zhodnocení práce.
 
 \chapter{Záznam dat}
 \label{zaznam_dat}
 
 \section{Historické pozadí záznamu dat}
 \label{pocatky}
-Lidstvo již od svých počátků mělo potřebu zaznamenávat data, neboť člověk mnohdy dokáže datům přiřadit sémantiku - jejich význam, a proměnit je tak v informace. Právě díky nim se lidé mohou učit z minulých zkušeností, předávat znalosti dalším generacím, organizovat a podpořit tak neustálý lidský pokrok. 
+Lidstvo již od svých počátků mělo potřebu zaznamenávat data, neboť člověk mnohdy dokáže datům přiřadit sémantiku -- jejich význam, a proměnit je tak v informace. Právě díky nim se lidé mohou učit z minulých zkušeností, předávat znalosti dalším generacím, organizovat a podpořit tak neustálý lidský pokrok. 
 
 % Nicméně největším pokrokem ve zaznamenávání dat nastal s příchodem výpočetní techniky.
-Po staletí byl záznam dat výhradně manuální. Informace se uchovávaly v rukopisech, knihách či na papírových svitcích, ať už formou psaného textu, nebo ručně zapisovanými výsledky pozorování. Přesnost a dostupnost těchto dat byla však omezena kapacitou lidské obsluhy a možnostmi mechanických nástrojů.
+Po staletí byl záznam dat výhradně manuální. Informace se uchovávaly v rukopisech, knihách či na papírových svitcích, ať už formou psaného textu, nebo ručně zapisovanými výsledky pozorování. Zaznamenaná data byla však limitována svou přesností, která byla omezena lidskou obsluhou a možnostmi mechanických nástrojů, tak i svou dostupností, protože k nim měl přístup jen omezený okruh lidí.
+
+% Přesnost zaznamenaných dat byla však omezena schopnostmi lidské obsluhy a možnostmi mechanických nástrojů, tak i omezenou dostupností, 
+% ale také dostupnost těchto dat byla omezena, ke kterým měl přístup jen omezený okruh lidí.
 
 
 % pripadne to upravit na: Stěžejní změna přišla ve 20. století s rozvojem automatických záznamníků
@@ -55,7 +60,7 @@ Stěžejní změna přišla ve 20. století s rozvojem elektrotechniky a nástup
 
 \section{Záznam dat v počátcích elektrotechniky}
 \label{zaznam}
-Prvními specializovanými záznamníky byly mechanické či elektromechanické zařízení, využívající principu analogového záznamu dat. Jejich primárním účelem bylo zaznamenávání fyzikálních veličin, jako je například teplota, tlak, vlhkost nebo vibrace. Tyto přístroje využívaly myšlenky mechanického pohyblivého pera, které převádělo naměřenou hodnotu fyzikální veličiny na samočinný pohyb. Pro realizaci tohoto pohybu bylo nutné nejprve převést měřenou fyzikální veličinu na mechanický posun. Například pro měření teploty se běžně využíval bimetalový pásek, složený ze dvou kovových materiálů s různou hodnotou teplotní roztažitelnosti. Při změně teploty docházelo k prohnutí pásku v důsledku rozpínání kovu, čímž bylo rozpohybováno mechanické pero, které zapsalo hodnotu na paměťové médium. 
+Prvními specializovanými záznamníky byly mechanické či elektromechanické zařízení, využívající principu analogového záznamu dat. Jejichž primárním účelem bylo zaznamenávání fyzikálních veličin, jako je například teplota, tlak, vlhkost nebo vibrace. Tyto přístroje využívaly myšlenky mechanického pohyblivého pera, které převádělo naměřenou hodnotu fyzikální veličiny na samočinný pohyb. Pro realizaci tohoto pohybu bylo nutné nejprve převést měřenou fyzikální veličinu na mechanický posun, přičemž konkrétní způsob převodu závisel na typu měřené veličiny. Například pro měření teploty se běžně využíval bimetalový pásek, složený ze dvou kovových materiálů s různou hodnotou teplotní roztažitelnosti. Při změně teploty docházelo k prohnutí pásku v důsledku rozpínání kovu, čímž bylo rozpohybováno mechanické pero, které zapisovalo hodnotu na paměťové médium. 
 
 % mechanicky -< samocinny
 % pomocí kterého se zapisovala změřená hodnota na paměťové médiu (papírová páska nebo papírový buben)
@@ -68,9 +73,9 @@ Prvními specializovanými záznamníky byly mechanické či elektromechanické 
 \end{figure}
 
 
-Tyto přístroje jsou běžně používány od druhé poloviny 19. století. Pro již zmíněný záznam teploty lze například využít přístroj zvaný cirkulární grafový záznamník (Circular Chart Recorder), dále je hojně využíván polygraf, využívaný jako detektor lži. Značnou nevýhodou těchto záznamníků bývá typ paměťového média, na které probíhá zápis hodnot, nejčastěji jim je papírová páska nebo papírový buben. Nevýhodou těchto pásek bylo, že musely být velice často měněny za nové, ještě nepopsané, jelikož výsledné záznamy by se jinak staly značně nepřehledné, pokud by byly popsány vícekrát. \cite{origin_of_chart_recorders}
+Tyto přístroje jsou běžně používány od druhé poloviny 19. století. Pro již zmíněný záznam teploty lze například využít přístroj zvaný cirkulární grafový záznamník (Circular Chart Recorder), dále je hojně využíván polygraf, využívaný jako detektor lži. Značnou nevýhodou těchto záznamníků bývá typ paměťového média, na které probíhá zápis hodnot, nejčastěji jim je papírová páska nebo papírový buben. Nevýhodou těchto paměťových médií byla nutnost jejich časté výměny za nové, ještě nepopsané, jelikož výsledné záznamy by se jinak staly značně nepřehlednými, pokud by byly popsány vícekrát. \cite{origin_of_chart_recorders}
 
-Největší nevýhodou analogových záznamových systémů je jejich vysoká specializace\footnote{Řešení jsou současně mnohdy optimalizovaná pro záznam konkrétního systému.} pro jediný konkrétní typ záznamu. Tyto záznamníky tedy nejsou snadno upravitelné pro jiné účely, na rozdíl od digitálních řešení, která umožňují flexibilnější přizpůsobení (například pouhou úpravou softwarového programu) k sledování monitorované soustavy. Často je v těchto případech nutné využít jiné analogové řešení. \cite{analog_signal_and_digital_signal_processing_Tel_System}
+Hlavním omezením analogových záznamových systémů je však jejich vysoká specializace\footnote{Řešení jsou současně mnohdy optimalizovaná pro záznam konkrétního systému.} pro jediný konkrétní typ záznamu. Tyto záznamníky nejsou snadno upravitelné pro jiné účely, na rozdíl od digitálních řešení, která umožňují flexibilnější přizpůsobení (například pouhou úpravou softwarového programu) k sledování monitorované soustavy. Často je v těchto případech nutné využít jiné analogové řešení. \cite{analog_signal_and_digital_signal_processing_Tel_System}
 
 Další limitací těchto přístrojů bylo ruční vyhodnocování dat, což bylo mnohdy časově zdlouhavé a také náchylné k chybám. K správné interpretaci dat byla často potřeba zkušená obsluha a v některých případech i pomocné měřící pomůcky. Přenos souborů a automatizace taktéž nebyla možná, proto jakmile se v polovině 20. století začaly na trh dostávat číslicové systémy, analogové záznamové systémy těmito digitálními systémy byly postupně nahrazovány. \cite{newcastle_history_of_digital_computers, florian_prechod_a_analog_do_digital}
 
@@ -82,9 +87,9 @@ Další limitací těchto přístrojů bylo ruční vyhodnocování dat, což by
 S nástupem číslicových systémů v polovině 20. století došlo k velkému pokroku ve způsobu, jakým byla data zaznamenávána, zpracovávána a uchovávána. Digitální zpracování dat v porovnání s analogovým zpracováním se liší způsobem, jakým se v systému obecně pracuje se signály (viz. \ref{zaznam}). Zatímco analogový záznam pracuje se spojitými (kontinuálními) signály, digitální záznam využívá diskrétní (číslicové) hodnoty, které jsou uchovávány v binární podobě.
 
 \subsection{Princip digitálního záznamu dat}
-Z předchozího textu je tedy zřejmé, že digitální zpracování dat (tedy i záznam dat) vyžaduje číslicové hodnoty a z toho plyne, že již na vstupu musí být příchozí signály v digitální podobě. Data tedy musí být generována číslicovými zdroji, nebo musí být převedena do digitálního tvaru pomocí komponenty k tomu určené, kterou je například analogově-digitální převodník. 
+Z předchozího textu je tedy zřejmé, že digitální zpracování dat (tedy i záznam dat) vyžaduje číslicové hodnoty a z toho plyne, že již na vstupu musí být příchozí signály v digitální podobě. Data tedy musí být generována číslicovými zdroji, nebo musí být převedena do digitálního tvaru pomocí komponenty k tomu určené, kterou je například analogově-digitální převodník.
 
-Pro převod analogových signálů do jejich digitální podoby se využívá proces digitalizace, který zahrnuje tři základní kroky. V počátku dochází ke vzorkování, při kterém je původní spojitý signál snímán ať už v pravidelných či nepravidelných časových intervalech a převáděn na diskrétní vzorky. Následně dochází ke kvantizaci, při níž jsou vzorkované hodnoty zaokrouhleny na nejbližší úroveň amplitudy v omezeném rozsahu. Vzorky jsou tedy rozděleny do segmentů (tříd) diskrétních hodnot, to s sebou nese ztrátu přesnosti závislou na jemnosti stupnice. Nakonec je kvantizovaný signál kódován do binární podoby, ve které jej může výpočetní stroj dále zpracovávat, ukládat nebo přenášet.
+Pro převod analogových signálů do jejich digitální podoby se využívá proces digitalizace, který zahrnuje tři základní kroky. V počátku dochází ke vzorkování, při kterém je původní spojitý signál snímán ať už v pravidelných či nepravidelných časových intervalech. Následně dochází ke kvantizaci, při níž jsou vzorkované hodnoty zaokrouhleny na nejbližší úroveň amplitudy v omezeném rozsahu. Vzorky jsou tedy rozděleny do segmentů (tříd) diskrétních hodnot, přičemž tento krok s sebou nese ztrátu přesnosti závislou na jemnosti stupnice, která se nazývá kvantizační chyba. Nakonec je kvantizovaný signál kódován do binární podoby, ve které jej může výpočetní stroj dále zpracovávat, ukládat nebo přenášet.
 
 \begin{figure}[h]
     \centering
@@ -93,13 +98,13 @@ Pro převod analogových signálů do jejich digitální podoby se využívá pr
     \label{fig:digital-vs-analog}
 \end{figure}
 
-U digitálních signálů je proces záznamu výrazně jednodušší, protože již nevyžaduje žádnou digitalizaci. Digitální data vstupující do záznamníku v podobě datového toku (data stream) skrz přijímací periferie. Tyto periferie jsou specializované nikoliv na konkrétní fyzikální veličinu (jak tomu bylo u analogových záznamových zařízení viz. kapitola \ref{zaznam}), ale na specifický komunikační protokol. Tedy jedna periferie může přenášet jak údaje o teplotě, vlhkosti, tak i cokoliv jiného (pokud je dodrženo správné komunikační rozhraní), přičemž povaha přenášených dat závisí na senzorech a zařízeních připojených k této periferii. Přijímaná data jsou tedy v přijímací periferii zpracovávána přímo ve své binární podobě a mohou být bez nutnosti další konverze zpracovávána, přenášena či ukládána.
+U digitálních signálů je proces záznamu výrazně jednodušší, protože již nevyžaduje žádnou digitalizaci. Digitální data vstupující do záznamníku v podobě datového toku (data stream) skrz přijímací periferie. Tyto periferie nejsou navrženy pro přímé měření konkrétních fyzikálních veličin, ale pro příjem napěťového signálu reprezentujícího data dle přesně definovaného formátu. Typicky se jedná o digitální rámce, v nichž jsou data zakódována podle určitého přenosového schématu, například rámec může obsahovat jeden start bit, osm datových bitů a jeden stop bit, jako je to v případě UART přenosu. Tedy jedna periferie může přenášet jak údaje o teplotě, vlhkosti, tak i cokoliv jiného, pokud je dodržen rámec, přičemž povaha přenášených dat závisí na senzorech či zařízeních připojených k této periferii. Přijímaná data jsou tedy v přijímací periferii zpracovávána přímo ve své binární podobě a mohou být bez nutnosti další konverze zpracovávána, přenášena či ukládána.
 
 \newpage
 
 Digitální záznam poskytuje mnoho výhod oproti svému analogovému protějšku. Primárně je to jeho flexibilita a efektivita při zpracování, ukládání a přenosu dat. Digitální data lze snadněji kopírovat, přenášet, zpracovávat a ukládat, což je pro záznamové systémy zásadní. Díky digitálnímu záznamu můžeme dnes i jednoduše analyzovat data v porovnání s analogovým záznamem. Proto jsou dnes systémy s digitálním záznamem preferovanou volbou.
 
-    
+
 % TODO: Digitální záznamník může sloužit i pouze pro čistě PC programy? Pokud je zde nejak prijimaci periferie? To by slo primo do CPU
 \subsection{Digitální záznamník}
 \label{digitalni_zaznamik}
