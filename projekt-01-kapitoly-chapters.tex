@@ -1200,11 +1200,26 @@ CTIMER_ClearStatusFlags(CTIMER4, kCTIMER_Match0Flag);
 
 \section{Limitace systému}
 \label{limitace}
-    
+Během testování nebyly nalezeny žádné skutečnosti limitující provoz digitálního záznamníku. 
+
+% nicméně po odpojení digitálního záznamníku od napájecího napětí, je dobré počkat pár sekund před opětovným připojením digitálního záznamníku k napájecímu napětí, a to zdůvodu zálohovacím kondenzátorům, které udržují určité napětí v digitálnímu záznamníku a pokud toto napětí není dostatečně vybito 
+
 % ----------------------------------------------------
 
 \section{Možná rozšíření záznamníku}
 \label{mozne_rozsireni}
+Navržený digitální záznamník je koncipován jako modulární a dále rozšiřitelný systém, který lze v budoucnu snadno doplnit o nové funkce v závislosti na specifických požadavcích aplikace.
+
+Jednou z připravených, avšak dosud nerealizovaných funkcionalit je synchronizace reálného času pomocí systému GPS. Hardwarové rozhraní je již implementováno a připojeno, zbývá pouze doplnit softwarovou část, která bude pravidelně aktualizovat čas v RTC obvodu na základě časových údajů získaných z GPS modulu.
+
+Dalším potenciálním rozšířením je zavedení mechanismů pro zabezpečení zaznamenaných dat uložených na SD kartě. Například šifrování dat, zajištění integrity a autentizační systém chránící přístup k uloženým datům.
+
+Systém by mohl být dále vybaven volitelnou možností odesílání dat na vzdálené úložiště místo ukládání na SD kartu. 
+
+% Implementovaný digitální záznamník je možné rozšířit, hodila by se dopracovat synchronizace času pomocí GPS, která je připravena, a tedy je akorát nutné doimplementovat aktualizaci času do firmwaru digitálního záznamníku. Dále by bylo možné zabezpečit lépe zaznamenaná data na SD kartě, například pomocí šifrování, zajištění integrity dat a popřípadě k autentizaci, aby nedošlo k neoprávněnému přístupu k datům.
+
+%Možným rozšířením by také mohla být možnost ukládání dat na vzdálené úložiště, která by mohla být volitelná.
+
 
 \chapter{Závěr}
 \label{zaver}
