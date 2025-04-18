@@ -38,7 +38,7 @@ V závěru v kapitole~\ref{zaver} jsou zmíněna možná rozšíření digitáln
 
 \section{Historické pozadí záznamu dat}
 \label{pocatky}
-Lidstvo již od svých počátků mělo potřebu zaznamenávat data, neboť člověk mnohdy dokáže datům přiřadit sémantiku -- jejich význam, a proměnit je tak v informace. Právě díky nim se lidé mohou učit z minulých zkušeností, předávat znalosti dalším generacím, organizovat a podpořit tak neustálý lidský pokrok. 
+Lidstvo již od svých počátků mělo potřebu zaznamenávat data, neboť člověk mnohdy dokáže datům přiřadit sémantiku -- jejich význam, a proměnit je tak v informace. Právě díky informacím se lidé mohou učit z minulých zkušeností, předávat znalosti dalším generacím, organizovat a podpořit tak neustálý lidský pokrok. 
 
 % Nicméně největším pokrokem ve zaznamenávání dat nastal s příchodem výpočetní techniky.
 Po staletí byl záznam dat výhradně manuální. Informace se uchovávaly v rukopisech, knihách či na papírových svitcích, ať už formou psaného textu, nebo ručně zapisovanými výsledky pozorování. Zaznamenaná data byla však limitována svou přesností, která byla omezena lidskou obsluhou a možnostmi mechanick  ých nástrojů, tak i svou dostupností, protože k nim měl přístup jen omezený okruh lidí.
@@ -85,8 +85,8 @@ Další limitací těchto přístrojů je ruční vyhodnocování dat, což je m
 \label{digitalni_zaznam_dat}
 S nástupem číslicových systémů v polovině 20. století došlo k velkému pokroku ve způsobu, jakým byla data zaznamenávána, zpracovávána a uchovávána. Digitální zpracování dat v porovnání s analogovým zpracováním se liší způsobem, jakým se v systému obecně pracuje se signály (viz.~\ref{zaznam}). Zatímco analogový záznam pracuje se spojitými (kontinuálními) signály, digitální záznam využívá diskrétní (číslicové) hodnoty, které jsou uchovávány v binární podobě.
 
-\subsection{Princip d   igitálního záznamu dat}
-Z předchozího textu je tedy zřejmé, že digitální zpracování dat (tedy i záznam dat) vyžaduje číslicové hodnoty a z toho plyne, že již na vstupu musí být příchozí signály v digitální podobě. Data tedy musí být generována číslicovými zdroji, nebo musí být převedena do digitálního tvaru pomocí komponenty k tomu určené, kterou je například analogově-digitální převodník.
+\subsection{Princip digitálního záznamu dat}
+Z předchozího textu je tedy zřejmé, že digitální zpracování dat (tedy i záznam dat) vyžaduje číslicové hodnoty a z toho plyne, že již na vstupu musí být příchozí signály v digitální podobě. Data tedy musí být generována číslicovými zdroji, nebo musí být převedena do digitálního tvaru pomocí komponenty k tomu určené, kterou je například analogově-digitální převodník, aby následně mohly být zpracovány výpočetním strojem a případně uloženy na paměťové médium.
 
 Pro převod analogových signálů do jejich digitální podoby se využívá proces digitalizace, který zahrnuje tři základní kroky. V počátku dochází ke vzorkování, při kterém je původní spojitý signál snímán ať už v pravidelných či nepravidelných časových intervalech. Následně dochází ke kvantizaci, při níž jsou vzorkované hodnoty zaokrouhleny na nejbližší úroveň amplitudy v omezeném rozsahu. Vzorky jsou tedy rozděleny do segmentů (tříd) diskrétních hodnot, přičemž tento krok s sebou nese ztrátu přesnosti závislou na jemnosti stupnice, která se nazývá kvantizační chyba. Nakonec je kvantizovaný signál kódován do binární podoby, ve které jej může výpočetní stroj dále zpracovávat, ukládat nebo přenášet.
 
@@ -473,58 +473,22 @@ Raspberry Pi existuje v několika verzích, následující text je zaměřen na 
 
 Raspberry Pi má krom výše zmíněných výhod i své nevýhody. Hlavním omezením Raspberry Pi Zero 2 W je obecně nedostatek komunikačních periferií, platforma totiž disponuje pouze jedním modulem UART, jedním modulem SPI a jedním modulem I\textsuperscript{2}C, takto omezený počet periferií může značně limitovat další rozšiřování zařízení o senzory či externí moduly. Například komplikace může nastat pouze při řešení vkládání časových razítek do záznamů, Zero 2 W bohužel neobsahuje interní obvod reálného času, nabízí se tedy využít jako referenční zdroj času, časovač se softwarovým přerušením, druhou variantou je využití síťového protokolu NTP (Network Time Protocol). Alternativním řešením se nabízí dokoupit externí obvod reálného času, to by znamenalo, že už by nebylo možné rozšířit zařízení o další periferie komunikující pomocí rozhraní I\textsuperscript{2}C, jelikož RTC moduly toto rozhraní obvykle využívají.
 
-\subsection{Shrnutí výběru platformy}
-Jako nejvhodnější platforma pro implementaci digitálního záznamníku ve formě dedikovaného zařízení jsem vybral vývojovou desku FRDM--MCXN947 od společnosti NXP Semiconductors, která poskytuje široké spektrum integrovaných periferií vhodných pro realizaci digitálního záznamu a zároveň nabízí nejvyšší míru volnosti při výběru komponent, kterými může být tato vývojová deska rozšířena.
-
-Alternativa Arduino Due, podle mého hlediska za svou cenu neposkytuje dostatečný poměr cena/výkon. Maximální taktovací frekvence jádra je pouze 84 MHz, navíc obsahuje mikrokontrolér postaven na starší architektuře Cortex-M3. Kapacita flash paměti je oproti svým levnějším konkurentům pouze 512 KB a současně postrádá slot pro microSD kartu, která by jinak mohla sloužit jako vhodné médium pro ukládání zaznamenaných dat. Také výběr, z jakého je možné vybrat řešení pro detekci ztráty napájení, je omezen.
-
-Raspberry Pi Zero 2W naopak nabízí z vybraných vývojových desek velice dobrý poměr cena/výkon, obsahuje vysoce výkonný čip BCM2711 s taktem až 1 GHz a nabízí prostor, kde mohou být uloženy získané záznamy, zmíněný slot pro mikro SD kartu. Nicméně ve srovnání s vývojovou deskou FRDM–MCXN947 nabízí jen omezené množství dostupných periferií, což snižuje potenciál pro rozšiřování systému v podobě externích komponent.
-
-\begin{table}[h]
-    \centering
-    \renewcommand{\arraystretch}{1.2}
-    \begin{adjustbox}{max width=\textwidth} % Automatické přizpůsobení šířce stránky
-    \begin{tabular}{|l|c|c|c|}
-        \hline
-        \textbf{Parametr / Platforma}   & \textbf{Arduino Due}  & \textbf{FRDM-MCXN947} & \textbf{Raspberry Pi} \\ 
-        \hline
-        \textbf{Typ čipu}               & ATSAM3X8E             & MCXN947               & BCM2711               \\ 
-        \hline
-        \textbf{Typ jádra}              & ARM Cortex-M3         & ARM Cortex-M33        & ARM Cortex-A53        \\ 
-        \hline
-        \textbf{Architektura jádra}     & 32-bit                & 32-bit                & 64-bit                \\ 
-        \hline
-        \textbf{Taktovací frekvence}    & 84 MHz                & 150 MHz               & 1 GHz               \\ 
-        \hline
-        \textbf{Operační paměť}         & 96 KB                 & 1 MB                  & Až 8 GB LPDDR4        \\ 
-        \hline
-        \textbf{Flash paměť}            & 512 KB                & 2 MB                  & MicroSD               \\ 
-        \hline
-        \textbf{Spotřeba }              & -                     & -                     & -                     \\ 
-        \hline
-        \textbf{Pořizovací cena}        & 2 058 kč (50,82€)                    & 593 Kč                & 459 Kč  \\ 
-        \hline
-    \end{tabular}
-    \end{adjustbox}
-    \caption{Porovnání vývojových desek Arduino Due, FRDM-MCXN947 a Raspberry Pi}
-    \label{tab:board-comparison}
-\end{table}
 % ----------------------------------------------------
 % DALSI NAZVY: Volba datového úložiště, Výběr externího uložiště pro záznam dat, Možnosti způsobu ukládání získaných dat
-\section{Přístupy k ovládaní úložiště}
-Obecný popis, proč je potřeba externí uložiště, že by se data mohla ukládat i v RAM paměti, ale že by tam moc dlouho nevydržela, 
+%\section{Přístupy k ovládaní úložiště}
+%Obecný popis, proč je potřeba externí uložiště, že by se data mohla ukládat i v RAM paměti, ale že by tam moc dlouho nevydržela, 
 
-\subsection{SDIO}
+%\subsection{SDIO}
 
-\subsection{SPI}
+%\subsection{SPI}
 
-\subsection{Quad-SPI flash}
+%\subsection{Quad-SPI flash}
 
 
 % ----------------------------------------------------
 % DALSI NAZVY: Volba datového úložiště, Výběr externího uložiště pro záznam dat
 \section{Možnosti správy dat - souborové systémy}
-Zaznamenaná data na externím úložišti je potřeba nějak organizovat, spravovat, aby mohla být v budoucnu nějakým způsobem interpretována a zároveň je třeba zajistit jejich konzistenci a perzistenci. K tomu účelu lze využít například souborový systém, databázový systém nebo data uchovávat v surovém (raw) formátu. Každý z těchto přístupů má svá specifika, nicméně data, která budou zaznamenávána vyvíjeným záznamníkem, budou nestrukturovaná, proto jsem se rozhodl zvolit souborový systém. Souborový systém organizuje data přirozeně do souborů a složek a hodí se zejména pro již zmíněné ukládání nestrukturovaných dat. Pod pojmem nestrukturovaná data lze rozumět taková data, která nejsou organizována jednotně v tabulkách (relacích) nebo jiných databázových strukturách, ale mohou být ukládána do více typů souborů v různých formátech a umístěna do různorodých adresářových struktur. Digitální záznamník tak nebude vázán na konkrétní formát či strukturu dat a jeho implementace bude moct být upravena pro různé typy záznamu. \cite{weka_structured_unstructured_data, virginia_tech_file_database_systems}
+Zaznamenaná data na externím úložišti je potřeba organizovat a spravovat, aby mohla být v budoucnu určitým způsobem interpretována a zároveň je vhodné zajistit konzistenci a perzistenci těchto dat. K tomu účelu lze využít například souborový systém, databázový systém nebo data uchovávat v surovém (raw) formátu. Každý z těchto přístupů má svá specifika, nicméně data, která budou zaznamenávána vyvíjeným záznamníkem, jsou nestrukturovaná. Pod pojmem nestrukturovaná data lze rozumět taková data, která nejsou organizována jednotně v tabulkách (relacích) nebo jiných databázových strukturách, ale mohou být ukládána do více typů souborů v různých formátech a umístěna do různorodých adresářových struktur. Z tohoto důvodu byl zvolen souborový systém, zároveň tak bude firmware digitálního záznamníku upravitelný pro různé typy záznamu. \cite{weka_structured_unstructured_data, virginia_tech_file_database_systems}
 
 \subsection{FATFS}
 \label{fatfs}
@@ -538,7 +502,7 @@ Prvním z představených souborových systémů je FAT File System (FATFS), kte
     \label{fig:fat-file-system-structure}
 \end{figure}
 
-Fyzické úložiště v systému FAT je rozděleno do několika oblastí, konkrétně do zaváděcího záznamu (Boot Record) ležícího v rezervované oblasti (Reserved Area), který obsahuje informace nutné pro inicializaci a načtení souborového systému, alokační tabulky FAT1 a FAT2, které spravují umístění jednotlivých shluků.  Za nimi se nachází oblast kořenového adresáře (Root Directory), ve které jsou umístěny záznamy o souborech a adresářích nejvyšší úrovně. Poslední část tvoří datová oblast (Data Area), kde jsou samotné soubory a podadresáře fyzicky uloženy.
+Fyzické úložiště v systému FAT je rozděleno do několika oblastí, konkrétně do zaváděcího záznamu (Boot Record) ležícího v rezervované oblasti (Reserved Area), který obsahuje informace nutné pro inicializaci a načtení souborového systému, alokační tabulky FAT1 a FAT2, které spravují umístění jednotlivých shluků. Za nimi se nachází oblast kořenového adresáře (Root Directory), ve které jsou umístěny záznamy o souborech a adresářích nejvyšší úrovně. Poslední část tvoří datová oblast (Data Area), kde jsou samotné soubory a podadresáře fyzicky uloženy.
 
 \begin{figure}[h]
     \centering
@@ -549,7 +513,7 @@ Fyzické úložiště v systému FAT je rozděleno do několika oblastí, konkr�
 \end{figure}
 
 % Jaky je rozdil mezi FAT32 a FATFS?
-V dnešní době existuje několik variant systému FAT, mezi nejznámější patří FAT12, FAT16, FAT32 a exFAT. Pro úložná média typu SDHC karet se obvykle volí FAT32, neboť nižší varianty mají velmi omezenou maximální kapacitu úložného média, například pro FAT16 je kapacita omezena pouze na 4~GB, což je pro dnešní paměťová uložiště často nedostatečné. Z tohoto důvodu i dnešní implementace FATFS podporují 32--bitovou či 64--bitovou variantu adresování jednotlivých bloků dat (LBA - Logical Block Addressing), které podporují mnohem větší kapacitu uložišť. \cite{elm_fat_filesystem_app_note}
+V dnešní době existuje několik variant systému FAT, mezi nejznámější patří FAT12, FAT16, FAT32 a exFAT (FAT64). Vzhledem k rostoucí kapacitě paměťových médií se dnes standardně používají varianty FAT32 a exFAT, například starší varianta FAT16 umožňovala velikost uložiště pouze do 4~GB. Z tohoto důvodu i dnešní implementace FATFS podporují 32--bitovou či 64--bitovou variantu adresování jednotlivých bloků dat (LBA - Logical Block Addressing), které podporují mnohem větší kapacitu uložišť. \cite{elm_fat_filesystem_app_note}
 
 FATFS v současnosti představuje jeden z nejrozšířenějších souborových systémů pro použití ve vestavěných aplikacích, a to zejména díky své nízké paměťové náročnosti a snadné přenositelnosti mezi různými hardwarovými platformami. Významnou předností této knihovny je také široká možnost konfigurace, která umožňuje volby krátkých a dlouhých názvů souborů (Long File Name - LFN), navíc v různých formátech ANSI/OEM či Unicode. Pro velmi velká uložiště lze využít podporu exFAT s 64-bitovým adresováním bloků (LBA) a GPT (GUID Partition Table) pro práci s diskovými oddíly o velké kapacitě. FATFS také podporuje více fyzických jednotek či oddílů současně, variabilní velikost sektorů a různé kódové stránky. Knihovna rovněž obsahuje podporu pro volitelná rozhraní API, I/O buffering a režim pouze pro čtení. V případě použití v aplikaci běžící nad operačními systémy reálného času (RTOS) je garantována bezpečnost při práci ve vícevláknovém prostředí. \footnote{Knihovna FATFS je takzvaně Thread Safe.} \cite{elm_fat_filesystem_module}
 
@@ -765,7 +729,7 @@ Operační systém reálného času (RTOS) je typem počítačového operačníh
 
 RTOS podporuje multitasking, tedy schopnost spouštět více logických jednotek současně. Zmiňovanou nejmenší logickou jednotkou je obvykle vlákno (thread) nebo úloha (task)\footnote{Zde záleží na konkrétní implementaci RTOS například FreeRTOS používá úlohy, zatímco Zephyr RTOS pracuje s vlákny.}, které soutěží o čas procesoru a jsou vykonávána schedulerem. Na rozdíl od obecných operačních systémů, jako je Linux, které typicky využívají procesy (složené z jednoho či více vláken) izolované pomocí virtuální paměti, mnoho RTOS, zejména těch určených pro malé vestavné systémy, pracuje bez této vrstvy abstrakce. V takovém případě všechny úlohy sdílejí stejný fyzický adresní prostor a nejsou mezi sebou paměťově izolovány. Existují však i výkonnější RTOS, jako například Zephyr RTOS, které virtuální paměť a izolaci procesů podporují. \cite{freertos_what_is_rtos}
 
-Plánovač je součástí jádra (kernelu), které představuje centrální komponentu RTOS a má na starosti správu běhu jednotlivých úloh (viz. obrázek~\ref{fig:rtos-scheduling}) a přidělování procesorového času. Na rozdíl od jednoduchého sekvenčního provádění kódu v nekonečné smyčce mohou tyto úlohy běžet paralelně na základě priorit, časování a dalších parametrů. Kromě samotného plánování a přepínání mezi úlohami (tzv. přepínání kontextu) zajišťuje jádro také podporu pro synchronizaci a komunikaci mezi úlohami (např. semafory, fronty, mutexy), správu systémového času a obsluhu přerušení. Díky těmto funkcím umožňuje RTOS deterministické a přesně načasované vykonávání úloh.
+Plánovač je součástí jádra (kernelu), které představuje centrální komponentu RTOS a má na starosti správu běhu jednotlivých úloh (viz. obrázek~\ref{fig:rtos-scheduling}) a přidělování procesorového času. Na rozdíl od jednoduchého sekvenčního provádění kódu v nekonečné smyčce mohou tyto úlohy běžet paralelně na základě priorit, časování a dalších parametrů. Kromě samotného plánování a přepínání mezi úlohami (tzv. přepínání kontextu) zajišťuje jádro také podporu pro synchronizaci a komunikaci mezi úlohami (např. semafory, fronty, mutexy), správu systémového času a obsluhu přerušení.
 
 \begin{figure}[h]
     \centering
@@ -778,7 +742,7 @@ Plánovač je součástí jádra (kernelu), které představuje centrální komp
 % RTOS je obvykle menší a lehčí než operační systém pro všeobecné použití, takže je vhodný pro zařízení s omezenou pamětí, výpočetní kapacitou a spotřebou energie.
 Základními technickými výhodami RTOS jsou především deterministické chování, tedy schopnost reagovat na události ve striktně definovaném čase, a přesné řízení časování jednotlivých operací. To umožňuje systémům garantovat, že kritické úlohy budou vykonány ve stanovených časových limitech, bez ohledu na zátěž systému. Dále již byly nastíněny oblasti, ve kterých se operační systémy reálného času běžně uplatňují, mohou jimi být kritické systémy, jejichž selhání může mít katastrofální následky, například v robotice nebo v řídicích systémech letadel. Proto různé standardizované RTOS garantují vyšší bezpečnostní standardy a spolehlivější bezpečnostní funkce, například definované normami ISO 26262, DO-178C nebo IEC 61508.
 
-Přestože operační systémy reálného času přinášejí řadu výhod, nelze opomenout ani jejich určitá omezení a nevýhody. Jedním z častých argumentů proti jejich použití je větší režie (overhead), která může snížit výkon a zvýšit paměťové nároky, čímž se zvyšují nároky na hardware. RTOS vnáší do systému složitost, která může ztížit jeho pochopení a ladění. Vývojáři musí být obeznámeni s rozhraním RTOS API a rozumět tomu, jak fungují úlohy, zdroje a komunikace mezi úlohami. Získání těchto znalostí může trvat delší dobu, což prodlužuje dobu vývoje a zvyšuje náklady. Použití RTOS může také zvýšit náklady na systém. Mnoho komerčních dodavatelů RTOS si účtuje licenční poplatky, které mohou být pro malé projekty nákladné.
+Naopak jedním z častých argumentů proti jejich použití je větší režie (overhead), která může snížit výkon a zvýšit paměťové nároky, čímž se zvyšují nároky na hardware. RTOS vnáší do systému složitost, která může ztížit jeho pochopení a ladění. Vývojáři musí být obeznámeni s rozhraním RTOS API a rozumět tomu, jak fungují úlohy, zdroje a komunikace mezi úlohami. Získání těchto znalostí může trvat delší dobu, což prodlužuje dobu vývoje a zvyšuje náklady. Použití RTOS může také zvýšit náklady na systém. Mnoho komerčních dodavatelů RTOS si účtuje licenční poplatky, které mohou být pro malé projekty nákladné.
 
 \subsubsection{FreeRTOS}
 Jednou z možností je FreeRTOS, což je open-source operační systém reálného času, který je podobný vývoji s bare-metal přístupem. FreeRTOS podporuje mnoho různých architektur a kompilátorů a je navržen tak, aby byl „malý, jednoduchý a snadno použitelný“. Jeho jádro tvoří v základu tři oblasti - správa úloh, komunikace a propojení s hardwarem. Správa úloh se stará o vytváření úloh, jak statických, tak dynamických, tak i jejich plánování a správu životního cyklu. Dále FreeRTOS poskytuje oblast zaměřenou na komunikaci mezi jednotlivými úlohami, k tomu slouží fronty (Queue). Úlohy a přerušení používají fronty k vzájemnému odesílání dat a k signalizaci použití kritických prostředků pomocí semaforů a mutexů. Poslední oblast slouží jako mezistupeň mezi hardwarově nezávislým jádrem FreeRTOS a hardwarově závislým kódem. \cite{the_architecture_of_open_source_applications}
@@ -812,7 +776,7 @@ Na druhou stranu má Zephyr i své nevýhody, které mohou ovlivnit jeho vhodnos
 
 \section{Architektura systému digitálního záznamníku}
 \label{architektura_systemu_digitalniho_zaznamniku}
-V předchozích kapitolách byly představeny vybrané komponenty, které lze využít k sestavení digitálního záznamníku v podobě dedikovaného zařízení. Z představených vývojových desek byla jako nejvhodnější byla zvolena deska FRDM-MCXN947 od společnosti NXP Semiconductors (viz.~\ref{nxp_frdm_mcxn947}), která poskytuje dostatečný výkon, paměťový prostor a periferie, které lze využít k realizaci záznamníku.
+V předchozích kapitolách byly představeny vybrané komponenty, které lze využít k sestavení digitálního záznamníku v podobě dedikovaného zařízení. Z představených vývojových desek byla jako nejvhodnější zvolena deska FRDM-MCXN947 od společnosti NXP Semiconductors (viz.~\ref{nxp_frdm_mcxn947}), která poskytuje dostatečný výkon, paměťový prostor a periferie, které lze využít k realizaci záznamníku.
 
 Pro řízení činnosti záznamníku je použit operační systém reálného času FreeRTOS, přičemž architektura firmwaru je rozdělena do dvou hlavních úloh. První z nich představuje záznamovou úlohu, která zajišťuje průběžné získávání dat z UART periferie a jejich ukládání na paměťové médium. Druhou úlohou je komunikační úloha, která zodpovídá za zpřístupnění uložených dat prostřednictvím rozhraní USB ve standardu Mass Storage Class (MSC), čímž odpadá nutnost fyzického vyjímání paměťové karty ze zařízení. Pomocí tohoto přístupu tak je dosaženo vyšší modularity, přehlednosti a současného chodu obou činností bez vzájemného blokování.
 
@@ -824,7 +788,7 @@ Po spuštění firmware nejprve proběhne základní inicializace klíčových k
 
 Následně po úspěšné inicializaci bude spuštěna jako výchozí a dominantní úloha, záznamová úloha, která zajistí příjem dat z externího zdroje. V rámci dané varianty digitálního záznamníku pro využití firmou NXP Semiconductors bude jako vstupní periferní rozhraní využit modul LP\_FLEXCOMM, nakonfigurovaný v režimu UART. Přijatá data budou dále zpracovávána a ukládána do paměťového úložiště s využitím postupů popsaných v kapitole~\ref{klicove_koncepty_digitalnich_zaznamniku}, přičemž bude kladen důraz na efektivní využití prostředků a minimalizaci ztráty dat i při vyšších přenosových rychlostech. Správu a organizaci dat v paměťovém médiu bude zajišťovat hierarchický souborový systém FATFS, který byl již představen v kapitole~\ref{fatfs}.
 
-Samotná zaznamenaná data budou ukládána na SDHC kartu, která byla zvolena z důvodu dostatečné kapacity (až 32GB), možnosti vytvoření standardního souborového systému a snadné zpětné dostupnosti dat prostřednictvím USB Mass Storage rozhraní. K ukládání bude využit přístup s přímým zápisem, jelikož kdyby byl využit přístup s FeRAM mezipamětí, digitální záznamník by musel nejprve přijatá data zpracovat v RAM paměti, tj. doplnit časové značky. Tato zpracovaná data by pak byla přesunuta z RAM do FeRAM, kde by byla dočasně uchována, a následně opět načtena zpět do RAM, aby mohla být zapsána do souboru na SD kartu. Ve výsledku by tedy i tento přístup vyžadoval alokaci paměťového prostoru v RAM, a tím by se výhoda použití FeRAM jako mezivrstvy ztratila. Přístup se vzdáleným uložištěm naopak nebyl zvolen, z důvodu toho, že vývojový tým společnosti NXP Semiconductors, zaměřený na bezdrátové napájení, v současnosti nedisponuje žádnou infrastrukturou pro vzdálené ukládání dat a současně je zakázáno získaná data ukládat do externích cloudových řešení.
+Samotná zaznamenaná data budou ukládána na SDHC kartu, která byla zvolena z důvodu dostatečné kapacity (až 32GB), možnosti vytvoření standardního souborového systému a snadné zpětné dostupnosti dat prostřednictvím USB Mass Storage rozhraní. K ukládání bude využit přístup s přímým zápisem, jelikož kdyby byl využit přístup s FeRAM mezipamětí, digitální záznamník by musel nejprve přijatá data zpracovat v RAM paměti, tjeeeeeeeeeeeeeeeeeeeeeeeee. doplnit časové značky. Tato zpracovaná data by pak byla přesunuta z RAM do FeRAM, kde by byla dočasně uchována, a následně opět načtena zpět do RAM, aby mohla být zapsána do souboru na SD kartu. Ve výsledku by tedy i tento přístup vyžadoval alokaci paměťového prostoru v RAM, a tím by se výhoda použití FeRAM jako mezivrstvy ztratila. Přístup se vzdáleným uložištěm naopak nebyl zvolen, z důvodu toho, že vývojový tým společnosti NXP Semiconductors, zaměřený na bezdrátové napájení, v současnosti nedisponuje žádnou infrastrukturou pro vzdálené ukládání dat a současně je zakázáno získaná data ukládat do externích cloudových řešení.
 
 Přepnutí ze záznamové úlohy do USB Mass Storage úlohy nastane, jakmile bude detekováno připojení k hostitelskému počítači a firmware pomocí mechanismu USB OTG (On-The-Go) ověří, že došlo ke skutečnému připojení a navázání komunikace. V reakci na tuto událost se zařízení automaticky přepne do režimu Mass Storage, ve kterém bude vnitřní paměťové úložiště zpřístupněno jako běžný externí disk. Data tak budou přístupná bez nutnosti manipulovat se samotným zařízením nebo vyjímat paměťovou kartu.
 
@@ -841,12 +805,12 @@ Důležitou součástí návrhu systému je rovněž detekce ztráty napájecíh
 
 % ----------------------------------------------------
 
-\section{Volitelné rozšíření}
-\subsection{Měření teploty}
+%\section{Volitelné rozšíření}
+%\subsection{Měření teploty}
 
 % ----------------------------------------------------
 
-\subsection{Řešení problému synchronizace času}
+%\subsection{Řešení problému synchronizace času}
 
 % ----------------------------------------------------
 
