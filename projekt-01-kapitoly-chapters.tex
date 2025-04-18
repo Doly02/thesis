@@ -931,6 +931,46 @@ Každá dioda je připojena k tranzistoru typu NPN (konkrétně BC546 od společ
 
 \newpage
 
+\subsection{Seznam součástek expanzní desky}
+\label{bom_list}
+
+Důležitým parametrem expanzní desky je i její cena. Ta se skládá nejen z ceny jednotlivých komponent, ale také z nákladů na výrobu expanzní desky. V této kapitole je uveden přehled součástek použitých při návrhu digitálního záznamníku, včetně jejich orientačních cen. 
+
+Nutno dodat, že doporučené pin headery od výrobce Samtec nejsou nezbytně nutné a lze je nahradit levnějšími alternativami. Všechny komponenty byly vybírány tak, aby bylo možné je objednat u jednoho distributora elektronických součástek, aby se zjednodušil proces objednávky a zároveň se minimalizovaly náklady na dopravu.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Přehled použitých součástek}
+    \begin{tabular}{|l|l|c|c|}
+        \hline
+        \textbf{Součástka} & \textbf{Hodnota / Popis} & \textbf{Počet} & \textbf{Cena za kus} \\
+        \hline
+        NXP FRDM--MCXN947   & vývojová deska                    & 1  & 593,42 Kč  \\ \hline
+        SSQ-108-03-T-D      & 16pin pinová lišta (Samtec)       & 2  & 46,61 Kč   \\ \hline
+        SSQ-106-03-S-D      & 12pin pinová lišta (Samtec)       & 1  & 40,60 Kč   \\ \hline
+        SSQ-114-03-T-D      & 28pin pinová lišta (Samtec)       & 1  & 81,70 Kč   \\ \hline
+        SSQ-116-03-T-D      & 32pin pinová lišta (Samtec)       & 1  & 93,22 Kč   \\ \hline
+        SSQ-110-03-T-D      & 20pin pinová lišta (Samtec)       & 1  & 58,39 Kč   \\ \hline
+        M20-7830342         & 10pin pinová lišta (Harwin)       & 1  & 34,33 Kč   \\ \hline
+        DS3231M+            & Real-Time Clock Module            & 1  & 284,68 Kč  \\ \hline
+        SCMR14G334SRBB0     & Superkondenzátor (KYOCERA AVX)    & 1  & 141,09 Kč  \\ \hline
+        RSX301L-30DDTE25    & Schottky dioda (ROHM)             & 1  & 23,58 Kč   \\ \hline
+        BC546               & NPN Transistor (ON Semiconductor) & 5  & 5,71 Kč    \\ \hline
+        THT rezistor        & $\SI{10}{\ohm}$                   & 1  & --         \\ \hline
+        SMD rezistor R1206  & $\SI{18}{\kilo\ohm}$              & 1  & --         \\ \hline
+        SMD rezistor R1206  & $\SI{33}{\kilo\ohm}$              & 1  & --         \\ \hline
+        SMD rezistor R1206  & $\SI{1}{\kilo\ohm}$               & 14 & --         \\ \hline
+        SMD kondenzátor R1206  & $\SI{1}{\nano\farad}$          & 1  & --         \\ \hline
+    \end{tabular}
+\end{table}
+% celkova cena komponet presne 879.36 kc s pripocitanim vyvojove desky 1472.78
+
+Celková cena komponent použitých na realizaci expanzní desky činí přibližně 880~Kč. Po započtení vývojové desky dosahuje celková cena zařízení částky 1473~Kč. Ve srovnání s existujícími řešeními uvedenými v kapitole~\ref{existujici_reseni} se jedná o jednoznačně nejlevnější variantu.
+
+Například zařízení \textit{AirDrive Serial Logger Pro} je prodáváno za cenu \$119{,}99, což při aktuálním směnném kurzu 22{,}04~Kč/USD (k datu 18.~4.~2025) odpovídá částce 2644{,}41~Kč. Druhé zmíněné zařízení, \textit{Anticyclone Anti-Log Pro}, se prodává v cenovém rozmezí od 229~£ do 366~£. Při aktuálním kurzu 29{,}23~Kč/GBP se výsledná cena pohybuje mezi 6694{,}39~Kč a 10\,699{,}33~Kč.
+
+\newpage
+
 \section{Mechanická část}
 Navrh krabicky
 
@@ -1077,17 +1117,17 @@ Z pohledu uživatele je také důležité zjistit, zda digitální záznamník z
     \centering
     \begin{tabular}{|c|c|c|}
         \hline
-        \textbf{Dioda} & \textbf{Význam} & \textbf{Režim indikace} \\
+        \textbf{Dioda} & \textbf{Význam} & \textbf{Režim indikace}              \\
         \hline
-        D1 & Bezpečné odpojení              & Svítí trvale  \\
+        D1 & Bezpečné odpojení                          & Svítí trvale          \\
         \hline
-        D2 & Chybový stav během záznamu     & Svítí trvale \\
+        D2 & Chybový stav během záznamu                 & Svítí trvale          \\
         \hline
-        D3 & Ukončení záznamu dat\footnote  & Svítí trvale \\
+        D3 & Ukončení záznamu dat\footnote              & Svítí trvale          \\
         \hline
-        D4 & Aktivní záznam dat             & Bliká při záznamu dat \\
+        D4 & Aktivní záznam dat                         & Bliká při záznamu dat \\
         \hline
-        D5 & Dochází paměť                  & Bliká po bezpečném uložení dat \\
+        D5 & Volná paměť SD karty je pod hranicí 50~MB  & Svítí trvale          \\
         \hline
     \end{tabular}
     \caption{Přehled funkce jednotlivých signalizačních LED diod}
@@ -1188,6 +1228,19 @@ Systém by mohl být dále vybaven volitelnou možností odesílání dat na vzd
 
 \chapter{Závěr}
 \label{zaver}
+Cílem bakalářské práce bylo navržení a realizace digitálního záznamníku pro účely společnosti NXP Semiconductors, s řešením problematiky prevence ztráty napájecího napětí, a tohoto cíle bylo dosaženo.
+
+Práce se věnuje historickému pozadí záznamu dat, počátkům záznamu dat v počátcích elektrotechniky a digitálnímu záznamu dat včetně digitálního záznamu dat na PC a digitálního záznamu dat na mikrokontroléru. Rozvedeny jsou také klíčové koncepty, které jsou mnohdy využívány digitálními záznamníky a architekturami ukládání dat.
+
+Práce je dále věnována představení existujících řešení a návrhu digitálního záznamníku po jednotlivých komponentách, které byly brány v úvahu pro výslednou architekturu digitálního záznamníku.
+
+Součástí práce je následně rozebrán postup realizace hardwaru, čili expanzní desky rozšiřující funkcionalitu vývojové desky, a přístup k realizaci obslužného firmwaru digitálního záznamníku. Součástí textu je také testování digitálního záznamníku, které si kromě ověření správné funkcionality digitálního záznamníku klade důraz na bezpečnost a spolehlivost napsaného kódu, která byla ověřena vůči pravidlům standardu MISRA C. V závěru jsou pak zmíněny možné limitace digitálního záznamníku a možné rozšíření, která je možné dále implementovat.
+
+Výsledkem práce je zařízení, které je schopno reálného provozu, které je možné konfigurovat, dokáže zaznamenávat data přes rozhraní UART s doplňením časových značek, systematicky řadí záznamy, a získané záznamy je možné vyčíst bez nutnosti fyzického vyjmutí paměťového média. Zařízení je taktéž odolné při ztrátě napájecího napětí. 
+
+Digitální záznamník také obsahuje přípravu na možná rozšíření v připojení GPS modulu pro synchronizaci času. Firmware digitálního záznamníku je díky své modularitě možné nadále rozšiřovat, a nebo upravit pro záznam jiného typu dat.
+
+Digitální záznamník, taktéž předčí svou konkurenci, která byla popsána v kapitole~\ref{existujici_reseni} svou cenou, která je vůči \textit{AirDrive Serial Logger Pro} poloviční a vůči \textit{Anticyclone Anti-Log Pro} při nejlevnější srovnatelné konfiguraci čtvrtinová.
 
 %===============================================================================
 
