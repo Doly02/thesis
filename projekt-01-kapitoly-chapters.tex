@@ -814,14 +814,6 @@ Důležitou součástí návrhu systému je rovněž detekce ztráty napájecíh
 
 % ----------------------------------------------------
 
-\chapter{Realizace hardwaru}
-\label{realizace_hardwaru}
-
-\section{Základová deska} 
-V kapitole~\ref{vyber_vhodne_platformy} byl popsán proces výběru vhodné platformy pro běh firmwaru digitálního záznamníku. Jako nejvhodnější řešení se ukázalo využití vývojové desky FRDM-MCXN947 od společnosti NXP Semiconductors. Čip MCXN947 poskytuje mnoho různých periferií, které mohou být využity k realizaci digitálního záznamníku.
-
-Samotný čip poskytuje časovače v podobě CTIMER a CSTIMER, které mohou být využity pro měření časových intervalů nebo generování periodických událostí. Dále je k dispozici flexibilní komunikační blok LP\_FLEXCOMM, který umožňuje konfiguraci až osmi nezávislých instancí komunikačních rozhraní (například I\textsuperscript{2}C, UART nebo SPI) podle aktuálních požadavků aplikace.
-
 \section{Expanzní deska}
 % Jak jsem měřil spotřebu, jak jsem spočítal hodnoty kondenzátorů 
 Vybraná základová deska neobsahuje všechny potřebné komponenty k realizaci firmwaru, které byly představeny v kapitole~\ref{architektura_systemu_digitalniho_zaznamniku} a pro zajištění kompletní funkcionality je nutné doplnit celý systém o expanzní desku plošných spojů, která umožní integraci všech externích komponent a rozšíří tak funkcionalitu základové desky.
@@ -842,15 +834,19 @@ Z tohoto důvodu bylo třeba vybrat superkondenzátor, který bude vyhovovat par
     \label{fig:power-consumption}
 \end{figure}
 
+\newpage
+
 Jako vhodný kondenzátor byl tedy vybrán model SCMR14G334SRBB0 od společnosti KYOCERA AVX s kapacitou \SI{0.33}{\farad}, jmenovitým napětím \SI{7.5}{\volt} při stejnosměrném proudu a nízkým ESR, které má konkrétní hodnotu \SI{450}{\milli\ohm}. Vzhledem k relativně nízké ceně této komponenty bylo třeba jej nejprve experimentálně ověřit v provizorním zapojení (viz. schéma~\ref{fig:test-capacitors}) na nepájivém poli. Kondenzátor byl v tomto testu nejprve nabíjen z laboratorního zdroje nastaveného na \SI{5}{\volt} odpovídající reálným provozním podmínkám v cílovém zařízení. Po jeho odpojení byla sledována vybíjecí křivka sledována pomocí osciloskopu.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.440\textwidth]{obrazky-figures/test_capacitors.pdf}
+    \includegraphics[width=0.50\textwidth]{obrazky-figures/test_capacitors.pdf}
     
     \caption{Obvod pro testování kondenzátoru}
     \label{fig:test-capacitors}
 \end{figure}
+
+\newpage
 
 Aby bylo možné přesně vyhodnotit, jak dlouho dokáže záznamník fungovat při napájení ze superkondenzátoru, je třeba nejprve vysvětlit několik základních skutečností souvisejících s vývojovou deskou FRDM-MCXN947, která bude napájená z výše popsaného kondenzátoru. Vstupní napětí \SI{5}{\volt} jde přes LDO (Low-Dropout Regulator), které upravuje napětí na 3V3 zásobující čip. LDO však ke své funkci vyžaduje minimální rozdíl mezi vstupním a výstupním napětím, tzv. Dropout Voltage, při kterém je tento integrovaný obvod ještě schopen pracovat. Minimální vstupní napětí potřebné pro stabilní výstup 3.3V je dáno vztahem:
 
@@ -870,7 +866,7 @@ Následující obrázek~\ref{fig:test-capacitors}, zachycuje průběh napětí z
     \label{fig:test-capacitors}
 \end{figure}
 
-\newpage
+
 
 Na následujícím obrázku~\ref{fig:backup-power} je apk znázorněno výsledné schéma obvodu určeného k realizaci zálohovaného napájení včetně detekce ztráty hlavního napájecího napětí. Obvod zahrnuje zmíněnou Schottkyho diodu, která zabraňuje zpětnému toku proudu z kondenzátoru, a nabíjecí odpor s hodnotou $\SI{10}{\ohm}$, která byla zvolena tak, aby byl proud při nabíjení omezen na rozumnou, tedy aby zůstal pod minimální hodnotou, kterou je schopen standard USB-C, a zároveň aby nabíjení probíhalo v přiměřeném čase. Pro výpočet doby nabíjení je klíčovým parametrem časová konstanta~$\tau$, která je definována jako součin odporu~$R$ a kapacity~$C$:
 
@@ -887,6 +883,8 @@ Součástí navrženého obvodu zálohovaného napájení je rovněž detekce zt
     \caption{Schéma obvodu pro detekci ztráty napájení a zálohované napájení}
     \label{fig:backup-power}
 \end{figure}
+
+\newpage
 
 \subsection{Obvod reálného času}
 Pro uchovávání informací o čase a datu je využit externí obvod reálného času, konkrétně čip DS3231M+ od společnosti Analog Devices. DS3231M+ patří mezi vysoce přesné RTC čipy obsahující integrovaný oscilátor s teplotně kompenzovaným krystalem (TCXO), který zajišťuje minimální odchylku chodu v řádu několika sekund za měsíc bez nutnosti externí kalibrace. Tato odchylka specifikovaná výrobcem činí \SI{\pm2} minut za rok v teplotním rozsahu od \SI{-40}{\degreeCelsius} do \SI{+85}{\degreeCelsius}.
@@ -916,6 +914,8 @@ Modul NEO-7M obsahuje integrovaný přijímač, pasivní keramickou anténu a an
     \label{fig:neo-7m}
 \end{figure}
 
+\newpage
+
 \subsection{Signalizace stavu systému}
 Důležitou součástí digitálního záznamníku je také informování uživatele o běžném stavu systému, například že digitální záznamník nahrává nebo dosažení bezpečného stavu pro odpojení zařízení, ale signalizace je také nutná z důvodu výskytu případných chyb, které mohou nastat. K tomuto účelu slouží sada pěti světelných diod typu LED.
 
@@ -931,6 +931,35 @@ Každá dioda je připojena k tranzistoru typu NPN (konkrétně BC546 od společ
 
 \newpage
 
+\subsection{Layout expanzní desky}
+\label{bom_list}
+Výše zmíněné obvody byly navrženy na dvouvrstvou desku plošného spoje, jejíž rozměry i rozmístění pinových lišt přesně odpovídají vývodům konektorů na vývojové desce FRDM-MCXN947 od společnosti NXP Semiconductors.
+
+Ve středu desky se nachází logika zálohovaného napájení s detekcí ztráty napájecího napětí a také jsou zde otvory pro přichycení GPS modulu NEO--7M. Připojení GPS modulu je zamyšleno tak, mohlo být připojeno pomocí 90\textdegree zahnuté pinové lišty a uloženo rovnoběžně s rovinou expanzní desky a to z důvodu omezení rozměrů celé sestavy v krytu. Modul NEO--7M sice poskytuje pasivní anténu, nicméně zařízení bude využíváno ve vnitřních prostorách, kde může být nedostačující signál, a proto počítá s připojením aktivní antény, která má větší rozměry a bude vyvedena skrze kryt zařízení. 
+
+V levém spodním rohu se pak nachází pinová lišta pro umístění signalizačních diod typu LED spolu s obvody pro jejich spínání. Naopak v pravém horním rohu se nachází obvod s RTC a vývrtkami pro umístění držáku knoflíkové baterie.
+
+Krom samotných obvodů deska plošného spoje obsahuje čtyři montážní otvory (Mounting Holes), které slouží k přichycení distančních sloupků, pomocí kterých může být deska fixně zasazena do krytu záznamníku.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{obrazky-figures/extension_shield-brd-front.pdf}
+    
+    \caption{Layout expanzní desky -- přední strana}
+    \label{fig:neo-7m}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{obrazky-figures/extension_shield-brd-back.pdf}
+    
+    \caption{Layout expanzní desky -- spodní strana}
+    \label{fig:neo-7m}
+\end{figure}
+
+\newpage
+
+
 \subsection{Seznam součástek expanzní desky}
 \label{bom_list}
 
@@ -945,14 +974,13 @@ Nutno dodat, že doporučené pin headery od výrobce Samtec nejsou nezbytně nu
         \hline
         \textbf{Součástka} & \textbf{Hodnota / Popis} & \textbf{Počet} & \textbf{Cena za kus} \\
         \hline
-        NXP FRDM--MCXN947   & vývojová deska                    & 1  & 593,42 Kč  \\ \hline
         SSQ-108-03-T-D      & 16pin pinová lišta (Samtec)       & 2  & 46,61 Kč   \\ \hline
-        SSQ-106-03-S-D      & 12pin pinová lišta (Samtec)       & 1  & 40,60 Kč   \\ \hline
+        SSQ-106-03-T-D      & 12pin pinová lišta (Samtec)       & 1  & 40,60 Kč   \\ \hline
         SSQ-114-03-T-D      & 28pin pinová lišta (Samtec)       & 1  & 81,70 Kč   \\ \hline
         SSQ-116-03-T-D      & 32pin pinová lišta (Samtec)       & 1  & 93,22 Kč   \\ \hline
         SSQ-110-03-T-D      & 20pin pinová lišta (Samtec)       & 1  & 58,39 Kč   \\ \hline
         M20-7830342         & 10pin pinová lišta (Harwin)       & 1  & 34,33 Kč   \\ \hline
-        DS3231M+            & Real-Time Clock Module            & 1  & 284,68 Kč  \\ \hline
+        DS3231M+            & obvod reálného času               & 1  & 284,68 Kč  \\ \hline
         SCMR14G334SRBB0     & Superkondenzátor (KYOCERA AVX)    & 1  & 141,09 Kč  \\ \hline
         RSX301L-30DDTE25    & Schottky dioda (ROHM)             & 1  & 23,58 Kč   \\ \hline
         BC546               & NPN Transistor (ON Semiconductor) & 5  & 5,71 Kč    \\ \hline
