@@ -1004,30 +1004,30 @@ Navrh krabicky
 
 \chapter{Přístup k realizaci obslužného firmware}
 \label{softwarova_implementace}
-Obslužný firmware digitálního záznamníku je postaven na operačním systému reálného času FreeRTOS, který zajišťuje deterministické plánování jednotlivých úloh, které budou následně popsány v této kapitole.
+Obslužný firmware digitálního záznamníku byl implementován v jazyce ISO~C, přičemž během vývoje firmwaru byl kladen rovněž důraz na dokumentovanost zdrojového kódu. Všechny funkce, globální proměnné a makra jsou opatřeny komentáři v anglickém jazyce ve formátu \textit{Doxygen}, ze kterých lze snadno vygenerovat dokumentaci například v podobě HTML stránek. Krom \textit{Doxygen} komentářů je i samotný kód doplněn o kontextové komentáře, které objasňují klíčové části implementace.
 
-% Uved ze se zde prenasi cas z externiho RTC do interniho RTC
-% staticka alokace
-Na začátek je nutné uvést, že pro zvýšení spolehlivosti a predikovatelnosti firmwaru jsem rozhodl, že firmware bude využívat výhradně statickou alokaci paměti. Veškeré úlohy i synchronizační prostředky jsou vytvářeny staticky s předem definovanou velikostí zásobníků a řídicích struktur již při startu systému. Dynamická alokace paměti je zcela vypnuta i přímo v konfiguraci FreeRTOS.
-
-U vývoje firmwaru byl kladen rovněž důraz na dokumentovanost zdrojového kódu. Všechny funkce, globální proměnné a makra jsou opatřeny komentáři v anglickém jazyce ve formátu \textit{Doxygen}, ze kterých lze snadno vygenerovat dokumentaci například v podobě HTML stránek. Krom \textit{Doxygen} komentářů je i samotný kód doplněn o kontextové komentáře, které objasňují klíčové části implementace.
-
-Na podporu dobré čitelnosti kódu a snazší orientace ve zdrojových souborech byla kromě důkladné dokumentace kladena pozornost také na jednotný systém pojmenovávání proměnných. Pojmenování proměnných reflektují datový typ, rozsah a případnou strukturu. Globální proměnné jsou označeny prefixem \texttt{g\_}, čímž se jednoznačně odlišují od lokálních. Datový typ proměnné je dále specifikován typovým prefixem — např. u32 pro uint32\_t, \texttt{u16} pro uint16\_t, \texttt{b} pro bool, \texttt{p} pro ukazatel a \texttt{a} pro pole. Proměnné typu struktura (pokud nejsou globální) jsou pojmenovávány bez prefixu. Tyto prefixy jsou vzájemně kombinovány, aby správně reprezentovaly danou proměnnou.
+Zároveň pro podporu dobré čitelnosti kódu a snazší orientaci ve zdrojovém kódu byla kromě dokumentace kladena pozornost také na jednotný systém pojmenovávání proměnných. Pojmenování proměnných reflektuje datový typ, rozsah a případnou strukturu. Globální proměnné jsou označeny prefixem \texttt{g\_}, čímž se jednoznačně odlišují od lokálních. Datový typ proměnné je dále specifikován typovým prefixem, například proměnná typu uint32\_t obsahuje prefix \texttt{u32}, boolean je označen prefixem \texttt{b}, ukazatele jsou označeny prefixem \texttt{p} a pole jsou označeny prefixem \texttt{a}. Proměnné typu struktura (pokud nejsou globální) jsou pojmenovávány bez prefixu. Tyto prefixy jsou vzájemně kombinovány, aby správně reprezentovaly danou proměnnou. Příklad pojmenování proměnných může vypadat následovně:
 
 \begin{verbatim}
-    /**
-     * @brief 	Globální proměnná, ukazatel na hodnotu typu uint32_t
-     * @details  g_ = globální, p = pointer, u32 = uint32_t
-     */
-    static uint32_t* g_pu32CurrentCount;
-    
-    /**
-     * @brief 	Lokální proměnná typu struktura – bez prefixu
-     * @details  struktura reprezentující stav záznamu
-     */
-    recordingStatus_t recordingStatus;
+/**
+ * @brief 	Globální proměnná, ukazatel na hodnotu typu uint32_t
+ * @details g_ = globální, p = pointer, u32 = uint32_t
+ */
+static uint32_t* g_pu32CurrentCount;
+
+/**
+ * @brief 	Lokální proměnná typu struktura
+ * @details bez prefixu
+ */
+recordingStatus_t recordingStatus;
 \end{verbatim}
-    
+
+\newpage
+
+% staticka alokace
+Samotný firmware digitálního záznamníku je postaven na operačním systému reálného času FreeRTOS, který zajišťuje deterministické plánování jednotlivých úloh, které budou následně popsány v této kapitole. Firmware pro zvýšení spolehlivosti a predikovatelnosti využívá výhradně statickou alokaci paměti. Veškeré úlohy i synchronizační prostředky jsou vytvářeny s předem definovanou velikostí a dynamická alokace paměti je zcela vypnuta na úrovni FreeRTOS.
+
+% Uved ze se zde prenasi cas z externiho RTC do interniho RTC
 
 % TODO: Co vsechno lze zmenit v defs.h
 % obecna moznost konfigurace firmwaru
