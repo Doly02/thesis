@@ -1012,6 +1012,23 @@ Na začátek je nutné uvést, že pro zvýšení spolehlivosti a predikovatelno
 
 U vývoje firmwaru byl kladen rovněž důraz na dokumentovanost zdrojového kódu. Všechny funkce, globální proměnné a makra jsou opatřeny komentáři v anglickém jazyce ve formátu \textit{Doxygen}, ze kterých lze snadno vygenerovat dokumentaci například v podobě HTML stránek. Krom \textit{Doxygen} komentářů je i samotný kód doplněn o kontextové komentáře, které objasňují klíčové části implementace.
 
+Na podporu dobré čitelnosti kódu a snazší orientace ve zdrojových souborech byla kromě důkladné dokumentace kladena pozornost také na jednotný systém pojmenovávání proměnných. Pojmenování proměnných reflektují datový typ, rozsah a případnou strukturu. Globální proměnné jsou označeny prefixem \texttt{g\_}, čímž se jednoznačně odlišují od lokálních. Datový typ proměnné je dále specifikován typovým prefixem — např. u32 pro uint32\_t, \texttt{u16} pro uint16\_t, \texttt{b} pro bool, \texttt{p} pro ukazatel a \texttt{a} pro pole. Proměnné typu struktura (pokud nejsou globální) jsou pojmenovávány bez prefixu. Tyto prefixy jsou vzájemně kombinovány, aby správně reprezentovaly danou proměnnou.
+
+\begin{verbatim}
+/**
+ * @brief 	Globální proměnná, ukazatel na hodnotu typu uint32_t
+ * @details  g_ = globální, p = pointer, u32 = uint32_t
+ */
+static uint32_t* g_pu32CurrentCount;
+
+// Lokální proměnná typu struktura – bez prefixu
+/**
+ * @brief 	Lokální proměnná typu struktura – bez prefixu
+ * @details  struktura reprezentující stav záznamu
+ */
+recordingStatus_t recordingStatus;
+\end{verbatim}
+
 % TODO: Co vsechno lze zmenit v defs.h
 % obecna moznost konfigurace firmwaru
 Firmware digitálního záznamníku je navržen modulárně a je tedy rozdělen do několika funkčních celků, například logika záznamu, vyčtení zaznamenaných dat pomocí Mass Storage, detekce ztráty napájení, signalizace stavu systému a další, které je možné podle potřeby samostatně aktivovat či deaktivovat. Tohoto chování je dosaženo pomocí podmíněného překladu v jazyce ISO C, kdy jsou jednotlivé části kódu překládány pouze v případě, že jsou odpovídajícím způsobem povoleny. K centrální správě těchto voleb slouží aplikační konfigurační soubor \textit{defs.h}. 
