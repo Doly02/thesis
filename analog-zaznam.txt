@@ -1,0 +1,15 @@
+Při změně teploty docházelo k prohnutí pásku v důsledku rozdílné teplotní roztažnosti obou kovů.
+Tento mechanický pohyb mohl být přenesen na hřídel s ukazatelem díky čemuž se natočila ručička a 
+zobrazila se tak aktuální teplota na stupnici, a nebo byl mechanicky převeden na pohyb pera, které 
+zapisovalo hodnotu na paměťové médium.
+
+// Nevim jestli je ta druha veta dobre znalost vs zkusenost 
+Lidstvo již od svých počátků mělo potřebu zaznamenávat data, neboť člověk mnohdy dokáže
+datům přiřadit sémantiku – jejich význam, a proměnit je tak v informace. Právě díky
+informacím mohou lidé získat znalosti a učit se tak z minulých zkušeností, předávat znalosti
+dalším generacím a podpořit tak neustálý lidský pokrok
+
+
+Celková cena komponent použitých na realizaci expanzní desky činí přibližně 880~Kč. Po započtení vývojové desky dosahuje celková cena zařízení částky 1473~Kč. Ve srovnání s existujícími řešeními uvedenými v kapitole~\ref{existujici_reseni} se jedná o jednoznačně nejlevnější variantu.
+
+Například zařízení \textit{AirDrive Serial Logger Pro} je prodáváno za cenu \$119{,}99, což při aktuálním směnném kurzu 22{,}04~Kč/USD (k datu 18.~4.~2025) odpovídá částce 2644{,}41~Kč. Druhé zmíněné zařízení, \textit{Anticyclone Anti-Log Pro}, se prodává v cenovém rozmezí od 229~£ do 366~£. Při aktuálním kurzu 29{,}23~Kč/GBP se výsledná cena pohybuje mezi 6694{,}39~Kč a 10\,699{,}33~Kč.

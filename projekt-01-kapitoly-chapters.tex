@@ -669,7 +669,7 @@ Jedna z nevýhod globálního polohovacího systému může nastat u zařízení
 \subsubsection{Network Time Protocol (NTP)}
 Další široce používanou technologií pro získání přesného času je síťový protokol NTP (Network Time Protocol). Tento protokol slouží k synchronizaci systémového času počítačových zařízení s časovými servery prostřednictvím sítí TCP/IP. NTP servery jsou organizovány do hierarchického systému vrstev (stratum), přičemž servery s nejnižším číslem (např. stratum 1) jsou přímo napojeny na referenční časové zdroje, jako jsou atomové hodiny nebo GPS přijímače (stratum 0). Servery na vyšších úrovních (např. stratum 2 a vyšší) získávají čas z těchto primárních zdrojů a zpřístupňují ho dále v síti.
 
-Princip spočívá ve výměně časových značek mezi klientem a serverem. Klient odešle dotaz na NTP server ve chvíli $T_1$ a server tento dotaz přijme v čase $T_2$. Po zpracování server odešle odpověď v čase $T_3$, kterou klient přijme v čase $T_4$. Na základě těchto čtyř časových údajů lze vypočítat celkové síťové zpoždění $\delta$ a časový rozdíl (offset) $\theta$ mezi hodinami klienta a serveru. Zpoždění $\delta$ se určí jako:
+Princip spočívá ve výměně časových značek mezi klientem a serverem. Klient odešle dotaz na NTP server ve chvíli $T_1$ a server tento dotaz přijme v čase $T_2$. Po zpracování server odešle odpověď v čase $T_3$, kterou klient přijme v čase $T_4$. Na základě těchto čtyř časových údajů lze vypočítat celkové síťové zpoždění $\delta$ a časový rozdíl (offset) $\theta$ mezi hodinami klienta a serveru. Zpoždění $\delta$ lze určit jako:
 
 \begin{equation}
     \delta = (T_4 - T_1) - (T_3 - T_2)
@@ -694,8 +694,7 @@ Získané hodnoty spoždění a rozdílu pak klientovi umožňují upravit syst�
     \label{fig:network-time-protocol}
 \end{figure}
 
-NTP poskytuje přesný čas, nicméně také není vhodný pro každé vestavné zařízení vyžadující absolutní čas. Pro jeho fungování je nutná přítomnost TCP/IP zásobníku a zároveň aktivní síťové připojení k dostupnému NTP serveru. V prostředí, kde není možné garantovat trvalou konektivitu (například v mobilních, autonomních nebo izolovaných systémech), může být použití NTP omezené nebo zcela nevhodné. V takových případech je výhodnější spolehnout se na jiné zdroje času, jako je například GPS modul, nebo využít NTP pouze pro počáteční jednorázovou synchronizaci času při startu systému, kdy je připojení k síti dostupné.
-
+NTP poskytuje přesný čas, nicméně také není vhodný pro každé vestavné zařízení vyžadující absolutní čas. Pro jeho fungování je nutná přítomnost TCP/IP zásobníku a zároveň aktivní síťové připojení k dostupnému NTP serveru. V prostředí, kde není možné garantovat trvalou konektivitu (například v mobilních, autonomních nebo izolovaných systémech), může být použití NTP omezené nebo zcela nevhodné. V takových případech je výhodnější spolehnout se na jiné zdroje času, jako je například GPS modul, nebo využít NTP pouze pro synchronizaci času, a následně se spolehnout na lokální zdroj času, například časovač či RTC.
 % ----------------------------------------------------
 \section{Výber přístupu řízení běhu aplikace}
 Důležitou součástí, která bude určovat způsob, jakým bude výsledná aplikace implementována, je výběr způsobu řízení běhu aplikace. U aplikací vestavných zařízení se zpravidla rozhoduje mezi dvěma směry. Prvním z nich je implementace na holém železe, obvykle se pro tento způsob využívá anglický název bare--metal a druhou možností může být stavět program nad operačním systémem reálného času (Real-Time Operating System, zkráceně RTOS). Volba přístupu ovlivňuje výslednou architekturu. V následujících podkapitolách budou oba přístupy rozebrány, včetně jejich výhod a nevýhod. 
@@ -1200,48 +1199,11 @@ Z pohledu uživatele je také důležité zjistit, zda digitální záznamník z
 % ----------------------------------------------------
 
 \section{Funkcionální testování systému}
-Funkcionalita digitálního záznamníku byla prověřena pomocí skriptu využívajícího objektově orientovaný přístup napsaném v jazyce Python. Tento skript simuluje monitorované zařízení tak, že načítá testovací textové soubory a jejich obsah postupně odesílá ve formě sériových dat přes COM port do digitálního záznamníku. Testovací skript se nachází v adresáři \texttt{tests/} pod názvem \texttt{serial\_test.py} a pro jeho korektní funkcionalitu je potřeba správně nastavit hodnoty definující COM port přes který budou data posílána, sadu testovacích souborů a přenosovou rychlost.
+Funkcionalita digitálního záznamníku byla prověřena pomocí testovacího skriptu napsaného v jazyce Python s využitím objektově orientovaného přístupu. Tento skript simuluje monitorované zařízení tak, že načítá testovací textové soubory a jejich obsah postupně odesílá ve formě sériových dat přes COM port do digitálního záznamníku. Po dokončení testu je třeba z digitálního záznamníku vyčíst zaznamenané soubory a jejich obsah porovnat s původními testovacími vstupy. Testovací skript se nachází v adresáři \texttt{tests/} pod názvem \texttt{serial\_test.py} a pro jeho korektní funkcionalitu je potřeba správně nastavit hodnoty definující COM port přes který budou data posílána, sadu testovacích souborů a přenosovou rychlost.
 
-Testování s pomocí skriptu bylo prováděno s různými přenosovými rychlostmi, přičemž testování bylo primárně zaměřeno na přenosové rychlosti odpovídající skutečným scénářům nasazení. Po ukončení testu byly zaznamenané výstupy porovnány s původními testovacími soubory. Výsledky porovnání potvrdily, že ve všech testovaných případech proběhl přenos korektně a nedošlo k žádné ztrátě ani poškození dat.
+Testování s pomocí skriptu bylo provedeno s různými přenosovými rychlostmi, přičemž testování bylo primárně zaměřeno na přenosové rychlosti odpovídající skutečným scénářům nasazení. Po ukončení testu byly zaznamenané výstupy porovnány s původními testovacími soubory. Výsledky porovnání potvrdily, že ve všech testovaných případech proběhl přenos korektně a nedošlo k žádné ztrátě ani poškození dat.
 
 Součástí funkčního testování bylo také ověření chování digitálního záznamníku v hraničních či nestandardních situacích, které mohou nastat při reálném nasazení digitálního záznamníku. Testy byly zaměřeny na případy, jako je absence nebo nekompletní obsah konfiguračního souboru, použití nové SD karty bez vytvořeného souborového systému, nebo ověření funkčnosti s různě velkými záznamovými soubory. Výsledky testování jsou uvedeny v následující tabulce~\ref{tab:test-extremes}.
-
-\begin{longtable}{|p{6cm}|p{5cm}|p{3cm}|}
-    \caption{Výsledky testování hraničních stavů digitálního záznamníku}
-    \label{tab:test-extremes} \\
-    \hline
-    \textbf{Popis testu} & \textbf{Očekávaný výsledek} & \textbf{Splněno} \\
-    \hline
-    \endfirsthead
-
-    \hline
-    \textbf{Popis testu} & \textbf{Očekávaný výsledek} & \textbf{Splněno} \\
-    \hline
-    \endhead
-
-    \hline
-    \endfoot
-
-    \hline
-    \endlastfoot
-
-    Absence konfiguračního souboru & Signalizace chyby pomocí LED diody D2, přerušení záznamu & Ano \\
-    \hline
-    Chybějící hodnota \texttt{baudrate} v konfiguraci & Signalizace chyby a zastavení záznamu & Ano \\
-    \hline
-    Záznam na novou nezformátovanou SD~kartu & SD~karta je zformátována, je inicializován souborový systém a zařízení následně zaznamenává příchozí data & Ano \\
-    \hline
-    Záznam s velikostí souboru 512~B & Vytvoření souboru a správné ukončení po dosažení limitu & Ano \\
-    \hline
-    Záznam s velikostí souboru 1~MB & Správné naplnění a ukončení souboru bez ztráty dat & Ano \\
-    \hline
-    Docházející volná kapacita SD karty (tzn. volná kapacita pod 500~MB) & Signalizace pomocí LED & Ano \\
-    \hline
-    Přenos zaznamenaných dat z digitálního záznamníku & Přeneseny záznamy do hostitelského zařízení z digitálního záznamníku & Ano \\
-    \hline
-\end{longtable}
-
-Digitální záznamník byl dále testován i s reálným monitorovaným zařízením po dobu delší než 168 hodin provozu. Ani během tohoto dlouhodobého testu nebyly zjištěny žádné projevy nesprávné funkce nebo ztráty dat, čímž byla taktéž potvrzena stabilita a spolehlivost zařízení.
 
 \section{Kontrola bezpečnosti kódu}
 Kromě funkcionálního testování byla provedena statická analýza zdrojového kódu pomocí pravidel specifikace MISRA (Motor Industry Software Reliability Association), respektive MISRA C:2012. MISRA C:2012 je standard pro vývoj softwaru v programovacím jazyku ISO C, který má za cíl zvýšení bezpečnosti kódu, přenositelnosti a spolehlivosti v kontextu vestavěných systémů.

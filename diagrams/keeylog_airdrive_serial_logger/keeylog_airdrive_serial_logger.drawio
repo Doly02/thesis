@@ -1,6 +1,6 @@
-<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.16 Chrome/132.0.6834.196 Electron/34.2.0 Safari/537.36" version="26.0.16">
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.2.2 Chrome/134.0.6998.178 Electron/35.1.2 Safari/537.36" version="26.2.2">
   <diagram name="Page-1" id="lf3GEtGUB8VhACDYCo2x">
-    <mxGraphModel dx="1434" dy="836" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="1428" dy="841" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -79,7 +79,7 @@
         <mxCell id="qizNdXYnVyPi3BkZtSoY-18" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;Tx&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;container=0;" parent="1" vertex="1">
           <mxGeometry x="763.5" y="385.25" width="37.50000000000001" height="16.5" as="geometry" />
         </mxCell>
-        <mxCell id="qizNdXYnVyPi3BkZtSoY-20" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;Port 0&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;container=0;" parent="1" vertex="1">
+        <mxCell id="qizNdXYnVyPi3BkZtSoY-20" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;Port 1&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;container=0;" parent="1" vertex="1">
           <mxGeometry x="763.5" y="418.25" width="75.00000000000001" height="16.5" as="geometry" />
         </mxCell>
         <mxCell id="qizNdXYnVyPi3BkZtSoY-25" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;container=0;fillColor=#d5e8d4;strokeColor=#000000;" parent="1" vertex="1">
@@ -232,19 +232,19 @@
         <mxCell id="RBV7hKRJF5p7ZGhdcJtB-4" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;&lt;b&gt;192.168.4.1/advanced.html&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="169" y="396.35" width="147" height="14" as="geometry" />
         </mxCell>
-        <mxCell id="5T-xlOQUob_WEuRAa6tl-1" value="&lt;b&gt;teplota: 25.5&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="5T-xlOQUob_WEuRAa6tl-1" value="&lt;b&gt;teplota: 25.5&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="164.5" y="418.25" width="84.5" height="18" as="geometry" />
         </mxCell>
-        <mxCell id="5T-xlOQUob_WEuRAa6tl-3" value="&lt;b&gt;teplota: 25.0&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="5T-xlOQUob_WEuRAa6tl-3" value="&lt;b&gt;teplota: 25.0&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="164.5" y="436.25" width="84.5" height="18" as="geometry" />
         </mxCell>
-        <mxCell id="5T-xlOQUob_WEuRAa6tl-4" value="&lt;b&gt;teplota: 25.5&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="5T-xlOQUob_WEuRAa6tl-4" value="&lt;b&gt;teplota: 25.5&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="164.5" y="454.25" width="84.5" height="18" as="geometry" />
         </mxCell>
-        <mxCell id="5T-xlOQUob_WEuRAa6tl-5" value="&lt;b&gt;teplota: 25.5&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="5T-xlOQUob_WEuRAa6tl-5" value="&lt;b&gt;teplota: 25.5&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="164.5" y="472.25" width="84.5" height="18" as="geometry" />
         </mxCell>
-        <mxCell id="5T-xlOQUob_WEuRAa6tl-6" value="&lt;b&gt;teplota: 25.5&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="5T-xlOQUob_WEuRAa6tl-6" value="&lt;b&gt;teplota: 25.5&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="164.5" y="490.25" width="84.5" height="18" as="geometry" />
         </mxCell>
       </root>
