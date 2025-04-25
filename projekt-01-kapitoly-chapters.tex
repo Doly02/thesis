@@ -1078,7 +1078,7 @@ free_space=50
 \end{verbatim}
 
 % (například z důvodu chybného formátu , nevalidních hodnot,...)
-V případě, že konfigurační soubor \textit{config.txt} není nalezen v kořenovém adresáři nebo se jeho obsah nepodaří záznamníku zpracovat, záznam zařízení proběhne dle předdefinovaných parametrů \texttt{DEFAULT\_BAUDRATE} a \texttt{DEFAULT\_MAX\_FILESIZE} uvedených v souboru \textit{defs.h}. vPokud je konfigurační soubor nalezen, ale některý z očekávaných parametrů v něm chybí, je pro tento konkrétní parametr rovněž automaticky dosazena příslušná výchozí hodnota.
+V případě, že konfigurační soubor \textit{config.txt} není nalezen v kořenovém adresáři nebo se jeho obsah nepodaří záznamníku zpracovat, záznam zařízení proběhne dle předdefinovaných parametrů uvedených v souboru \textit{defs.h}. Mezi tyto výchozí parametry patří makra \texttt{DEFAULT\_BAUDRATE}, \texttt{DEFAULT\_DATA\_BITS}, \texttt{DEFAULT\_STOP\_BITS}, \texttt{DEFAULT\_PARITY}. Dále je definována základní maximální velikost souboru pomocí makra \texttt{DEFAULT\_MAX\_FILESIZE} a základní prahová volná kapacity na SD karty je definována makrem \texttt{DEFAULT\_FREE\_SPACE}. Pokud je konfigurační soubor nalezen, ale některý z očekávaných parametrů v něm chybí, je pro tento konkrétní parametr rovněž automaticky dosazena příslušná výchozí hodnota.
 
 \newpage
 
