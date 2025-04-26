@@ -1078,9 +1078,31 @@ free_space=50
 \end{verbatim}
 
 % (například z důvodu chybného formátu , nevalidních hodnot,...)
-V případě, že konfigurační soubor \textit{config.txt} není nalezen v kořenovém adresáři nebo se jeho obsah nepodaří záznamníku zpracovat, záznam zařízení proběhne dle předdefinovaných parametrů uvedených v souboru \textit{defs.h}. Mezi tyto výchozí parametry patří makra \texttt{DEFAULT\_BAUDRATE}, \texttt{DEFAULT\_DATA\_BITS}, \texttt{DEFAULT\_STOP\_BITS}, \texttt{DEFAULT\_PARITY}. Dále je definována základní maximální velikost souboru pomocí makra \texttt{DEFAULT\_MAX\_FILESIZE} a základní prahová volná kapacity na SD karty je definována makrem \texttt{DEFAULT\_FREE\_SPACE}. Pokud je konfigurační soubor nalezen, ale některý z očekávaných parametrů v něm chybí, je pro tento konkrétní parametr rovněž automaticky dosazena příslušná výchozí hodnota.
+% (například z důvodu chybného formátu , nevalidních hodnot,...)
+V případě, že konfigurační soubor \textit{config.txt} není nalezen v kořenovém adresáři nebo se jeho obsah nepodaří záznamníku zpracovat, záznam zařízení proběhne dle předdefinovaných parametrů uvedených v hlavičkovém souboru \textit{defs.h}. Také může nastat situace, kdy je konfigurační soubor nalezen, ale některý z očekávaných parametrů v něm chybí, v tomto případě je pro tento konkrétní parametr rovněž automaticky dosazena příslušná výchozí hodnota dle následující tabulky \ref{tab:default-parameters}.
 
-\newpage
+\begin{table}[h]
+    \centering
+    \begin{tabularx}{\textwidth}{|c|c|X|}
+        \hline
+        \textbf{Parametr} & \textbf{Výchozí hodnota} & \textbf{Význam} \\
+        \hline
+        \texttt{DEFAULT\_BAUDRATE} & 230400 & Výchozí přenosová rychlost sériové komunikace (baudrate). \\
+        \hline
+        \texttt{DEFAULT\_DATA\_BITS} & 8 datových bitů & Výchozí počet datových bitů pro sériovou komunikaci. \\
+        \hline
+        \texttt{DEFAULT\_STOP\_BITS} & 1 stop bit & Výchozí počet stop bitů pro sériovou komunikaci. \\
+        \hline
+        \texttt{DEFAULT\_PARITY} & Žádná & Výchozí nastavení parity – parita není používána. \\
+        \hline
+        \texttt{DEFAULT\_MAX\_FILESIZE} & 8 MB & Maximální velikost jednoho záznamového souboru v bajtech. \\
+        \hline
+        \texttt{DEFAULT\_FREE\_SPACE} & 50 MB & Prahová hodnota volné kapacity SD karty, pod kterou je signalizováno docházející místo. \\
+        \hline
+    \end{tabularx}
+    \caption{Výchozí hodnoty používané při absenci nebo chybě v konfiguračním souboru}
+    \label{tab:default-parameters}
+\end{table}
 
 Pro zpracování konfiguračního souboru slouží vlastní parser implementovaný v souborech \textit{parser.c} a \textit{parser.h}, a je možné jej snadno rozšířit o podporu dalších parametrů. Každý parametr je zpracováván samostatnou funkcí. V případě rozšíření stačí deklarovat funkci v hlavičkovém souboru \textit{parser.h}, implementovat ji ve zdrojovém souboru \textit{parser.c} a následně ji přidat do funkce, a poté ji zavolat ve funkci \texttt{CONSOLELOG\_ProccessConfigFile()}, která konfigurační soubor zpracovává při inicializaci záznamové úlohy.
 
