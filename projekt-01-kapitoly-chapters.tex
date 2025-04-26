@@ -1078,8 +1078,9 @@ free_space=50
 \end{verbatim}
 
 % (například z důvodu chybného formátu , nevalidních hodnot,...)
-% (například z důvodu chybného formátu , nevalidních hodnot,...)
-V případě, že konfigurační soubor \textit{config.txt} není nalezen v kořenovém adresáři nebo se jeho obsah nepodaří záznamníku zpracovat, záznam zařízení proběhne dle předdefinovaných parametrů uvedených v hlavičkovém souboru \textit{defs.h}. Také může nastat situace, kdy je konfigurační soubor nalezen, ale některý z očekávaných parametrů v něm chybí, v tomto případě je pro tento konkrétní parametr rovněž automaticky dosazena příslušná výchozí hodnota dle následující tabulky \ref{tab:default-parameters}.
+V případě, že konfigurační soubor \textit{config.txt} není nalezen v kořenovém adresáři nebo se jeho obsah nepodaří záznamníku zpracovat, záznam zařízení proběhne dle předdefinovaných parametrů uvedených v hlavičkovém souboru \textit{defs.h}. Také může nastat situace, kdy je konfigurační soubor nalezen, ale některý z očekávaných parametrů v něm chybí, v tomto případě je pro tento konkrétní parametr rovněž automaticky dosazena příslušná výchozí hodnota. Přehled výchozích hodnot shrnuje následující tabulka~\ref{tab:default-parameters}.
+
+V případě, že konfigurační soubor \textit{config.txt} není nalezen v kořenovém adresáři nebo se jeho obsah nepodaří záznamníku zpracovat, záznam zařízení proběhne dle předdefinovaných parametrů uvedených v hlavičkovém souboru \textit{defs.h}. Předdefinované parametry z hlavičkového souboru jsou automaticky zvoleny i v případě, kdy je konfigurační soubor nalezen, ale některý z očekávaných parametrů v něm chybí. Přehled všech výchozích hodnot shrnuje tabulka~\ref{tab:default-parameters}.
 
 \begin{table}[h]
     \centering
@@ -1103,7 +1104,6 @@ V případě, že konfigurační soubor \textit{config.txt} není nalezen v koř
     \caption{Výchozí hodnoty používané při absenci nebo chybě v konfiguračním souboru}
     \label{tab:default-parameters}
 \end{table}
-
 Pro zpracování konfiguračního souboru slouží vlastní parser implementovaný v souborech \textit{parser.c} a \textit{parser.h}, a je možné jej snadno rozšířit o podporu dalších parametrů. Každý parametr je zpracováván samostatnou funkcí. V případě rozšíření stačí deklarovat funkci v hlavičkovém souboru \textit{parser.h}, implementovat ji ve zdrojovém souboru \textit{parser.c} a následně ji přidat do funkce, a poté ji zavolat ve funkci \texttt{CONSOLELOG\_ProccessConfigFile()}, která konfigurační soubor zpracovává při inicializaci záznamové úlohy.
 
 
