@@ -881,9 +881,9 @@ Každá dioda je připojena k bipolárnímu tranzistoru typu NPN (konkrétně BC
 
 \subsection{Layout expanzní desky}
 \label{bom_list}
-Výše zmíněné obvody byly navrženy na dvouvrstvou desku plošného spoje, jejíž rozměry i rozmístění pinových lišt přesně odpovídají vývodům konektorů na vývojové desce FRDM-MCXN947 od společnosti NXP Semiconductors.
+Výše zmíněné obvody byly navrženy na dvouvrstvou desku plošného spoje, jejíž rozměry i rozmístění pinových lišt přesně odpovídají vývodům konektorů vývojové desky FRDM-MCXN947 od společnosti NXP Semiconductors.
 
-Ve středu desky se nachází logika zálohovaného napájení s detekcí ztráty napájecího napětí a také jsou zde otvory pro přichycení GPS modulu NEO--7M. Připojení GPS modulu je zamyšleno tak, mohlo být připojeno pomocí 90\textdegree zahnuté pinové lišty a uloženo rovnoběžně s rovinou expanzní desky a to z důvodu omezení rozměrů celé sestavy v krytu. Modul NEO--7M sice poskytuje pasivní anténu, nicméně zařízení bude využíváno ve vnitřních prostorách, kde může být nedostačující signál, a proto počítá s připojením aktivní antény, která má větší rozměry a bude vyvedena skrze kryt zařízení. 
+Ve středu desky se nachází logika zálohovaného napájení s detekcí ztráty napájecího napětí a také jsou zde otvory pro přichycení GPS modulu NEO--7M. Připojení GPS modulu je zamyšleno tak, aby mohl být modul připojen pomocí 90\textdegree zahnuté pinové lišty a uložen rovnoběžně s rovinou expanzní desky a to z důvodu omezení rozměrů celé sestavy v krytu. Modul NEO--7M sice poskytuje pasivní anténu, nicméně zařízení bude využíváno ve vnitřních prostorách, kde může být nedostačující signál, a proto se počítá s připojením aktivní antény, která má větší rozměry a bude vyvedena skrze kryt zařízení. 
 
 V levém spodním rohu se pak nachází pinová lišta pro umístění signalizačních diod typu LED spolu s obvody pro jejich spínání. Naopak v pravém horním rohu se nachází obvod s RTC a vývrtkami pro umístění držáku knoflíkové baterie.
 
@@ -913,7 +913,7 @@ Krom samotných obvodů deska plošného spoje obsahuje čtyři montážní otvo
 
 Důležitým parametrem expanzní desky je i její cena. Celková cena komponent použitých na realizaci expanzní desky činí přibližně 880~Kč. V této kapitole je uveden přehled součástek použitých při návrhu digitálního záznamníku, včetně jejich orientačních cen. 
 
-Nutno dodat, že doporučené pin headery od výrobce Samtec nejsou nezbytně nutné a lze je nahradit levnějšími alternativami. Všechny komponenty byly vybírány tak, aby bylo možné je objednat u jednoho distributora elektronických součástek, aby se zjednodušil proces objednávky a zároveň se minimalizovaly náklady na dopravu.
+Nutno dodat, že doporučené pin headery od výrobce Samtec nejsou nezbytně nutné a lze je nahradit levnějšími alternativami. Všechny komponenty byly vybírány tak, aby je bylo možné objednat u jednoho distributora elektronických součástek z důvodu zjednoduššení procesu objednávky a zároveň minimalizace nákladů na dopravu.
 
 \begin{table}[htbp]
     \centering
