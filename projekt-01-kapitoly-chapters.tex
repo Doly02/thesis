@@ -758,13 +758,21 @@ Důležitou součástí návrhu systému je rovněž detekce ztráty napájecíh
 
 % ----------------------------------------------------
 
+\chapter{Realizace hardwaru}
+\label{realizace_hardwaru}
+
+%\section{Základová deska} 
+%V kapitole~\ref{vyber_vhodne_platformy} byl popsán proces výběru vhodné platformy pro běh firmwaru digitálního záznamníku. Jako nejvhodnější řešení se ukázalo využití vývojové desky FRDM-MCXN947 od společnosti NXP Semiconductors. Čip MCXN947 poskytuje mnoho různých periferií, které mohou být využity k realizaci digitálního záznamníku.
+
+%Samotný čip poskytuje časovače v podobě CTIMER a CSTIMER, které mohou být využity pro měření časových intervalů nebo generování periodických událostí. Dále je k dispozici flexibilní komunikační blok LP\_FLEXCOMM, který umožňuje konfiguraci až osmi nezávislých instancí komunikačních rozhraní (například I\textsuperscript{2}C, UART nebo SPI) podle aktuálních požadavků aplikace.
+
 \section{Expanzní deska}
 % Jak jsem měřil spotřebu, jak jsem spočítal hodnoty kondenzátorů 
-Vybraná základová deska neobsahuje všechny potřebné komponenty k realizaci firmwaru, které byly představeny v kapitole~\ref{architektura_systemu_digitalniho_zaznamniku} a pro zajištění kompletní funkcionality je nutné doplnit celý systém o expanzní desku plošných spojů, která umožní integraci všech externích komponent a rozšíří tak funkcionalitu základové desky.
+Vybraná základová deska neobsahuje všechny potřebné komponenty k realizaci digitálního záznamníku dle představené architektury v kapitole~\ref{architektura_systemu_digitalniho_zaznamniku} a pro zajištění kompletní funkcionality je nutné doplnit celý systém o expanzní desku plošných spojů, která umožní integraci všech externích komponent a rozšíří tak funkcionalitu základové desky.
 
 \subsection{Zálohované napájení}
 \label{zalohovane_napajeni_hw}
-Důležitou součástí realizovaného digitálního záznamníku je zálohované napájení s detekcí ztráty napájecího napětí. Zálohované napájení lze realizovat několika způsoby, například pomocí Li-Po baterie, knoflíkového článku nebo pomocí kondenzátoru. Nejschůdnější variantou pro digitální záznamník se ukázal být kondenzátor, respektive superkondenzátor. Na rozdíl od baterií je schopen okamžitě dodat relativně vysoký vybíjecí proud, který byl naměřen při testování spotřeby pomocí zařízení Power Profiler Kit II od společnosti Nordic Semiconductors (viz. obrázek~\ref{fig:power-consumption}), při kterém se ukázalo, že vstupní proud může dosáhnout hodnot až \SI{250}{\milli\ampere}. Běžné knoflíkové články nebo malé Li-Po baterie by v tomto ohledu nemusely zajistit dostatečný proud a případně by při takové zátěži vedly k velmi krátké výdrži. \cite{nordic_semi_ppk2}
+Důležitou součástí realizovaného digitálního záznamníku je zálohované napájení s detekcí ztráty napájecího napětí. Zálohované napájení lze realizovat několika způsoby, například pomocí knoflíkového baterie nebo pomocí kondenzátoru. Nejschůdnější variantou pro digitální záznamník se ukázal být kondenzátor, respektive superkondenzátor. Na rozdíl od baterií je schopen okamžitě dodat relativně vysoký vybíjecí proud, který byl naměřen při testování spotřeby pomocí zařízení Power Profiler Kit II od společnosti Nordic Semiconductors (viz. obrázek~\ref{fig:power-consumption}), při kterém se ukázalo, že vstupní proud může dosáhnout hodnot až \SI{250}{\milli\ampere}. Běžné knoflíkové články nebo malé Li-Po baterie by v tomto ohledu nemusely zajistit dostatečný proud a případně by při takové zátěži vedly k velmi krátké výdrži. \cite{nordic_semi_ppk2}
 
 % Zaroven musi byt jmennovite napeti vyssi z duvodu
 Z tohoto důvodu bylo třeba vybrat superkondenzátor, který bude vyhovovat parametrům pro využití v digitálním záznamníku. Mezi takové parametry patří zejména kapacita, která určuje, jak dlouho je zařízení schopno fungovat po ztrátě napájení. Dále bylo nutné zohlednit jmenovité napětí, které musí být vyšší než maximální napájecí napětí systému, aby nedošlo k poškození součástky.\footnote{Běžně je doporučováno volit dvojnásobek či dokonce trojnásobek napětí při kterém bude kondenzátor operovat.} Dalším důležitým faktorem je ekvivalentní sériový odpor (ESR), jenž ovlivňuje schopnost superkondenzátoru dodávat vysoký proud bez výrazného poklesu napětí, čím nižší ESR, tím lépe je tedy kondenzátor schopen poskytovat vyšší proud. Vzhledem k omezenému prostoru na expanzní desce bylo zároveň nezbytné zohlednit fyzické rozměry kondenzátoru tak, aby jej bylo možné snadno integrovat a popřípadě umožnit, aby bylo možné využít dva kondenzátory paralelně, pro zvýšení spolehlivosti systému v případě selhání jednoho z kondenzátorů. \cite{cadence_capacitor_size}
@@ -780,7 +788,7 @@ Z tohoto důvodu bylo třeba vybrat superkondenzátor, který bude vyhovovat par
 
 \newpage
 
-Jako vhodný kondenzátor byl tedy vybrán model SCMR14G334SRBB0 od společnosti KYOCERA AVX s kapacitou \SI{0.33}{\farad}, jmenovitým napětím \SI{7.5}{\volt} při stejnosměrném proudu a nízkým ESR, které má konkrétní hodnotu \SI{450}{\milli\ohm}. Vzhledem k relativně nízké ceně této komponenty bylo třeba jej nejprve experimentálně ověřit v provizorním zapojení (viz. schéma~\ref{fig:test-capacitors}) na nepájivém poli. Kondenzátor byl v tomto testu nejprve nabíjen z laboratorního zdroje nastaveného na \SI{5}{\volt} odpovídající reálným provozním podmínkám v cílovém zařízení. Po jeho odpojení byla sledována vybíjecí křivka sledována pomocí osciloskopu.
+Jako vhodný kondenzátor byl tedy vybrán model SCMR14G334SRBB0 od společnosti KYOCERA AVX s kapacitou \SI{0.33}{\farad}, jmenovitým napětím \SI{7.5}{\volt} při stejnosměrném proudu a nízkým ESR, které má konkrétní hodnotu \SI{450}{\milli\ohm}. Vzhledem k relativně nízké ceně této komponenty bylo třeba jej nejprve experimentálně ověřit v provizorním zapojení (viz. schéma~\ref{fig:test-capacitors}) na nepájivém poli. Kondenzátor byl v tomto testu nejprve nabíjen z laboratorního zdroje nastaveného na \SI{5}{\volt} odpovídající reálným provozním podmínkám v cílovém zařízení. Po jeho odpojení byla sledována vybíjecí křivka pomocí osciloskopu.
 
 \begin{figure}[h]
     \centering
@@ -798,9 +806,9 @@ Aby bylo možné přesně vyhodnotit, jak dlouho dokáže záznamník fungovat p
 V_{\text{LDO Min}} = V_{\text{LDO Out}} + V_{\text{Dropout}}
 \]
 
-V případě použitého stabilizátoru, který je využit na vývojové desce FRDM-MCXN947, je hodnota Dropout Voltage rovna \SI{0.2}{\volt} a minimální napětí, kterým tedy tato deska musí být napájena, činí \SI{3.5}{\volt}. Součástí zapojení na schématu je také Schottky dioda, na které vzniká úbytek napětí, u použité součástky činí tento úbytek přibližně \SI{0.4}{\volt}. Z těchto hodnot vyplývá, že je nutné sledovat napětí vybíjejícího se kondenzátoru v intervalu od \SI{4.6}{\volt} do \SI{3.5}{\volt}, které definuje časový interval, ve kterém je provoz vývojové desky stabilní.
+V případě použitého stabilizátoru, který je využit na vývojové desce FRDM-MCXN947, je hodnota Dropout Voltage rovna \SI{0.2}{\volt} a minimálním napětím, kterým tedy tato deska musí být napájena, činí \SI{3.5}{\volt}. Součástí zapojení na schématu je také Schottky dioda, na které vzniká úbytek napětí, u použité součástky činí tento úbytek přibližně \SI{0.4}{\volt}. Z těchto hodnot vyplývá, že je nutné sledovat napětí vybíjejícího se kondenzátoru v intervalu od \SI{4.6}{\volt} do \SI{3.5}{\volt}, které definuje časový interval, ve kterém je provoz vývojové desky stabilní.
 
-Následující obrázek~\ref{fig:test-capacitors}, zachycuje průběh napětí z výše zmíněného testu, zaznamenaného pomocí osciloskopu, ze kterého je patrné chování napájecího napětí v čase. Z naměřených dat vyplývá, že napětí na kondenzátoru zůstává v požadovaném funkčním rozsahu od \SI{4.6}{\volt} do \SI{3.5}{\volt} po dobu přibližně 1.3 sekundy. Pokud tedy dojde ke včasné detekci ztráty napájejícího napětí, může dojít k bezpečnému ukončení programu a korektnímu uložení všech potřebných dat, která jsou dočasně uložena ve volatilní paměti RAM, což potvrzuje vhodnost zvoleného superkondenzátoru pro danou aplikaci zálohovaného napájení.
+Následující obrázek~\ref{fig:test-capacitors}, zachycuje průběh napětí z výše zmíněného testu, zaznamenaného pomocí osciloskopu, ze kterého je patrné chování napájecího napětí v čase. Z naměřených dat vyplývá, že napětí na kondenzátoru zůstává v požadovaném funkčním rozsahu od \SI{4.6}{\volt} do \SI{3.5}{\volt} po dobu přibližně 1.3 sekundy při zátěži $\SI{20}{\ohm}$. Pokud tedy dojde ke včasné detekci ztráty napájejícího napětí, může dojít k bezpečnému ukončení programu a korektnímu uložení všech potřebných dat, která jsou dočasně uložena ve volatilní paměti RAM, což potvrzuje vhodnost zvoleného superkondenzátoru pro danou aplikaci zálohovaného napájení.
 
 \begin{figure}[h]
     \centering
@@ -812,17 +820,13 @@ Následující obrázek~\ref{fig:test-capacitors}, zachycuje průběh napětí z
 
 
 
-Na následujícím obrázku~\ref{fig:backup-power} je apk znázorněno výsledné schéma obvodu určeného k realizaci zálohovaného napájení včetně detekce ztráty hlavního napájecího napětí. Obvod zahrnuje zmíněnou Schottkyho diodu, která zabraňuje zpětnému toku proudu z kondenzátoru, a nabíjecí odpor s hodnotou $\SI{10}{\ohm}$, která byla zvolena tak, aby byl proud při nabíjení omezen na rozumnou, tedy aby zůstal pod minimální hodnotou, kterou je schopen standard USB-C, a zároveň aby nabíjení probíhalo v přiměřeném čase. Pro výpočet doby nabíjení je klíčovým parametrem časová konstanta~$\tau$, která je definována jako součin odporu~$R$ a kapacity~$C$:
-
-\[
-\tau = R \cdot C
-\]
+Na následujícím obrázku~\ref{fig:backup-power} je pak znázorněno výsledné schéma obvodu určeného k realizaci zálohovaného napájení včetně detekce ztráty hlavního napájecího napětí. Obvod zahrnuje zmíněnou Schottkyho diodu, která zabraňuje zpětnému toku proudu z kondenzátoru, a nabíjecí odpor s hodnotou $\SI{10}{\ohm}$, která byla zvolena tak, aby nabíjecí proud nepřekročil maximální proud povolený základním profilem napájení standardu USB-C, a zároveň aby nabíjení kondenzátoru probíhalo v přiměřeném čase.
 
 Součástí navrženého obvodu zálohovaného napájení je rovněž detekce ztráty napájecího napětí, jelikož je monitorována \SI{5}{\volt} větev vývojové desky, která překračuje maximální přípustné napětí pro přímé připojení na vstupy mikrokontroléru pracujícího s logikou \SI{3.3}{\volt}, je tedy zapotřebí využít napěťový dělič, který upravuje napěťový signál, aby mohl být zpracován periferiemi pracujícími s digitálními signály, jako jsou GPIO, nebo analogovými signály, jako je komparátor (CMP) či analogově-digitální převodník (ADC).
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.80\textwidth]{obrazky-figures/backup-power.png}
+    \includegraphics[width=0.80\textwidth]{obrazky-figures/backup-power.pdf}
     
     \caption{Schéma obvodu pro detekci ztráty napájení a zálohované napájení}
     \label{fig:backup-power}
@@ -833,13 +837,13 @@ Součástí navrženého obvodu zálohovaného napájení je rovněž detekce zt
 \subsection{Obvod reálného času}
 Pro uchovávání informací o čase a datu je využit externí obvod reálného času, konkrétně čip DS3231M+ od společnosti Analog Devices. DS3231M+ patří mezi vysoce přesné RTC čipy obsahující integrovaný oscilátor s teplotně kompenzovaným krystalem (TCXO), který zajišťuje minimální odchylku chodu v řádu několika sekund za měsíc bez nutnosti externí kalibrace. Tato odchylka specifikovaná výrobcem činí \SI{\pm2} minut za rok v teplotním rozsahu od \SI{-40}{\degreeCelsius} do \SI{+85}{\degreeCelsius}.
 
-Obvod reálného času s čipem DS3231M+ je integrován do expanzní desky plošných spojů (viz. obrázek~\ref{fig:ds3231m+}) podle vzorového zapojení, jež bylo ukázáno v datasheetu k tomuto čipu. Pro komunikaci s tímto čipem se využívá jednoduché rozhraní I\textsuperscript{2}C s využitím dvou signálových linek, kterými jsou SDA (Serial Data Line) a SCL (Serial Clock Line). Linka SDA slouží k přenosu dat mezi mikrokontrolérem a RTC obvodem, zatímco linka SCL zajišťuje synchronizaci komunikace pomocí hodinového signálu. Kromě komunikačních linek je nutné k čipu připojit napájení. Pin V\textsubscript{CC} slouží pro napájení čipu v běžném provozu, kdy je deska aktivně napájena. Pro zachování aktuální časové informace i během neaktivního stavu zařízení nebo během výpadku napájecího napětí je k dispozici pin V\textsubscript{BAT}, který je připojen ke knoflíkové baterii CR2032.
+Obvod reálného času s čipem DS3231M+ je integrován do expanzní desky plošných spojů (viz. obrázek~\ref{fig:ds3231m+}) podle vzorového zapojení znázorněného v datasheetu k tomuto čipu. Pro komunikaci s tímto čipem slouží jednoduché rozhraní I\textsuperscript{2}C s využitím dvou signálových linek, kterými jsou SDA (Serial Data Line) a SCL (Serial Clock Line). Linka SDA slouží k přenosu dat mezi mikrokontrolérem a RTC obvodem, zatímco linka SCL zajišťuje synchronizaci komunikace pomocí hodinového signálu. Kromě komunikačních linek je nutné k čipu připojit napájení. Pin V\textsubscript{CC} slouží pro napájení čipu v běžném provozu, kdy je deska aktivně napájena. Pro zachování aktuální časové informace i během neaktivního stavu zařízení nebo během výpadku napájecího napětí je k dispozici pin V\textsubscript{BAT}, který je připojen ke knoflíkové baterii CR2032.
 
 Dále čip DS3231M+ obsahuje vývod 32KHZ, který slouží jako výstup stabilního hodinového signálu o frekvenci 32 kHz. Dále je k dispozici multifunkční pin INT/SQW, který může pracovat buď jako výstup čtvercového signálu (square wave), nebo jako přerušovací výstup v případě shody časových registrů s nastaveným alarmem. Signály 32KHZ a INT/SQW nejsou v implementaci digitálního záznamníku využívány, proto jsou oba připojeny pull-up odpory k zemi. Posledním relevantním signálem je RST, který slouží k resetování RTC obvodu. V návrhu expanzní desky je vývod signálu připojen k jumperu, jehož sepnutím lze čip ručně resetovat.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.80\textwidth]{obrazky-figures/ds3231m+.png}
+    \includegraphics[width=0.80\textwidth]{obrazky-figures/ds3231m+.pdf}
     
     \caption{Obvod pro reálného času s čipem DS3231M+}
     \label{fig:ds3231m+}
@@ -848,11 +852,11 @@ Dále čip DS3231M+ obsahuje vývod 32KHZ, který slouží jako výstup stabiln�
 \subsection{GPS pro synchronizaci času}
 Přestože integrovaný obvod reálného času DS3231M+ nabízí velmi dobrou dlouhodobou přesnost, stále jeho odchylka může činit až \SI{\pm2} minuty za rok. Mnoho aplikací vyžaduje ještě vyšší přesnost časové synchronizace, proto je expanzní deska připravena pro možnost připojení externího GPS modulu. Konkrétně se počítá s využitím modulu NEO-7M, který je schopen poskytovat přesné údaje o čase díky synchronizaci s globálním navigačním systémem.
 
-Modul NEO-7M obsahuje integrovaný přijímač, pasivní keramickou anténu a anténní zesilovač. Pokud zařízení má vyšší nároky na příjem signálu, je popřípadě možné pomocí SMA konektoru připojit aktivní anténu. Z následujícího obrázku~\ref{fig:neo-7m} je patrné, že GPS modul NEO-7M je možné připojit k mikrokontroléru pomocí vývodů TXD a RXD, které slouží pro komunikaci prostřednictvím sériového rozhraní UART. Prostřednictvím tohoto rozhraní poskytuje modul datový výstup ve formátu NMEA (National Marine Electronics Association), který je široce používaným standardem pro přenos informací z navigačních zařízení. Mezi nejčastěji přenášené údaje patří aktuální čas v UTC, zeměpisná šířka a délka, nadmořská výška, rychlost pohybu, směr pohybu, počet detekovaných satelitů, kvalita signálu a další navigační parametry. Modul NEO-7M poskytuje také speciální vývod PPS (Pulse Per Second), který generuje přesný časový impuls synchronizovaný s GPS systémem, který lze využít k synchronizaci ve vestavných systémech, například k časové korekci RTC nebo přesnému časovému značkování událostí. V rámci návrhu této expanzní desky však vývod PPS není připojen k mikrokontroléru, neboť pro potřeby digitálního záznamníku není jeho využití nezbytné.
+Modul NEO-7M obsahuje integrovaný přijímač, pasivní keramickou anténu a anténní zesilovač. Pokud zařízení má vyšší nároky na příjem signálu, je popřípadě možné pomocí SMA konektoru připojit aktivní anténu. Z následujícího obrázku~\ref{fig:neo-7m} je patrné, že GPS modul NEO-7M je možné připojit k mikrokontroléru pomocí vývodů TXD a RXD, které slouží pro komunikaci prostřednictvím sériového rozhraní UART. Prostřednictvím tohoto rozhraní poskytuje modul datový výstup ve formátu NMEA (National Marine Electronics Association), který je široce používaným standardem pro přenos informací z navigačních zařízení. Mezi přenášené údaje patří aktuální čas v UTC, zeměpisná šířka a délka, nadmořská výška, rychlost pohybu, směr pohybu, počet detekovaných satelitů, kvalita signálu a další navigační parametry. Modul NEO-7M poskytuje také speciální vývod PPS (Pulse Per Second), který generuje přesný časový impuls synchronizovaný s GPS systémem, který lze využít k synchronizaci ve vestavných systémech, například k časové korekci RTC nebo přesnému časovému značkování událostí. V rámci návrhu této expanzní desky však vývod PPS není připojen k mikrokontroléru, neboť se počítá s tím že čas bude synchronizován pomocí dat získaných přes rozhraní UART.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.70\textwidth]{obrazky-figures/neo-7m.png}
+    \includegraphics[width=0.70\textwidth]{obrazky-figures/neo-7m.pdf}
     
     \caption{Připojení GPS modulu NEO-7M}
     \label{fig:neo-7m}
@@ -861,13 +865,13 @@ Modul NEO-7M obsahuje integrovaný přijímač, pasivní keramickou anténu a an
 \newpage
 
 \subsection{Signalizace stavu systému}
-Důležitou součástí digitálního záznamníku je také informování uživatele o běžném stavu systému, například že digitální záznamník nahrává nebo dosažení bezpečného stavu pro odpojení zařízení, ale signalizace je také nutná z důvodu výskytu případných chyb, které mohou nastat. K tomuto účelu slouží sada pěti světelných diod typu LED.
+Důležitou součástí digitálního záznamníku je také informování uživatele o běžném stavu systému, mezi které například patří informace o probíhajícím záznamu nebo dosažení bezpečného stavu pro odpojení zařízení. Signalizace je také nutná z důvodu výskytu případných chyb, které mohou nastat. K informování o těchto stavech slouží sada pěti světelných diod typu LED.
 
-Každá dioda je připojena k tranzistoru typu NPN (konkrétně BC546 od společnosti ON Semi), který slouží jako spínací prvek. Tranzistor je ovládán mikrokontrolérem přes odpovídající GPIO pin. Pokud tedy bude na bázi tranzistoru přítomen signál s logickou úrovní „1“, tranzistor se otevře a umožní průtok proudu skrze diodu a sériově zapojený omezovací rezistor, čímž dojde k jejímu rozsvícení. Schéma zapojení jedné z těchto LED diod je znázorněno na obrázku~\ref{fig:control-diodes}. Všechny diody jsou napájeny napětím \SI{3.3}{\volt} a proud tekoucí jednotlivými LED je omezen odpovídajícími rezistory, přičemž jednotlivé diody je pak možné připojit do pinové lišty (Pin Header).
+Každá dioda je připojena k bipolárnímu tranzistoru typu NPN (konkrétně BC546 od společnosti ON Semi), který slouží jako spínací prvek. Tranzistor je řízen malým proudem z mikrokontroléru prostřednictvím příslušného GPIO pinu, což umožňuje spínat větší proud tekoucí přes LED diodu. Pokud je tedy na bázi tranzistoru přítomen signál s logickou úrovní „1“, tranzistor se otevře a umožní průtok proudu skrze diodu a sériově zapojený omezovací rezistor, čímž dojde k jejímu rozsvícení. Schéma zapojení jedné z těchto LED diod je znázorněno na obrázku~\ref{fig:control-diodes}. Všechny diody jsou napájeny napětím \SI{3.3}{\volt} a proud tekoucí jednotlivými LED je omezen odpovídajícími rezistory, přičemž jednotlivé diody je pak možné připojit do pinové lišty (Pin Header).
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.90\textwidth]{obrazky-figures/control-diodes.png}
+    \includegraphics[width=0.90\textwidth]{obrazky-figures/led-diodes.pdf}
     
     \caption{Ukázka zapojení jedné z kontrolních diod typu LED}
     \label{fig:control-diodes}
@@ -907,44 +911,47 @@ Krom samotných obvodů deska plošného spoje obsahuje čtyři montážní otvo
 \subsection{Seznam součástek expanzní desky}
 \label{bom_list}
 
-Důležitým parametrem expanzní desky je i její cena. Ta se skládá nejen z ceny jednotlivých komponent, ale také z nákladů na výrobu expanzní desky. V této kapitole je uveden přehled součástek použitých při návrhu digitálního záznamníku, včetně jejich orientačních cen. 
+Důležitým parametrem expanzní desky je i její cena. Celková cena komponent použitých na realizaci expanzní desky činí přibližně 880~Kč. V této kapitole je uveden přehled součástek použitých při návrhu digitálního záznamníku, včetně jejich orientačních cen. 
 
 Nutno dodat, že doporučené pin headery od výrobce Samtec nejsou nezbytně nutné a lze je nahradit levnějšími alternativami. Všechny komponenty byly vybírány tak, aby bylo možné je objednat u jednoho distributora elektronických součástek, aby se zjednodušil proces objednávky a zároveň se minimalizovaly náklady na dopravu.
 
 \begin{table}[htbp]
     \centering
     \caption{Přehled použitých součástek}
-    \begin{tabular}{|l|l|c|c|}
+    \begin{tabularx}{\textwidth}{|X|X|c|c|}
         \hline
         \textbf{Součástka} & \textbf{Hodnota / Popis} & \textbf{Počet} & \textbf{Cena za kus} \\
         \hline
-        SSQ-108-03-T-D      & 16pin pinová lišta (Samtec)       & 2  & 46,61 Kč   \\ \hline
-        SSQ-106-03-T-D      & 12pin pinová lišta (Samtec)       & 1  & 40,60 Kč   \\ \hline
-        SSQ-114-03-T-D      & 28pin pinová lišta (Samtec)       & 1  & 81,70 Kč   \\ \hline
-        SSQ-116-03-T-D      & 32pin pinová lišta (Samtec)       & 1  & 93,22 Kč   \\ \hline
-        SSQ-110-03-T-D      & 20pin pinová lišta (Samtec)       & 1  & 58,39 Kč   \\ \hline
-        M20-7830342         & 10pin pinová lišta (Harwin)       & 1  & 34,33 Kč   \\ \hline
-        DS3231M+            & obvod reálného času               & 1  & 284,68 Kč  \\ \hline
-        SCMR14G334SRBB0     & Superkondenzátor (KYOCERA AVX)    & 1  & 141,09 Kč  \\ \hline
-        RSX301L-30DDTE25    & Schottky dioda (ROHM)             & 1  & 23,58 Kč   \\ \hline
-        BC546               & NPN Transistor (ON Semiconductor) & 5  & 5,71 Kč    \\ \hline
-        THT rezistor        & $\SI{10}{\ohm}$                   & 1  & --         \\ \hline
-        SMD rezistor R1206  & $\SI{18}{\kilo\ohm}$              & 1  & --         \\ \hline
-        SMD rezistor R1206  & $\SI{33}{\kilo\ohm}$              & 1  & --         \\ \hline
-        SMD rezistor R1206  & $\SI{1}{\kilo\ohm}$               & 14 & --         \\ \hline
-        SMD kondenzátor R1206  & $\SI{1}{\nano\farad}$          & 1  & --         \\ \hline
-    \end{tabular}
+        SSQ-108-03-T-D      & 16--pinová lišta (Samtec)       & 2  & 46,61 Kč   \\ \hline
+        SSQ-106-03-T-D      & 12--pinová lišta (Samtec)       & 1  & 40,60 Kč   \\ \hline
+        SSQ-114-03-T-D      & 28--pinová lišta (Samtec)       & 1  & 81,70 Kč   \\ \hline
+        SSQ-116-03-T-D      & 32--pinová lišta (Samtec)       & 1  & 93,22 Kč   \\ \hline
+        SSQ-110-03-T-D      & 20--pinová lišta (Samtec)       & 1  & 58,39 Kč   \\ \hline
+        M20-7830342         & 10--pinová lišta (Harwin)       & 1  & 34,33 Kč   \\ \hline
+        DS3231M+            & Obvod reálného času             & 1  & 284,68 Kč  \\ \hline
+        SCMR14G334SRBB0     & Superkondenzátor (\mbox{KYOCERA AVX})  & 1  & 141,09 Kč  \\ \hline
+        RSX301L-30DDTE25    & Schottky dioda (ROHM)           & 1  & 23,58 Kč   \\ \hline
+        BC546               & NPN tranzistor (ON Semi)        & 5  & 5,71 Kč    \\ \hline
+        THT rezistor        & $\SI{10}{\ohm}$                 & 1  & --         \\ \hline
+        SMD rezistor R1206  & $\SI{18}{\kilo\ohm}$            & 1  & --         \\ \hline
+        SMD rezistor R1206  & $\SI{33}{\kilo\ohm}$            & 1  & --         \\ \hline
+        SMD rezistor R1206  & $\SI{1}{\kilo\ohm}$             & 14 & --         \\ \hline
+        SMD kondenzátor R1206  & $\SI{1}{\nano\farad}$        & 1  & --         \\ \hline
+    \end{tabularx}
 \end{table}
 % celkova cena komponet presne 879.36 kc s pripocitanim vyvojove desky 1472.78
 
-Celková cena komponent použitých na realizaci expanzní desky činí přibližně 880~Kč. Po započtení vývojové desky dosahuje celková cena zařízení částky 1473~Kč. Ve srovnání s existujícími řešeními uvedenými v kapitole~\ref{existujici_reseni} se jedná o jednoznačně nejlevnější variantu.
+\newpage
 
-Například zařízení \textit{AirDrive Serial Logger Pro} je prodáváno za cenu \$119{,}99, což při aktuálním směnném kurzu 22{,}04~Kč/USD (k datu 18.~4.~2025) odpovídá částce 2644{,}41~Kč. Druhé zmíněné zařízení, \textit{Anticyclone Anti-Log Pro}, se prodává v cenovém rozmezí od 229~£ do 366~£. Při aktuálním kurzu 29{,}23~Kč/GBP se výsledná cena pohybuje mezi 6694{,}39~Kč a 10\,699{,}33~Kč.
+\subsection{Výsledná expanzní deska}
+\label{vysledek}
+Výsledkem je zhotovená expanzní deska, na kterou byly připájeny všechny navržené komponenty. SMD součástky, jako jsou rezistory a kondenzátory, byly osazeny pomocí pájecí pasty, která byla nanesena na příslušná pájecí pole. Po jejich umístění byla deska zapájena reflow procesem v pájecí peci. Zbylé součástky s vývody typu THT (Through-Hole Technology), jako jsou pinové lišty, nabíjecí odpor, držák knoflíkové baterie a superkondenzátory pro zálohované napájení, byly připájeny ručně pomocí páječky.
+
 
 \newpage
 
-\section{Mechanická část}
-Navrh krabicky
+% \section{Mechanická část}
+% Navrh krabicky
 
 \chapter{Přístup k realizaci obslužného firmware}
 \label{softwarova_implementace}
@@ -972,16 +979,17 @@ recordingStatus_t recordingStatus;
 Samotný firmware digitálního záznamníku je postaven na operačním systému reálného času FreeRTOS, který zajišťuje deterministické plánování jednotlivých úloh, které budou následně popsány v této kapitole. Firmware pro zvýšení spolehlivosti a predikovatelnosti využívá výhradně statickou alokaci paměti. Veškeré úlohy i synchronizační prostředky jsou vytvářeny s předem definovanou velikostí a dynamická alokace paměti je zcela vypnuta na úrovni FreeRTOS.
 
 % Uved ze se zde prenasi cas z externiho RTC do interniho RTC
-
 % TODO: Co vsechno lze zmenit v defs.h
 % obecna moznost konfigurace firmwaru
-Firmware digitálního záznamníku je navržen modulárně a je tedy rozdělen do několika funkčních celků, například logika záznamu, vyčtení zaznamenaných dat pomocí Mass Storage, detekce ztráty napájení, signalizace stavu systému a další, které je možné podle potřeby samostatně aktivovat či deaktivovat. Tohoto chování je dosaženo pomocí podmíněného překladu v jazyce ISO C, kdy jsou jednotlivé části kódu překládány pouze v případě, že jsou odpovídajícím způsobem povoleny. K centrální správě těchto voleb slouží aplikační konfigurační soubor \textit{defs.h}. 
+Aplikační vrstva firmwaru je strukturována do tří hlavních souborů. Inicializaci hardwaru a konfiguraci systému zajišťuje \textit{app\_init.c}. Dále všechny aplikační FreeRTOS úlohy jsou implementovány v \textit{app\_task.c}, přičemž samotná inicializace, vytvoření úloh a jejich spuštění je implementováno v souboru \textit{main.c}.
+
+Firmware digitálního záznamníku je navržen modulárně a je tedy rozdělen do několika funkčních celků, například logika záznamu, vyčtení zaznamenaných dat pomocí Mass Storage, detekce ztráty napájení, signalizace stavu systému a další, přičemž mnoho z nich je možné dle potřeby samostatně aktivovat či deaktivovat. Tohoto chování je dosaženo pomocí podmíněného překladu v jazyce ISO C, kdy jsou jednotlivé části kódu překládány pouze v případě, že jsou odpovídajícím způsobem povoleny. K centrální správě těchto voleb slouží aplikační konfigurační soubor \textit{defs.h}. 
 
 Součástí konfiguračního souboru \textit{defs.h} je rovněž možnost zvolit si, jakou mírou informačního výstupu bude firmware komunikovat k vývojáři.\footnote{Pro koncového uživatele je naopak stav zařízení signalizován jednoduše pomocí LED indikátorů.} Firmware digitálního záznamníku podporuje tři úrovně výstupu zpráv. První, nejnižší úrovní, jsou chybová hlášení (zprávy začínající řetězcem \texttt{ERR:}), která informují o kritických stavech. Tato vrstva je automaticky aktivní a nelze ji vypnout. Druhou vrstvou je informační režim (zprávy začínající řetězcem \texttt{INFO:}), ve kterém aplikace poskytuje podrobnější výpisy o právě probíhajících událostech, jako je například spuštění záznamu, nalezení konfiguračního souboru či inicializace periferií. Třetí, nejpodrobnější úrovní, je ladící režim (zprávy začínající řetězcem \texttt{DEBUG:}), ve kterém aplikace rozšiřuje výstup o doplňující technické detaily, které mohou být užitečné zejména při ladění během vývoje. Veškeré tyto výstupy jsou poskytovány skrze sériové rozhraní UART. K tomuto účelu je využívána konkrétně instance periferie LP\_FLEXCOMM4, která je nakonfigurována na přenosovou rychlost 115200 baudů, 8 datových bitů, 1 stop bit a bez použití parity.
 
 Taktéž je možné v konfiguračním souboru \textit{defs.h} nastavit pevné velikosti zásobníků jednotlivých statických úloh, priority využívaných přerušení či výchozí parametry záznamu, které budou dále rozvedeny v kapitole~\ref{zaznamove_vlakno}. 
 
-Po inicializaci firmwaru jsou vytvořeny dvě hlavní úlohy, kterými jsou \textit{record\_task} určený k záznamu dat a \textit{msc\_task} pro vyčtení zaznamenaných dat pomocí USB Mass Storage. Tyto úlohy jsou vzájemně přepínány na základě dvou binárních semaforů. Po startu systému obě úlohy běží paralelně a žádná z úloh není explicitně uspávána. V každém okamžiku je plná funkcionalita umožněna pouze záznamové úloze, přičemž \textit{msc\_task} úloze je tento přístup omezen pomocí semaforu. Plná funkcionalita záznamové úlohy je umožněna až do situace připojení zařízení k hostitelskému počítači prostřednictvím USB-C, kdy dojde k vyvolání přerušení od USB1\_HS, které je zpracováno příslušnou obsluhou přerušení. V rámci této rutiny je pomocí stavových registrů USB OTG řadiče ověřeno, že skutečně došlo k připojení k hostiteli. Je-li připojení potvrzeno, příslušný semafor je uvolněn ve prospěch msc\_task úlohy, která následně zpřístupní obsah paměťové karty jako externí úložiště ve formátu USB Mass Storage. Během této doby je záznamová úloha upozaděna a čeká na opětovné získání semaforu, ke kterému dojde v případě vyvolání přerušení opět od USB1\_HS a je-li odpojení potvrzeno opět pomocí USB OTG řadiče. 
+Po inicializaci firmwaru jsou vytvořeny dvě hlavní úlohy, mezi které patří \textit{record\_task} určený k záznamu dat a \textit{msc\_task} pro vyčtení zaznamenaných dat pomocí USB Mass Storage. Tyto úlohy jsou vzájemně přepínány na základě dvou binárních semaforů. Po startu systému obě úlohy běží paralelně a žádná z úloh není explicitně uspávána. V každém okamžiku je plná funkcionalita umožněna pouze záznamové úloze, přičemž úloze \textit{msc\_task} je tento přístup omezen pomocí semaforu. Plná funkcionalita záznamové úlohy je umožněna až do situace připojení zařízení k hostitelskému počítači prostřednictvím USB-C, kdy dojde k vyvolání přerušení od USB1\_HS, které je zpracováno příslušnou obsluhou přerušení. V rámci této rutiny je pomocí stavových registrů USB OTG řadiče ověřeno, že skutečně došlo k připojení k hostiteli. Je-li připojení potvrzeno, příslušný semafor je uvolněn ve prospěch msc\_task úlohy, která následně zpřístupní obsah paměťové karty jako externí úložiště ve formátu USB Mass Storage. Během této doby je záznamová úloha upozaděna a čeká na opětovné získání semaforu, ke kterému dojde v případě vyvolání přerušení opět od USB1\_HS a je-li odpojení potvrzeno opět pomocí USB OTG řadiče.
 
 \begin{figure}[h]
     \centering
@@ -1061,7 +1069,7 @@ Samotný záznam dat je založen na konceptech představených v kapitole~\ref{k
 
 \newpage
 
-Data jsou následně v běhu záznamové úlohy vkládána do jedné ze dvou vyrovnávacích pamětí, u kterých se využívá koncept vícenásobné vyrovnávací paměti (viz. kapitola~\ref{vicenasobna_vyrovnavaci_pamet}), přičemž jedna paměť vždy slouží ke sběru a předzpracování přicházejících dat (Back Buffer), zatímco druhá slouží k jejich ukládání na paměťovou kartu prostřednictvím řadiče SDHC (Front Buffer). Role těchto dvou pamětí jsou mezi sebou cyklicky prohazovány na základě jednoduché výměny ukazatelů. Znaky jsou tedy vkládány do Back Buffer a při vkládání je každý nový znak porovnáván s předchozím tak, aby bylo možné detekovat přítomnost znakové dvojice \texttt{CR+LF} z prostředí operačního systému Windows CR+LF (Carriage Return Line Feed). Tento bílý znak je detekován z toho důvodu, že sledované zařízení používá znakové dvojice \texttt{CR+LF} pro ukončení řádku. Díky jeho rozpoznání je tak možné jednoznačně identifikovat začátek nového řádku. V případě, že je tato znaková sekvence zachycena, je z interního obvodu reálného času mikrokontroléru MCXN947 získán aktuální čas, který je následně vložen jako časová značka na začátek právě detekovaného řádku. Výsledný formát textu může vypadat následovně:
+Data jsou následně v běhu záznamové úlohy vkládána z cirkulárního bufferu do jedné ze dvou vyrovnávacích pamětí, u kterých se využívá koncept vícenásobné vyrovnávací paměti (viz. kapitola~\ref{vicenasobna_vyrovnavaci_pamet}), přičemž jedna paměť vždy slouží ke sběru a předzpracování přicházejících dat (Back Buffer), zatímco druhá slouží k jejich ukládání na paměťovou kartu prostřednictvím řadiče SDHC (Front Buffer). Role těchto dvou pamětí jsou mezi sebou cyklicky prohazovány na základě jednoduché výměny ukazatelů. Znaky jsou tedy vkládány do Back Buffer a při vkládání je každý nový znak porovnáván s předchozím tak, aby bylo možné detekovat přítomnost znakové dvojice \texttt{CR+LF} z prostředí operačního systému Windows \texttt{CR+LF} (Carriage Return Line Feed). Tento bílý znak je detekován z toho důvodu, že monitorovaná bezdrátová nabíječka používá znakové dvojice \texttt{CR+LF} pro ukončení řádku. Díky jeho rozpoznání je tak možné jednoznačně identifikovat začátek nového řádku. V případě, že je tato znaková sekvence zachycena, je z interního obvodu reálného času mikrokontroléru MCXN947 získán aktuální čas, který je následně vložen jako časová značka na začátek právě detekovaného řádku. Výsledný formát zaznamenaného textu po doplnění časových značek vypadá následovně:
 
 \begin{verbatim}
 [12:34:56] Starting system diagnostics...
@@ -1072,9 +1080,9 @@ Data jsou následně v běhu záznamové úlohy vkládána do jedné ze dvou vyr
 
 % U ADMA uvest ze to je neblokujici zpusob
 % Uvest ze cela tato cast je implementovana funkci CONSOLELOG_Recording()
-Back Buffer je tímto způsobem postupně plněn záznamovými daty a doplňován o časové značky s aktuálním časem. Jakmile dojde k jeho naplnění, jsou role obou vyrovnávacích pamětí vzájemně zaměněny prostou výměnou ukazatelů. Paměť, která dosud sloužila ke sběru dat a vkládání časových značek, je nyní určena k zápisu dat na SD kartu, a naopak – paměť předtím vyhrazená pro zápis je určena pro naplnění novými daty. Samotný zápis dat do paměťového média je realizován neblokujícím způsobem prostřednictvím transportního algoritmu s přímým přístupem do paměti ADMA (Advanced Direct Memory Access). \cite{nxp_MCX_Nx4x_Reference_Manual}
+Back Buffer je tímto způsobem postupně plněn záznamovými daty a doplňován o časové značky s aktuálním časem, až do okamžiku, kdy je dosažena jeho kapacitní hranice. V ten moment dojde k záměně rolí vyrovnávacích pamětí. Paměť, která dosud sloužila ke sběru dat a vkládání časových značek, je nyní určena k zápisu dat na SD kartu, a naopak paměť, která byla vyhrazená pro zápis je určena pro naplnění novými daty. Samotný zápis dat do paměťového média je realizován neblokujícím způsobem prostřednictvím transportního algoritmu s přímým přístupem do paměti ADMA (Advanced Direct Memory Access). \cite{nxp_MCX_Nx4x_Reference_Manual}
 
-Jakmile je záznamový soubor zaplněn na jeho maximální definovanou velikost, je soubor uzavřen, a následně je vytvořen nový pomocí funkce \texttt{CONSOLELOG\_CreateFile()}. Tato funkce na základě aktuálního data a času vygeneruje unikátní název souboru ve formátu \texttt{YYYYMMDD\_HHMMSS\_X.txt}, kde \texttt{X} je inkrementální čítač a následně tento soubor otevře pro zápis a nastaví jeho metadata (čas vytvoření) pomocí dat z interního RTC a záznam tak může pokračovat.
+Pokud dojde zaplnění záznamového souboru, jehož velikost je definována pametrem \texttt{file\_size}, je tento soubor uzavřen, a následně je vytvořen nový soubor pomocí funkce \texttt{CONSOLELOG\_CreateFile()}. Funkce \texttt{CONSOLELOG\_CreateFile()} vygeneruje unikátní název souboru na základě aktuálního data a času ve formátu \texttt{YYYYMMDD\_HHMMSS\_X.txt}, kde \texttt{X} je inkrementální čítač a následně tento soubor otevře pro zápis, nastaví jeho metadata (čas vytvoření) pomocí dat z interního RTC a záznam tak může pokračovat.
 
 % je pojisteno ze kontrola CRLF probehne validne i v pripade ze je obsazeno ve dvou bufferech
 Součástí návrhu je také ošetření okrajových stavů, které by mohly ohrozit konzistenci vkládání časových značek do záznamu. Typickým případem je rozdělení sekvence znaků, kdy první speciální znak \texttt{CR} se může dostat na konec vyrovnávací paměti plnící roli Back Buffer, následně dojde k prohození vyrovnávacích pamětí a druhý speciální znak \texttt{LF} se ocitne již na začátku nového Back Bufferu. V takové situaci by se mohlo stát, že začátek řádku by nebyl detekován a časová značka by nebyla vložena. Aby bylo této chybě zabráněno, jsou uchovávány jakékoliv po sobě jdoucí znaky, a tedy k této situaci nedojde. Druhou situací je případ, kdy se sekvence \texttt{CR+LF} nachází na samotném konci aktivního bufferu a do dané paměti se již nevejde celá časová značka. Časová značka je v takovém případě rozdělena, část je uložena do konce původního bufferu a zbývající část je po výměně bufferů doplněna do nově aktivní paměti.
@@ -1086,23 +1094,30 @@ Další specifickou situací je potřeba korektního ukončení záznamu, tu lze
 % TODO: napsat jak vypada struktura logovani, vytvoreni slozky pro danou session, ....
 
 \section{USB Mass Storage úloha}
-Druhou úlohou je USB Mass Storage, která slouží ke zpřístupnění obsahu paměťové karty SDHC připojenému hostitelskému zařízení prostřednictvím rozhraní USB. Tato úloha je aktivována tehdy, když dojde k připojení záznamníku k hostitelskému zařízení USB1\_HS.
+Druhou úlohou je USB Mass Storage, která slouží ke zpřístupnění obsahu paměťové SD karty připojenému hostitelskému zařízení prostřednictvím rozhraní USB. Tato úloha je aktivována tehdy, když dojde k připojení záznamníku k hostitelskému zařízení USB1\_HS.
+
+% Samotná úloha pokud je aktivována, tak ve své inicializaci vypne záznam dat, uloží všechna zpracována a zaznamenaná data, která jsou uložena ve RAM paměti a uloží je na SD kartu, umožní vyčtění uložených dat a zároveň si kontroluje zda nedošlo k odpojení USB-C. 
 
 % zachovan pouze EHCI, z duvodu zjednodusseni projektu 
 Funkcionalita USB Mass Storage je mnohdy poskytována samotnými výrobci mikrokontrolérů jako součást vývojových balíků s cílem usnadnit vývojářům vývoj aplikací. Společnost NXP Semiconductors nabízí v rámci svého MCUXpresso SDK (Software Development Kit) USB Mass Storage se zpřístupněním obsahu SD karty připojenému hostitelskému zařízení.
 
-USB Mass Storage bylo třeba zaintegrovat do firmwaru digitálního záznamníku, ve kterém je veškerá paměť předalokována staticky. USB Mass Storage (tedy software třetí strany) je v rámci projektu umístěn v adresáři \texttt{msc/}. Nad tímto základem je pak postavena aplikační část, která je umístěná v rámci složky \texttt{source/} soubor \texttt{mass\_storage.c} obsahuje aplikaci USB Mass Storage, kterou je možné rozšířit. Z pohledu Mass Storage je také důležitá obslužná rutina přerušení \texttt{USB1\_Hs\_IRQHandler()}, která zprostředkovává komunikaci a přenos dat mezi hostitelským zařízením.
+USB Mass Storage bylo třeba zaintegrovat do firmwaru digitálního záznamníku, ve kterém je veškerá paměť předalokována staticky. USB Mass Storage (tedy software třetí strany) je v rámci projektu umístěn v adresáři \texttt{msc/}. Nad tímto základem je pak postavena aplikační část, která je umístěná v rámci složky \texttt{source/} soubor \texttt{mass\_storage.c} obsahuje aplikaci USB Mass Storage, kterou je možné rozšířit. Z pohledu Mass Storage je také důležitá obslužná rutina přerušení \texttt{USB1\_HS\_IRQHandler()}, která zprostředkovává komunikaci a přenos dat mezi hostitelským zařízením.
 
 USB Mass Storage využívá obecný USB modul implementovaný se záměrem kompatibility s velkou řadou mikrokontrolérů. z tohoto důvodu jsem se rozhodl modul optimalizovat. Poskytnutý Mass Storage poskytuje vícero rozhraní hostitelských řadičů (Host Controller Interface - HCI) jakým je například KHCI, a speciální rozhraní pro rodinu LPC, které jsou nekompatibilní s mikrokontrolérem MCXN947, proto byla odstraněna, a v případě přechodu na jiné MCU lze rozhraní zaměnit. 
+
+
 
 % Tato volba mi přijde jako vhodná, z tohoto důvodu, že není třeba periodicky kontrolovat napětí v systému (tzv. Polling), ale pouze pomocí přerušení, a lze tuto detekci upravovat pouze pomocí firmwaru.
 % implementována v samostatném modulu \texttt{pwrloss_det.c}.
 \section{Detekce ztráty napájejícího napětí}
 Z důvodu prevence ztráty dat a minimalního rizika poškození souborového systému v důsledku náhlého výpadku napájení je v systému implementován mechanismus pro detekci poklesu napájecího napětí, který je realizován pomocí analogového komparátoru a pomocného časovače.  
 
-Analogový komparátor je přítomen na MCU MCXN947 v podobě periferie \texttt{LPCMP} (Low-Power Comparator), který bude porovnávat napětí na \SI{5}{\volt} větvi, na které bude respektive hodnota napětí \SI{4.6}{\volt}, z důvodu úbytku napětí na Schottky diodě (viz. kapitola~\ref{zalohovane_napajeni_hw}).
+Analogový komparátor je přítomen na MCU MCXN947 v podobě periferie \texttt{LPCMP} (Low-Power Comparator) a ve firmwaru slouží k sledování poklesu na \SI{5}{\volt} větvi, na které je respektive při napájení hodnota napětí \SI{4.6}{\volt}, z důvodu úbytku napětí na Schottky diodě (viz. kapitola~\ref{zalohovane_napajeni_hw}).
 
-Důležité je také zmínit, že v případě, kdy je zařízení napájeno, je napětí na sledované \SI{5}{\volt} napájecí větvi reálně nižší, a to přibližně \SI{4.6}{\volt} (viz. kapitola~\ref{zalohovane_napajeni_hw}) z důvodu úbytku napětí na Schottkyho diodě. Napětí z této větve je následně přivedeno na vstup analogového komparátoru prostřednictvím napěťového děliče. Komparátor musí reagovat co nejdříve, aby MCU dostalo co nejvíce času na uložení dat do SD karty, proto je jako hodnota napětí, při které bude komparátor reagovat, zvoleno napětí \SI{4.5}{\volt}, pokud je tato hodnota přepočítána na hodnotu napětí, které je za napěťovým děličem, vyjde hodnota \SI{2.91176}{\volt}, jelikož:
+\newpage
+
+
+Napětí z této větve je následně přivedeno na vstup analogového komparátoru prostřednictvím napěťového děliče. Komparátor musí reagovat co nejdříve, aby MCU dostalo co nejvíce času na uložení dat do SD karty, proto je jako hodnota napětí, při které bude komparátor reagovat, zvoleno napětí \SI{4.5}{\volt}, pokud je tato hodnota přepočítána na hodnotu napětí, které je za napěťovým děličem, vyjde hodnota \SI{2.91176}{\volt}, jelikož:
 
 \begin{equation}
     V_{diff} = \SI{4.5}{\volt} * \frac{33}{18 + 33} = \SI{2.91176}{\volt} 
@@ -1112,24 +1127,32 @@ Důležité je také zmínit, že v případě, kdy je zařízení napájeno, je
 Perifie \texttt{LPCMP} obsahuje interní DAC (Digital-Analog Converter), díky kterému je možné porovnávat vstupní analogový signál s 256 respektive 255 úrovněmi referenčního napětí, kterým je signál \texttt{VDD\_ANA} s napětím \SI{3.3}{\volt}. Z tohoto důvodu je hodnota v DAC, při které bude komparátor reagovat, nastavena na hexadecimální hodnotu 0xE1, jelikož:
 
 \begin{equation}
-    DAC_{level} = 255 * \frac{2.91176}{3.3} = 225.125 = 0xE1
+    DAC_{level} = 255 * \frac{2.91176}{3.3} = 225.125 \approx  0xE1
     \label{eq:dac-value}
 \end{equation}
 
 % 5 tau = 16.5 sekundy
-Reakce komparátoru je rovněž ovlivněna hysterézí nastavené na hodnotu \SI{20}{\milli\volt} aby byly omezeny falešné detekce. Krom samotného komparátoru je součástí detekce ztráty napájení ještě časovač, který za dobu $5\tau$ (čas, ve kterém bude kondenzátor pro zálohované napájení nabit na $99\%$) uvede komparátor do stavu, ve kterém je schopen detekovat korektně ztrátu napájení. Během testování se v ojedinělých případech objevily falešné detekce, pokud byl digitální záznamník napájen z měkkého zdroje a obvod pro zálohované napájení ještě nebyl dostatečně nabitý.\footnote{Stav, kdy je komparátor připraven k detekci, je signalizován pomocí LED (viz. kapitola~\ref{signalizace_stavu_systemu}).}
+Reakce komparátoru je rovněž ovlivněna hysterézí, která je nastavena na hodnotu \SI{20}{\milli\volt} aby byly omezeny falešné detekce. Aby bylo zajištěno, že detekce ztráty napájení bude aktivní až po dostatečném nabití zálohovacího kondenzátoru, je součástí systému také časovač, který zpozdí povolení detekce. Funkce komparátoru je aktivována po uplynutí doby odpovídající přibližně $0{,}9\tau$, tedy v okamžiku, kdy je kondenzátor nabitý přibližně na 60~\% své kapacity a je již schopen dokončit záznam dat. Výsledná hodnota $0{,}9\tau$ činí necelé \SI{3}{\second}, což odpovídá následujícímu výpočtu:
 
-Jakmile je záznamník připraven na bezpečné odpojení napájení, a k odpojení skutečně dojde, je pomocí komparátoru detekován pokles napětí pod stanovenou hranici a je vyvoláno přerušení od komparátoru s nejvyšší prioritou. Během obslužné rutiny přerušení jsou uložena všechna data, která jsou dočasně uložená ve volatilní paměti RAM, do souboru uloženém na SD kartě prostřednictvím funkce \texttt{CONSOLELOG\_Flush()}, která zajišťuje také korektní uzavření souboru. Následně se systém dostává do stavu, kdy je připraven na nedostatečné napětí, při kterém již není možný provoz záznamníku bez ohrožení integrity dat.
+\begin{equation}
+    0{,}9\tau = 0{,}9 \cdot R \cdot C = 0{,}9 \cdot \SI{10}{\ohm} \cdot \SI{0.33}{\farad} = \SI{2.97}{\second}
+    \label{eq:timer}
+\end{equation}
 
-Na následujícím obrázku~\ref{fig:pwrloss-detection-saleae} je možné vidět, jak komparátor reaguje v případě odpojení napájejícího napětí. Vrchní průběh grafu reprezentuje stav komparátoru, prostřední průběh zobrazuje napětí na vstupu komparátoru a poslední (spodní) reprezentuje stav napětí na sledované \SI{5}{\volt} napájecí větvi.
+
+Jakmile je záznamník připraven na bezpečné odpojení napájení, a k odpojení skutečně dojde, je pomocí komparátoru detekován pokles napětí pod stanovenou hranici a je vyvoláno přerušení od komparátoru s nejvyšší prioritou. Během obslužné rutiny přerušení jsou uložena všechna data, která jsou dočasně uložená ve volatilní paměti RAM, do souboru uloženém na SD kartě prostřednictvím funkce \texttt{CONSOLELOG\_PowerLossFlush()}, která zajišťuje také korektní uzavření souboru. Následně se systém dostává do stavu, kdy je připraven na nedostatečné napětí, při kterém již není možný provoz záznamníku bez ohrožení integrity dat.
+
+Na následujícím obrázku~\ref{fig:pwrloss-detection-saleae} je možné vidět, jak komparátor reaguje v případě odpojení napájejícího napětí.  Horní průběh představuje výstup komparátoru, který se při detekci poklesu napětí změní z logické úrovně „0“ na „1“. Prostřední průběh zobrazuje napětí na vstupu komparátoru, které se při připojeném napájení pohybuje okolo \SI{2.911}{\volt}. Spodní průběh pak zachycuje napětí na sledované \SI{5}{\volt} napájecí větvi.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.95\textwidth]{obrazky-figures/pwrloss-detection-saleae.png}`
+    \includegraphics[width=0.99\textwidth]{obrazky-figures/obrazky-figurespwrloss-detection-saleae-3-0-bigger.png}`
     
-    \caption{Zjednuduššený diagram běhu a přepínání úloh}
+    \caption{Detekce ztráty napájení, zachycena pomocí Saleae Logic 16 Pro}
     \label{fig:pwrloss-detection-saleae}
 \end{figure}
+
+\newpage
 
 \section{Signalizace stavu systému}
 \label{signalizace_stavu_systemu}
@@ -1143,7 +1166,9 @@ Digitální záznamník využívá sadu pěti LED diod, které slouží k signal
     \label{fig:signal-diodes}
 \end{figure}
 
-Dioda 1 signalizuje, zda je možné digitální záznamník bezpečně odpojit od napájejícího napětí a rozsvítí se tedy za dobu $5\tau$ (16.5 sekundy od připojení záznamníku k napájení), kdy je zajištěno dostatečné nabití kondenzátoru pro zálohované napájení. Dioda 4 signalizuje blikáním stav, kdy digitální záznamník zaznamenává a ukládá data. Pokud záznam skončí, tedy například monitorované zařízení přestane odesílat data, nebo je digitální záznamník odpojen od monitorovaného zařízení, rozsvítí se dioda 3. Může se stát, že na paměťové kartě nebude přítomen konfigurační soubor či bude ve špatném formátu, nebo může dojít k chybě během záznamu dat, v takovém případě je rozsvícená dioda 2.
+Dioda 1 signalizuje, zda je možné digitální záznamník bezpečně odpojit od napájejícího napětí a rozsvítí se tedy za dobu $0{,}9\tau$ (3 sekundy od připojení záznamníku k napájení), kdy je zajištěno dostatečné nabití kondenzátoru pro zálohované napájení. Dioda 4 signalizuje blikáním stav, kdy digitální záznamník zaznamenává a ukládá data. Pokud záznam skončí, tedy například monitorované zařízení přestane odesílat data, nebo je digitální záznamník odpojen od monitorovaného zařízení, rozsvítí se dioda 3. Může se stát, že na paměťové kartě nebude přítomen konfigurační soubor či bude ve špatném formátu, nebo může dojít k chybě během záznamu dat, v takovém případě je rozsvícená dioda 2.
+
+\newpage
 
 Z pohledu uživatele je také důležité zjistit, zda digitální záznamník zaznamenává a ukládá data; k tomuto účelu slouží dioda 4, která v případě záznamu dat bliká. Pokud záznam skončí, tedy například monitorované zařízení přestane odesílat data, nebo je digitální záznamník odpojen od monitorovaného zařízení, rozsvítí se dioda 3. Může se stát, že na paměťové kartě nebude přítomen konfigurační soubor, či bude ve špatném formátu, nebo může dojít k chybě během záznamu dat; v takovém případě je rozsvícená dioda 2.
 % 1 chybova dioda -> sviti pri chybe behem, ktereho neni mozne pokracovat v zaznamu dat
@@ -1151,43 +1176,92 @@ Z pohledu uživatele je také důležité zjistit, zda digitální záznamník z
 
 \begin{table}[h]
     \centering
-    \begin{tabular}{|c|c|c|}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabularx}{\linewidth}{|c|X|X|}
         \hline
-        \textbf{Dioda} & \textbf{Význam} & \textbf{Režim indikace}              \\
+        \textbf{Dioda} & \textbf{Význam} & \textbf{Režim indikace} \\
         \hline
-        1 & Bezpečné odpojení                          & Svítí trvale          \\
+        1 & Bezpečné odpojení & Svítí trvale \\
         \hline
-        2 & Chybový stav během záznamu                 & Svítí trvale          \\
+        2 & Chybový stav během záznamu & Svítí trvale \\
         \hline
-        3 & Ukončení záznamu dat\footnote              & Svítí trvale          \\
+        3 & Ukončení záznamu dat\footnote{Například kvůli odpojení napájení.} & Svítí trvale \\
         \hline
-        4 & Aktivní záznam dat                         & Bliká při záznamu dat \\
+        4 & Aktivní záznam dat & Bliká při záznamu dat \\
         \hline
-        5 & Volná paměť SD karty je pod hranicí 50~MB  & Svítí trvale          \\
+        5 & Volná paměť SD karty je pod hranicí definovanou parametrem \texttt{free\_space} & Svítí trvale \\
         \hline
-    \end{tabular}
+    \end{tabularx}
     \caption{Přehled funkce jednotlivých signalizačních LED diod}
     \label{tab:signal_leds}
 \end{table}
-
 % ==================================================== 
 \chapter{Testování systému}
 \label{testovani_systemu}
 % ----------------------------------------------------
 
 \section{Funkcionální testování systému}
-Funkcionalita digitálního záznamníku byla prověřena pomocí testovacího skriptu napsaného v jazyce Python s využitím objektově orientovaného přístupu. Tento skript simuluje monitorované zařízení tak, že načítá testovací textové soubory a jejich obsah postupně odesílá ve formě sériových dat přes COM port do digitálního záznamníku. Po dokončení testu je třeba z digitálního záznamníku vyčíst zaznamenané soubory a jejich obsah porovnat s původními testovacími vstupy. Testovací skript se nachází v adresáři \texttt{tests/} pod názvem \texttt{serial\_test.py} a pro jeho korektní funkcionalitu je potřeba správně nastavit hodnoty definující COM port přes který budou data posílána, sadu testovacích souborů a přenosovou rychlost.
+Funkcionalita digitálního záznamníku byla prověřena pomocí testovacího skriptu napsaného v jazyce Python s využitím objektově orientovaného přístupu. Testovací skript se nachází v adresáři \texttt{tests/} pod názvem \texttt{serial\_test.py}. 
+
+Skript \texttt{serial\_test.py} simuluje monitorované zařízení tak, že načítá testovací textové soubory a jejich obsah postupně odesílá ve formě sériových dat přes COM port do digitálního záznamníku. Mezi odesláním jednotlivých souborů je zařazena časová prodleva, která záměrně zapříčiní vyvolání funkce \texttt{CONSOLELOG\_Flush()} a každý testovací vstup je tak zaznamenán do samostatného souboru, který může být porovnán vůči originálnímu testovacímu souboru. 
+
+Aby mohl skript správně fungovat, je nezbytné nastavit parametry přímo ve zdrojovém kódu. Makro \texttt{TESTS\_FOLDER} určuje relativní cestu k adresáři obsahujícímu testovací soubory a \texttt{TEST\_CASES} obsahuje seznam názvů souborů, které budou odesílány. Důležité je také nastavit makro \texttt{COM\_PORT}, které specifikuje sériový portu, přes který bude probíhat komunikace, a \texttt{BAUD\_RATE}, jež určuje přenosovou rychlost odpovídající konfiguraci digitálního záznamníku.
+
+\begin{lstlisting}[language=Python, caption={Příklad konfigurace testovacího skriptu \texttt{serial\_test.py}}, label={lst:test-script}] 
+TESTS_FOLDER = 'test_files'
+TEST_CASES = ['test_1kb_one_line.txt', 'test_420B.txt']
+COM_PORT = 'COM11'
+BAUD_RATE = 230400
+\end{lstlisting}
 
 Testování s pomocí skriptu bylo provedeno s různými přenosovými rychlostmi, přičemž testování bylo primárně zaměřeno na přenosové rychlosti odpovídající skutečným scénářům nasazení. Po ukončení testu byly zaznamenané výstupy porovnány s původními testovacími soubory. Výsledky porovnání potvrdily, že ve všech testovaných případech proběhl přenos korektně a nedošlo k žádné ztrátě ani poškození dat.
 
 Součástí funkčního testování bylo také ověření chování digitálního záznamníku v hraničních či nestandardních situacích, které mohou nastat při reálném nasazení digitálního záznamníku. Testy byly zaměřeny na případy, jako je absence nebo nekompletní obsah konfiguračního souboru, použití nové SD karty bez vytvořeného souborového systému, nebo ověření funkčnosti s různě velkými záznamovými soubory. Výsledky testování jsou uvedeny v následující tabulce~\ref{tab:test-extremes}.
 
+\begin{longtable}{|p{6cm}|p{5cm}|p{2.5cm}|}
+    \caption{Výsledky testování hraničních stavů digitálního záznamníku}
+    \label{tab:test-extremes} \\
+    \hline
+    \textbf{Popis testu} & \textbf{Očekávaný výsledek} & \textbf{Splněno} \\
+    \hline
+    \endfirsthead
+
+    \hline
+    \textbf{Popis testu} & \textbf{Očekávaný výsledek} & \textbf{Splněno} \\
+    \hline
+    \endhead
+
+    \hline
+    \endfoot
+
+    \hline
+    \endlastfoot
+
+    Absence konfiguračního souboru & Signalizace chyby pomocí LED diody D2, přerušení záznamu & Ano \\
+    \hline
+    Chybějící hodnota \texttt{baudrate} v konfiguraci & Spuštění záznamu se základní hodnotou \texttt{baudrate} & Ano \\
+    \hline
+    Záznam na novou nezformátovanou SD~kartu & SD~karta je zformátována, je inicializován souborový systém a zařízení následně zaznamenává příchozí data & Ano \\
+    \hline
+    Záznam s velikostí souboru 512~B & Vytvoření souboru a správné ukončení po dosažení limitu & Ano \\
+    \hline
+    Záznam s velikostí souboru 1~MB & Správné naplnění a ukončení souboru bez ztráty dat & Ano \\
+    \hline
+    Docházející volná kapacita SD karty (tzn. volná kapacita pod 500~MB) & Signalizace pomocí LED & Ano \\
+    \hline
+    Přenos zaznamenaných dat z digitálního záznamníku & Přeneseny záznamy do hostitelského zařízení z digitálního záznamníku & Ano \\
+    \hline
+\end{longtable}
+
+Digitální záznamník byl dále testován i s reálným monitorovaným zařízením po dobu delší než 168 hodin provozu. Ani během tohoto dlouhodobého testu nebyly zjištěny žádné projevy nesprávné funkce nebo ztráty dat, čímž byla taktéž potvrzena stabilita a spolehlivost zařízení.
+
 \section{Kontrola bezpečnosti kódu}
 Kromě funkcionálního testování byla provedena statická analýza zdrojového kódu pomocí pravidel specifikace MISRA (Motor Industry Software Reliability Association), respektive MISRA C:2012. MISRA C:2012 je standard pro vývoj softwaru v programovacím jazyku ISO C, který má za cíl zvýšení bezpečnosti kódu, přenositelnosti a spolehlivosti v kontextu vestavěných systémů.
 
+% K spuštění PC-lint Plus je potřeba nástoj nastavit pomocí konfiguračních souborů
 K tomuto účelu byl využit nástroj PC-lint Plus ve verzi 2.2 od společnosti Vector s 14denní licencí zdarma. Konfigurační soubory \texttt{lint\_config.lts} a \texttt{sources.lts} spolu s výstupními reporty nástroje jsou uloženy ve složce \texttt{test/static-analysis/}.
 
-Pozornost byla věnována primárně pravidlům spadajícím do kategorie Required a Mandatory.\footnote{Pravidla ze skupiny Advisory nebyly brány v potaz, tyto chyby nijak nenarušují fukcionalitu firmwaru.} Všechna nalezená porušení patřící do kategorií Required a Mandatory byla odstraněna, případně obhájena pomocí komentářů ve zdrojovém kódu, kde je uveden odkaz na příslušné pravidlo i odůvodnění výjimky (viz ukázka~\ref{lst:misra}). Obhájená porušení se týkají zejména kvůli architektuře MCUXpresso SDK, FreeRTOSu, či z důvodu, že PC-lint Plus nedokázal například najít souvislosti mezi zdrojovými a hlavičkovými soubory.
+Pozornost byla věnována primárně pravidlům spadajícím do kategorie Required a Mandatory.\footnote{Standard MISRA C rozlišuje kategorie Advisory, Mandatory a Required. Pravidla ze skupiny Advisory nebyly brány v potaz, tyto chyby nijak nenarušují fukcionalitu firmwaru.} Všechna nalezená porušení pravidel patřící do kategorií Required a Mandatory byla opravena, případně obhájena pomocí komentářů ve zdrojovém kódu, kde je uveden odkaz na příslušné pravidlo i odůvodnění výjimky (viz ukázka~\ref{lst:misra}). Obhájená porušení se týkají zejména kvůli architektuře MCUXpresso SDK, FreeRTOSu, či z důvodu, že PC-lint Plus nedokázal například najít souvislosti mezi zdrojovými a hlavičkovými soubory.
 
 \begin{lstlisting}[language=C, caption={Ukázka odůvodněného porušení pravidla MISRA}, label={lst:misra}]
 /* MISRA Deviation Note:
@@ -1200,6 +1274,7 @@ Pozornost byla věnována primárně pravidlům spadajícím do kategorie Requir
 CTIMER_ClearStatusFlags(CTIMER4, kCTIMER_Match0Flag);
 /*lint +e9034 */
 \end{lstlisting}
+% ----------------------------------------------------
 
 % ----------------------------------------------------
 
@@ -1215,7 +1290,7 @@ Během testování nebyly nalezeny žádné skutečnosti limitující provoz dig
 \label{mozne_rozsireni}
 Navržený digitální záznamník je koncipován jako modulární a dále rozšiřitelný systém, který lze v budoucnu snadno doplnit o nové funkce v závislosti na specifických požadavcích aplikace.
 
-Jednou z připravených, avšak dosud nerealizovaných funkcionalit je synchronizace reálného času pomocí systému GPS. Hardwarové rozhraní je již implementováno a připojeno, zbývá pouze doplnit softwarovou část, která bude pravidelně aktualizovat čas v RTC obvodu na základě časových údajů získaných z GPS modulu.
+Jednou z připravených, avšak dosud nerealizovaných funkcionalit je synchronizace reálného času pomocí GPS modulu. Hardwarové rozhraní je již implementováno a připojeno, zbývá pouze doplnit softwarovou část, která bude pravidelně aktualizovat čas v RTC obvodu na základě časových údajů získaných z GPS modulu.
 
 Dalším potenciálním rozšířením je zavedení mechanismů pro zabezpečení zaznamenaných dat uložených na SD kartě. Například šifrování dat, zajištění integrity a autentizační systém chránící přístup k uloženým datům.
 
@@ -1227,19 +1302,20 @@ Systém by mohl být dále vybaven volitelnou možností odesílání dat na vzd
 
 \chapter{Závěr}
 \label{zaver}
-Cílem bakalářské práce bylo navržení a realizace digitálního záznamníku pro účely společnosti NXP Semiconductors, s řešením problematiky prevence ztráty napájecího napětí, a tohoto cíle bylo dosaženo.
+Cílem bakalářské práce bylo navržení a realizace digitálního záznamníku pro účely společnosti NXP Semiconductors, a tohoto cíle bylo dosaženo.
 
-Práce se věnuje historickému pozadí záznamu dat, počátkům záznamu dat v počátcích elektrotechniky a digitálnímu záznamu dat včetně digitálního záznamu dat na PC a digitálního záznamu dat na mikrokontroléru. Rozvedeny jsou také klíčové koncepty, které jsou mnohdy využívány digitálními záznamníky a architekturami ukládání dat.
+Práce se věnuje historickému pozadí záznamu dat, počátkům záznamu dat v počátcích elektrotechniky a digitálnímu záznamu dat včetně  záznamu dat na osobním počítači a na mikrokontrolérech. Rozvedeny jsou také klíčové koncepty, které jsou mnohdy využívány digitálními záznamníky a architekturami ukládání dat.
 
-Práce je dále věnována představení existujících řešení a návrhu digitálního záznamníku po jednotlivých komponentách, které byly brány v úvahu pro výslednou architekturu digitálního záznamníku.
+Následující část práce je zaměřena na analýzu existujících řešení dostupných na trhu a identifikaci jejich klíčových vlastností. Na tuto analýzu navazuje podrobná rešerše jednotlivých komponent, které byly brány v úvahu při návrhu architektury digitálního záznamníku.
 
-Součástí práce je následně rozebrán postup realizace hardwaru, čili expanzní desky rozšiřující funkcionalitu vývojové desky, a přístup k realizaci obslužného firmwaru digitálního záznamníku. Součástí textu je také testování digitálního záznamníku, které si kromě ověření správné funkcionality digitálního záznamníku klade důraz na bezpečnost a spolehlivost napsaného kódu, která byla ověřena vůči pravidlům standardu MISRA C. V závěru jsou pak zmíněny možné limitace digitálního záznamníku a možné rozšíření, která je možné dále implementovat.
+Součástí práce je popsán návrh a realizace hardwarové expanzní desky, která rozšiřuje funkcionalitu vývojové desky, a taktéž je popsán i návrh a implementace firmwaru. Následně je rozebrán způsob jakým probíhalo testování digitálního záznamníku, při kterém byla ověřena správná funkcionalita digitálního záznamníku a dále byla ověřena bezpečnost a spolehlivost kódu firmwaru vůči pravidlům standardu MISRA C. 
 
-Výsledkem práce je zařízení, které je schopno reálného provozu, které je možné konfigurovat, dokáže zaznamenávat data přes rozhraní UART s doplňením časových značek, systematicky řadí záznamy, a získané záznamy je možné vyčíst bez nutnosti fyzického vyjmutí paměťového média. Zařízení je taktéž odolné při ztrátě napájecího napětí. 
+Výsledkem práce je zařízení, které umožňuje záznam dat z rozhraní UART včetně vkládání časových značek do záznamů, systematické ukládání záznamů a pozdější přístup k těmto datům bez nutnosti vyjmutí paměťového média. Záznamník je zároveň schopen bezpečně reagovat na výpadky napájecího napětí a zabezpečit tak případnou ztrátu či poškození zaznamenaných dat a souborového systému. 
 
 Digitální záznamník také obsahuje přípravu na možná rozšíření v připojení GPS modulu pro synchronizaci času. Firmware digitálního záznamníku je díky své modularitě možné nadále rozšiřovat, a nebo upravit pro záznam jiného typu dat.
 
-Digitální záznamník, taktéž předčí svou konkurenci, která byla popsána v kapitole~\ref{existujici_reseni} svou cenou, která je vůči \textit{AirDrive Serial Logger Pro} poloviční a vůči \textit{Anticyclone Anti-Log Pro} při nejlevnější srovnatelné konfiguraci čtvrtinová.
+Výhodou vyvinutého záznamníku jsou i nižší náklady na realizaci vůči konkurenci, která byla zmíněná v kapitole~\ref{existujici_reseni}. Celková cena zařízení činí přibližně 1473~Kč. Například \textit{AirDrive Serial Logger Pro} stojí přibližně dvojnásobnou cenu a zařízení \textit{Anticyclone Anti-Log Pro} v nejlevnější konfiguraci přesahuje čtyřnásobek.
+
 
 %===============================================================================
 
