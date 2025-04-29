@@ -1166,11 +1166,12 @@ Digitální záznamník využívá sadu pěti LED diod, které slouží k signal
     \label{fig:signal-diodes}
 \end{figure}
 
-Dioda 1 signalizuje, zda je možné digitální záznamník bezpečně odpojit od napájejícího napětí a rozsvítí se tedy za dobu $0{,}9\tau$ (3 sekundy od připojení záznamníku k napájení), kdy je zajištěno dostatečné nabití kondenzátoru pro zálohované napájení. Dioda 4 signalizuje blikáním stav, kdy digitální záznamník zaznamenává a ukládá data. Pokud záznam skončí, tedy například monitorované zařízení přestane odesílat data, nebo je digitální záznamník odpojen od monitorovaného zařízení, rozsvítí se dioda 3. Může se stát, že na paměťové kartě nebude přítomen konfigurační soubor či bude ve špatném formátu, nebo může dojít k chybě během záznamu dat, v takovém případě je rozsvícená dioda 2.
+Dioda 1 signalizuje, zda je možné digitální záznamník bezpečně odpojit od napájejícího napětí a rozsvítí se za dobu $0{,}9\tau$ (3 sekundy od připojení záznamníku k napájení), kdy je zajištěno dostatečné nabití kondenzátoru pro zálohované napájení. Dioda 4 signalizuje blikáním stav, kdy digitální záznamník zaznamenává a ukládá data. Pokud záznam skončí, tedy například monitorované zařízení přestane odesílat data, nebo je digitální záznamník odpojen od monitorovaného zařízení, rozsvítí se dioda 3. Pokud volné místo na paměťové kartě klesne pod hodnotu nastavenou parametrem \texttt{free\_space}, který je definován v konfiguračním souboru, rozsvítí se dioda 4.
+
+Během užití digitálního záznamníku může nastat situace, kdy konfigurační soubor na paměťové kartě nebude správně přečten z důvodu špatného obsahu, nebo dojde k chybě během záznamu dat, v takovém případě je rozsvícená dioda 2.
 
 \newpage
 
-Z pohledu uživatele je také důležité zjistit, zda digitální záznamník zaznamenává a ukládá data; k tomuto účelu slouží dioda 4, která v případě záznamu dat bliká. Pokud záznam skončí, tedy například monitorované zařízení přestane odesílat data, nebo je digitální záznamník odpojen od monitorovaného zařízení, rozsvítí se dioda 3. Může se stát, že na paměťové kartě nebude přítomen konfigurační soubor, či bude ve špatném formátu, nebo může dojít k chybě během záznamu dat; v takovém případě je rozsvícená dioda 2.
 % 1 chybova dioda -> sviti pri chybe behem, ktereho neni mozne pokracovat v zaznamu dat
 % 1 chybova dioda -> pokud napr chybi konfiguracni soubor, tedy je mozne napr. zaznamenavat data s zakladnim (default) nastavenim
 
@@ -1195,6 +1196,7 @@ Z pohledu uživatele je také důležité zjistit, zda digitální záznamník z
     \caption{Přehled funkce jednotlivých signalizačních LED diod}
     \label{tab:signal_leds}
 \end{table}
+
 % ==================================================== 
 \chapter{Testování systému}
 \label{testovani_systemu}
@@ -1292,9 +1294,9 @@ Navržený digitální záznamník je koncipován jako modulární a dále rozš
 
 Jednou z připravených, avšak dosud nerealizovaných funkcionalit je synchronizace reálného času pomocí GPS modulu. Hardwarové rozhraní je již implementováno a připojeno, zbývá pouze doplnit softwarovou část, která bude pravidelně aktualizovat čas v RTC obvodu na základě časových údajů získaných z GPS modulu.
 
-Dalším potenciálním rozšířením je zavedení mechanismů pro zabezpečení zaznamenaných dat uložených na SD kartě. Například šifrování dat, zajištění integrity a autentizační systém chránící přístup k uloženým datům.
+Dalším potenciálním rozšířením je zavedení mechanismů pro zabezpečení zaznamenaných dat uložených na SD kartě, zahrnujících šifrování, ověřování integrity dat a řízení přístupu.
 
-Systém by mohl být dále vybaven volitelnou možností odesílání dat na vzdálené úložiště místo ukládání na SD kartu.
+Digitální záznamník by rovněž mohl být vybaven volitelnou možností odesílání dat na vzdálené úložiště místo ukládání na SD kartu.
 
 % Implementovaný digitální záznamník je možné rozšířit, hodila by se dopracovat synchronizace času pomocí GPS, která je připravena, a tedy je akorát nutné doimplementovat aktualizaci času do firmwaru digitálního záznamníku. Dále by bylo možné zabezpečit lépe zaznamenaná data na SD kartě, například pomocí šifrování, zajištění integrity dat a popřípadě k autentizaci, aby nedošlo k neoprávněnému přístupu k datům.
 
@@ -1308,6 +1310,8 @@ Práce se věnuje historickému pozadí záznamu dat, počátkům záznamu dat v
 
 Následující část práce je zaměřena na analýzu existujících řešení dostupných na trhu a identifikaci jejich klíčových vlastností. Na tuto analýzu navazuje podrobná rešerše jednotlivých komponent, které byly brány v úvahu při návrhu architektury digitálního záznamníku.
 
+Navržený digitální záznamník neobsahuje klasické ovládací prvky, které byly zmíněny v zadání, jelikož ovládání digitálního záznamníku probíha na základě připojí/odpojení aplikačního USB s oveřením pomocí USB OTG. Díky tohoto přístupu je zjednodušena obsluha zařízení, jelikož digitální záznamník bude často používán nezkušenou obsluhou, která s tímto zařízení přijde do kontaktu poprvé.
+
 Součástí práce je popsán návrh a realizace hardwarové expanzní desky, která rozšiřuje funkcionalitu vývojové desky, a taktéž je popsán i návrh a implementace firmwaru. Následně je rozebrán způsob jakým probíhalo testování digitálního záznamníku, při kterém byla ověřena správná funkcionalita digitálního záznamníku a dále byla ověřena bezpečnost a spolehlivost kódu firmwaru vůči pravidlům standardu MISRA C. 
 
 Výsledkem práce je zařízení, které umožňuje záznam dat z rozhraní UART včetně vkládání časových značek do záznamů, systematické ukládání záznamů a pozdější přístup k těmto datům bez nutnosti vyjmutí paměťového média. Záznamník je zároveň schopen bezpečně reagovat na výpadky napájecího napětí a zabezpečit tak případnou ztrátu či poškození zaznamenaných dat a souborového systému. 
@@ -1315,7 +1319,6 @@ Výsledkem práce je zařízení, které umožňuje záznam dat z rozhraní UART
 Digitální záznamník také obsahuje přípravu na možná rozšíření v připojení GPS modulu pro synchronizaci času. Firmware digitálního záznamníku je díky své modularitě možné nadále rozšiřovat, a nebo upravit pro záznam jiného typu dat.
 
 Výhodou vyvinutého záznamníku jsou i nižší náklady na realizaci vůči konkurenci, která byla zmíněná v kapitole~\ref{existujici_reseni}. Celková cena zařízení činí přibližně 1473~Kč. Například \textit{AirDrive Serial Logger Pro} stojí přibližně dvojnásobnou cenu a zařízení \textit{Anticyclone Anti-Log Pro} v nejlevnější konfiguraci přesahuje čtyřnásobek.
-
 
 %===============================================================================
 
