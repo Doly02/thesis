@@ -286,6 +286,52 @@ V těchto případech je proto nutné zvážit provozní podmínky a očekávano
 % Strategie ukládání dat 
 % Architektury ukládání dat 
 % ORIGIN: Způsoby zápisu dat
+\section{Synchronizační značky digitálních záznamníků} 
+\label{synchronizace_systemu}
+Přítomnost časových značek ve výsledných záznamech digitálního záznamníku mohou představovat klíčový prvek a to obzvášť při následném zpracování dat. Jejich hlavním účelem je zajistit přesnou časovou orientaci jednotlivých záznamů, což je zásadní pro správnou interpretaci uložených událostí, analýzu jejich posloupnosti i případné porovnávání dat, vůči datům z vícero různých zařízení, bez kterých by nebylo možné správně interpretovat vztahy mezi událostmi nebo porovnávat data získaná v různých podmínkách. V praxi se pak často rozlišují dva základní typy časových značek, a to relativní časové značky a absolutní časové značky.
+
+\subsection{Relativní časové značky} 
+Relativní časové značky vyjadřují časový okamžik vztažený k určitému referenčnímu bodu, typicky ke spuštění zařízení nebo zahájení konkrétního měření. Jsou využívány především v systémech, kde je podstatné sledovat pouze pořadí a vzájemné rozestupy mezi jednotlivými událostmi, nikoli jejich konkrétní datum a čas.
+
+Relativní čas lze v praxi generovat například pomocí interního časovače mikrokontroléru, které jsou standardní součástí většiny mikrokontrolérů a umožňují přesné měření uplynulého času na základě hodinového signálu získávaného z interního nebo externího oscilátoru. nebo vnitřního systémového čítače. Alternativně je možné relativní čas generovat pomocí vnitřního systémového čítače, například modulu Systick u procesorů založených na architektuře ARM Cortex--M, který je přímo svázán s hlavním taktem procesoru a běží nezávisle na ostatních periferiích.
+
+Příklad výsledného záznamu dat z monitorovaného zařízení může vypadat jako v následující ukázce~\ref{lst:relative-timestamp}, kde v hranatých závorkách je uvedena relativní časová značka vyjadřující počet tiků od spuštění systému.
+
+\begin{lstlisting}[language={}, caption={Ukázka záznamu s relativními časovými značkami}, label={lst:relative-timestamp}]
+[000000] Start systemu
+[000105] Inicializace senzoru
+[000347] Navazani spojeni s externim zarizenim
+[000892] Data prijata
+[002030] Prechod zarizeni do rezimu spanku
+\end{lstlisting}
+
+Výhodou relativních časových značek je jejich jednoduchost a vysoká přesnost v rámci sledovaného intervalu, bez nutnosti řešit komplexní problémy spojené s absolutním časem jakými jsou například přechody mezi časovými pásmy nebo sezónní změny času. Díky přímému řízení pomocí interních oscilátorů a možnosti konfigurace časovačů lze dosáhnout velmi jemné časové granularit, často v řádu jednotek mikrosekund, a v některých případech dokonce i nanosekund. To umožňuje použití relativních časových značek v aplikacích vyžadujících vysokou přesnost časování.
+
+\newpage
+
+\subsection{Absolutní časové značky} 
+Alternativou k relativním časovým značkám, jsou značky absolutní, které obsahují plnou informaci o reálném čase události, tedy datum a čas v rámci standardizovaného časového systému, například UTC. Tento typ časových značek je nezbytný zejména tehdy, pokud je potřeba korelovat události mezi různými nezávislými systémy, kde samotný relativní čas nestačí.
+
+Pro získání absolutního času lze v praxi využít mnoho způsobů, jakými jsou například obvod reálného času (Real Time Circuit), globální polohovací systém (Global Positioning System) poskytující velmi přesný čas synchronizovaný s atomovými hodinami, nebo pomocí například síťovou synchronizaci přes aplikační protokol NTP (Network Time Protocol). 
+
+Příklad výsledného záznamu dat s použitím absolutních časových značek je uveden v následující ukázce~\ref{lst:absolute-timestamp}, kde v hranatých závorkách je uvedeno datum a čas události zaznamených z monitorovaného zařízení.
+
+\begin{lstlisting}[language={}, caption={Ukázka záznamu s absolutními časovými značkami}, label={lst:absolute-timestamp}]
+[2025-04-27 14:00:00] Start systemu
+[2025-04-27 14:00:00] Inicializace senzoru
+[2025-04-27 14:00:15] Navazani spojeni s externim zarizenim
+[2025-04-27 14:00:45] Data prijata
+[2025-04-27 14:02:30] Prechod zarizeni do rezimu spanku
+\end{lstlisting}
+
+Kromě výhody v již zmíněné možné korelaci událostí mezi více systémy je také využití absolutních časových značek výhodné pro zpětnou analýzu a archivaci dat v dlouhodobém horizontu.
+
+Výhodou absolutních časových značek je možnost přesné korelace událostí v globálním časovém rámci, avšak vyžadují spolehlivý a přesný zdroj času, který je schopen kompenzovat například odchylky krystalových oscilátorů, výpadky napájení nebo síťová zpoždění. Kromě toho je potřeba řešit i specifické jevy spojené s reálným časem, například přechody mezi letním a zimním časem nebo změny časových pásem.
+
+Přestože absolutní časové značky přinášejí řadu výhod, jejich použití může být spojeno i s určitými riziky. Může například dojít ke ztrátě přesnosti časových údajů, a to například vlivem odchylek krystalových oscilátorů, výpadků synchronizačního zdroje nebo narušením komunikačního spojení. Digitální záznamník, používající absolutní časové značky může navíc narazit na problémy i v rámci standardních situací, jako je korekce času při přechodu mezi letním a zimním časem, změna časového pásma nebo jiná úprava času, pokud zdroj času poskytující absolutní čas není správně synchronizován.
+
+\newpage
+
 \section{Architektury ukládání dat}
 Záznamníky dat musí být navrženy tak, aby umožnily spolehlivé ukládání získaných dat, které by mělo být efektivní ve smyslu rychlosti a šetrné pro zvýšení životnosti uložiště. V této kapitole jsou popsány tři různé způsoby ukládání dat, přímý zápis na lokální úložiště, ukládání prostřednictvím mezivrstvy s FRAM pamětí a využití vzdálených úložišť. Každá z těchto metod má své specifické výhody a omezení, které určují její vhodnost pro konkrétní aplikace.
 
@@ -1306,11 +1352,11 @@ Digitální záznamník by rovněž mohl být vybaven volitelnou možností odes
 \label{zaver}
 Cílem bakalářské práce bylo navržení a realizace digitálního záznamníku pro účely společnosti NXP Semiconductors, a tohoto cíle bylo dosaženo.
 
-Práce se věnuje historickému pozadí záznamu dat, počátkům záznamu dat v počátcích elektrotechniky a digitálnímu záznamu dat včetně  záznamu dat na osobním počítači a na mikrokontrolérech. Rozvedeny jsou také klíčové koncepty, které jsou mnohdy využívány digitálními záznamníky a architekturami ukládání dat.
+Práce se věnuje historickému pozadí záznamu dat, počátkům záznamu dat v počátcích elektrotechniky a digitálnímu záznamu dat včetně záznamu dat na osobním počítači a na mikrokontrolérech. Rozvedeny jsou také klíčové koncepty včetně vkládání synchronizačních značek, které jsou mnohdy využívány digitálními záznamníky a architektury ukládání dat.
 
-Následující část práce je zaměřena na analýzu existujících řešení dostupných na trhu a identifikaci jejich klíčových vlastností. Na tuto analýzu navazuje podrobná rešerše jednotlivých komponent, které byly brány v úvahu při návrhu architektury digitálního záznamníku.
+Navazující část práce je zaměřena na analýzu existujících řešení dostupných na trhu a identifikaci jejich klíčových vlastností. Na tuto analýzu navazuje podrobná rešerše jednotlivých komponent, které byly brány v úvahu při návrhu architektury digitálního záznamníku a samotný návrh této architektury.
 
-Navržený digitální záznamník neobsahuje klasické ovládací prvky, které byly zmíněny v zadání, jelikož ovládání digitálního záznamníku probíha na základě připojí/odpojení aplikačního USB s oveřením pomocí USB OTG. Díky tohoto přístupu je zjednodušena obsluha zařízení, jelikož digitální záznamník bude často používán nezkušenou obsluhou, která s tímto zařízení přijde do kontaktu poprvé.
+Navržený digitální záznamník neobsahuje klasické ovládací prvky, které byly zmíněny v zadání, jelikož ovládání digitálního záznamníku probíhá na základě připojení/odpojení aplikačního USB s ověřením pomocí USB OTG. Díky tomuto přístupu je zjednodušena obsluha zařízení, jelikož digitální záznamník bude často používán nezkušenou obsluhou, která s tímto zařízením přijde do kontaktu poprvé.
 
 Součástí práce je popsán návrh a realizace hardwarové expanzní desky, která rozšiřuje funkcionalitu vývojové desky, a taktéž je popsán i návrh a implementace firmwaru. Následně je rozebrán způsob jakým probíhalo testování digitálního záznamníku, při kterém byla ověřena správná funkcionalita digitálního záznamníku a dále byla ověřena bezpečnost a spolehlivost kódu firmwaru vůči pravidlům standardu MISRA C. 
 
@@ -1319,7 +1365,6 @@ Výsledkem práce je zařízení, které umožňuje záznam dat z rozhraní UART
 Digitální záznamník také obsahuje přípravu na možná rozšíření v připojení GPS modulu pro synchronizaci času. Firmware digitálního záznamníku je díky své modularitě možné nadále rozšiřovat, a nebo upravit pro záznam jiného typu dat.
 
 Výhodou vyvinutého záznamníku jsou i nižší náklady na realizaci vůči konkurenci, která byla zmíněná v kapitole~\ref{existujici_reseni}. Celková cena zařízení činí přibližně 1473~Kč. Například \textit{AirDrive Serial Logger Pro} stojí přibližně dvojnásobnou cenu a zařízení \textit{Anticyclone Anti-Log Pro} v nejlevnější konfiguraci přesahuje čtyřnásobek.
-
 %===============================================================================
 
 % Pro kompilaci po částech (viz projekt.tex) nutno odkomentovat
