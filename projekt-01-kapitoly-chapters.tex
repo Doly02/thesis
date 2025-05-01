@@ -305,31 +305,9 @@ Příklad výsledného záznamu dat z monitorovaného zařízení může vypadat
 [002030] Prechod zarizeni do rezimu spanku
 \end{lstlisting}
 
-Výhodou relativních časových značek je jejich jednoduchost a vysoká přesnost v rámci sledovaného intervalu, bez nutnosti řešit komplexní problémy spojené s absolutním časem jakými jsou například přechody mezi časovými pásmy nebo sezónní změny času. Díky přímému řízení pomocí interních oscilátorů a možnosti konfigurace časovačů lze dosáhnout velmi jemné časové granularit, často v řádu jednotek mikrosekund, a v některých případech dokonce i nanosekund. To umožňuje použití relativních časových značek v aplikacích vyžadujících vysokou přesnost časování.
+V případě, že záznamník slouží k záznamu datového proudu, například sériové komunikace, není okamžik vkládání časové značky předem jasně daný jednotlivými událostmi. Digitální záznamník proto musí implementovat mechanismus pro detekci vhodného okamžiku, kdy do datového toku synchronizační značku vložit.
 
-\newpage
-
-\subsection{Absolutní časové značky} 
-Alternativou k relativním časovým značkám, jsou značky absolutní, které obsahují plnou informaci o reálném čase události, tedy datum a čas v rámci standardizovaného časového systému, například UTC. Tento typ časových značek je nezbytný zejména tehdy, pokud je potřeba korelovat události mezi různými nezávislými systémy, kde samotný relativní čas nestačí.
-
-Pro získání absolutního času lze v praxi využít mnoho způsobů, jakými jsou například obvod reálného času (Real Time Circuit), globální polohovací systém (Global Positioning System) poskytující velmi přesný čas synchronizovaný s atomovými hodinami, nebo pomocí například síťovou synchronizaci přes aplikační protokol NTP (Network Time Protocol). 
-
-Příklad výsledného záznamu dat s použitím absolutních časových značek je uveden v následující ukázce~\ref{lst:absolute-timestamp}, kde v hranatých závorkách je uvedeno datum a čas události zaznamených z monitorovaného zařízení.
-
-\begin{lstlisting}[language={}, caption={Ukázka záznamu s absolutními časovými značkami}, label={lst:absolute-timestamp}]
-[2025-04-27 14:00:00] Start systemu
-[2025-04-27 14:00:00] Inicializace senzoru
-[2025-04-27 14:00:15] Navazani spojeni s externim zarizenim
-[2025-04-27 14:00:45] Data prijata
-[2025-04-27 14:02:30] Prechod zarizeni do rezimu spanku
-\end{lstlisting}
-
-Kromě výhody v již zmíněné možné korelaci událostí mezi více systémy je také využití absolutních časových značek výhodné pro zpětnou analýzu a archivaci dat v dlouhodobém horizontu.
-
-Výhodou absolutních časových značek je možnost přesné korelace událostí v globálním časovém rámci, avšak vyžadují spolehlivý a přesný zdroj času, který je schopen kompenzovat například odchylky krystalových oscilátorů, výpadky napájení nebo síťová zpoždění. Kromě toho je potřeba řešit i specifické jevy spojené s reálným časem, například přechody mezi letním a zimním časem nebo změny časových pásem.
-
-Přestože absolutní časové značky přinášejí řadu výhod, jejich použití může být spojeno i s určitými riziky. Může například dojít ke ztrátě přesnosti časových údajů, a to například vlivem odchylek krystalových oscilátorů, výpadků synchronizačního zdroje nebo narušením komunikačního spojení. Digitální záznamník, používající absolutní časové značky může navíc narazit na problémy i v rámci standardních situací, jako je korekce času při přechodu mezi letním a zimním časem, změna časového pásma nebo jiná úprava času, pokud zdroj času poskytující absolutní čas není správně synchronizován.
-
+Jedním ze způsobů může být sledování časových prodlev mezi přijatými daty. Pokud mezi dvěma bloky dat přijde prodleva delší než stanovený interval (například 50~ms), považuje se tato prodleva za ukončení bloku dat, a následně se na začátku dalšího bloku vloží nová časová značka. Další možností je vkládání synchronizačních značek po fixní velikosti přijatých dat, například každých 64~bajtů. Alternativně lze využít dohodnutý ukončovací znak nebo sekvenci, která signalizuje konec jednoho logického bloku dat. Typickým příkladem může být znak konce řádku (např.~`\textbackslash n`), nulový bajt (`0x00`) nebo definovaná specifická posloupnost bajtů. Jakmile je taková sekvence detekována, je po její zpracování připojena časová značka, případně je vložena před začátek následujícího bloku. \cite{github_serial_datalogger_w_timestamps_sd_card_fatfs}
 \newpage
 
 \section{Architektury ukládání dat}
@@ -818,16 +796,16 @@ Vybraná základová deska neobsahuje všechny potřebné komponenty k realizaci
 
 \subsection{Zálohované napájení}
 \label{zalohovane_napajeni_hw}
-Důležitou součástí realizovaného digitálního záznamníku je zálohované napájení s detekcí ztráty napájecího napětí. Zálohované napájení lze realizovat několika způsoby, například pomocí knoflíkového baterie nebo pomocí kondenzátoru. Nejschůdnější variantou pro digitální záznamník se ukázal být kondenzátor, respektive superkondenzátor. Na rozdíl od baterií je schopen okamžitě dodat relativně vysoký vybíjecí proud, který byl naměřen při testování spotřeby pomocí zařízení Power Profiler Kit II od společnosti Nordic Semiconductors (viz. obrázek~\ref{fig:power-consumption}), při kterém se ukázalo, že vstupní proud může dosáhnout hodnot až \SI{250}{\milli\ampere}. Běžné knoflíkové články nebo malé Li-Po baterie by v tomto ohledu nemusely zajistit dostatečný proud a případně by při takové zátěži vedly k velmi krátké výdrži. \cite{nordic_semi_ppk2}
+Důležitou součástí realizovaného digitálního záznamníku je zálohované napájení s detekcí ztráty napájecího napětí. Zálohované napájení lze realizovat několika způsoby, například pomocí knoflíkového baterie nebo pomocí kondenzátoru. Nejschůdnější variantou pro digitální záznamník se ukázal být kondenzátor, respektive superkondenzátor. Na rozdíl od baterií je schopen okamžitě dodat relativně vysoký vybíjecí proud, který byl naměřen při testování spotřeby pomocí zařízení Power Profiler Kit II od společnosti Nordic Semiconductors (viz. obrázek~\ref{fig:power-consumption}), při kterém se ukázalo, že vstupní proud může dosáhnout hodnot až \SI{250}{\milli\ampere}. Běžné knoflíkové články nebo malé Li-Po baterie by v tomto ohledu nemusely zajistit dostatečný proud a případně by při takové zátěži vedly k velmi krátké výdrži.~\cite{nordic_semi_ppk2}
 
 % Zaroven musi byt jmennovite napeti vyssi z duvodu
-Z tohoto důvodu bylo třeba vybrat superkondenzátor, který bude vyhovovat parametrům pro využití v digitálním záznamníku. Mezi takové parametry patří zejména kapacita, která určuje, jak dlouho je zařízení schopno fungovat po ztrátě napájení. Dále bylo nutné zohlednit jmenovité napětí, které musí být vyšší než maximální napájecí napětí systému, aby nedošlo k poškození součástky.\footnote{Běžně je doporučováno volit dvojnásobek či dokonce trojnásobek napětí při kterém bude kondenzátor operovat.} Dalším důležitým faktorem je ekvivalentní sériový odpor (ESR), jenž ovlivňuje schopnost superkondenzátoru dodávat vysoký proud bez výrazného poklesu napětí, čím nižší ESR, tím lépe je tedy kondenzátor schopen poskytovat vyšší proud. Vzhledem k omezenému prostoru na expanzní desce bylo zároveň nezbytné zohlednit fyzické rozměry kondenzátoru tak, aby jej bylo možné snadno integrovat a popřípadě umožnit, aby bylo možné využít dva kondenzátory paralelně, pro zvýšení spolehlivosti systému v případě selhání jednoho z kondenzátorů. \cite{cadence_capacitor_size}
+Z tohoto důvodu bylo třeba vybrat superkondenzátor, který bude vyhovovat parametrům pro využití v digitálním záznamníku. Mezi takové parametry patří zejména kapacita, která určuje, jak dlouho je zařízení schopno fungovat po ztrátě napájení. Dále bylo nutné zohlednit jmenovité napětí, které musí být vyšší než maximální napájecí napětí systému, aby~nedošlo k poškození součástky.\footnote{Běžně je doporučováno volit dvojnásobek či dokonce trojnásobek napětí při kterém bude kondenzátor operovat.} Dalším důležitým faktorem je ekvivalentní sériový odpor (ESR), jenž ovlivňuje schopnost superkondenzátoru dodávat vysoký proud bez výrazného poklesu napětí, čím nižší ESR, tím lépe je tedy kondenzátor schopen poskytovat vyšší proud. Vzhledem k omezenému prostoru na expanzní desce bylo zároveň nezbytné zohlednit fyzické rozměry kondenzátoru tak, aby jej bylo možné snadno integrovat a popřípadě umožnit, aby bylo možné využít dva kondenzátory paralelně, pro zvýšení spolehlivosti systému v případě selhání jednoho z kondenzátorů.~\cite{cadence_capacitor_size}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.80\textwidth]{obrazky-figures/power-consumption-2.png}
+    \includegraphics[width=0.85\textwidth]{obrazky-figures/power-consumption-2.png}
     
-    \caption{Výsledek měření spotřeba implementovaného záznamníku pomocí Power Profiler Kit II 
+    \caption{Výsledek měření spotřeby implementovaného záznamníku pomocí Power Profiler Kit II 
     \cite{nordic_semi_ppk2}}
     \label{fig:power-consumption}
 \end{figure}
@@ -846,15 +824,15 @@ Jako vhodný kondenzátor byl tedy vybrán model SCMR14G334SRBB0 od společnosti
 
 \newpage
 
-Aby bylo možné přesně vyhodnotit, jak dlouho dokáže záznamník fungovat při napájení ze superkondenzátoru, je třeba nejprve vysvětlit několik základních skutečností souvisejících s vývojovou deskou FRDM-MCXN947, která bude napájená z výše popsaného kondenzátoru. Vstupní napětí \SI{5}{\volt} jde přes LDO (Low-Dropout Regulator), které upravuje napětí na 3V3 zásobující čip. LDO však ke své funkci vyžaduje minimální rozdíl mezi vstupním a výstupním napětím, tzv. Dropout Voltage, při kterém je tento integrovaný obvod ještě schopen pracovat. Minimální vstupní napětí potřebné pro stabilní výstup 3.3V je dáno vztahem:
+Aby bylo možné vyhodnotit vhodnost kondenzátoru pro napájení digitálního záznamníku při výpadku napájecího napětí, je třeba nejprve vysvětlit základní skutečnosti související s vývojovou deskou FRDM-MCXN947. V této desce je vstupní napětí \SI{5}{\volt} vedeno přes LDO (Low-Dropout Regulator), které upravuje napětí na \SI{3.3}{\volt} pro napájení hlavního mikrokontroléru. LDO však ke své funkci vyžaduje minimální rozdíl mezi vstupním a výstupním napětím, tzv. Dropout Voltage ($V_{\text{Dropout}}$), při kterém je tento integrovaný obvod ještě schopen stabilně regulovat výstupní napětí. Minimální vstupní napětí ($V_{\text{LDO In}}$) potřebné pro stabilní výstup \SI{3.3}{\volt} ($V_{\text{LDO Out}}$) je dáno vztahem:
 
 \[
 V_{\text{LDO Min}} = V_{\text{LDO Out}} + V_{\text{Dropout}}
 \]
 
-V případě použitého stabilizátoru, který je využit na vývojové desce FRDM-MCXN947, je hodnota Dropout Voltage rovna \SI{0.2}{\volt} a minimálním napětím, kterým tedy tato deska musí být napájena, činí \SI{3.5}{\volt}. Součástí zapojení na schématu je také Schottky dioda, na které vzniká úbytek napětí, u použité součástky činí tento úbytek přibližně \SI{0.4}{\volt}. Z těchto hodnot vyplývá, že je nutné sledovat napětí vybíjejícího se kondenzátoru v intervalu od \SI{4.6}{\volt} do \SI{3.5}{\volt}, které definuje časový interval, ve kterém je provoz vývojové desky stabilní.
+V případě použitého stabilizátoru, který je využit na vývojové desce FRDM-MCXN947, je hodnota Dropout Voltage rovna \SI{0.2}{\volt} a minimálním napětím, kterým tedy tato deska musí být napájena, činí \SI{3.5}{\volt}. Součástí zapojení na schématu je také Schottky dioda, na které vzniká úbytek napětí, u použité součástky činí tento úbytek přibližně \SI{0.4}{\volt}. Z těchto hodnot vyplývá, že je nutné sledovat napětí vybíjejícího se kondenzátoru v intervalu od \SI{4.6}{\volt} do \SI{3.5}{\volt}, které definuje časový interval, ve kterém by měl být provoz vývojové desky stabilní.
 
-Následující obrázek~\ref{fig:test-capacitors}, zachycuje průběh napětí z výše zmíněného testu, zaznamenaného pomocí osciloskopu, ze kterého je patrné chování napájecího napětí v čase. Z naměřených dat vyplývá, že napětí na kondenzátoru zůstává v požadovaném funkčním rozsahu od \SI{4.6}{\volt} do \SI{3.5}{\volt} po dobu přibližně 1.3 sekundy při zátěži $\SI{20}{\ohm}$. Pokud tedy dojde ke včasné detekci ztráty napájejícího napětí, může dojít k bezpečnému ukončení programu a korektnímu uložení všech potřebných dat, která jsou dočasně uložena ve volatilní paměti RAM, což potvrzuje vhodnost zvoleného superkondenzátoru pro danou aplikaci zálohovaného napájení.
+Následující obrázek~\ref{fig:test-capacitors}, zachycuje průběh napětí z výše zmíněného testu, zaznamenaného pomocí osciloskopu, ze kterého je patrné chování napájecího napětí v čase. Z naměřených dat vyplývá, že napětí na kondenzátoru zůstává v požadovaném funkčním rozsahu od \SI{4.6}{\volt} do \SI{3.5}{\volt} po dobu přibližně 1.3 sekundy při odporu $\SI{20}{\ohm}$. Pokud tedy dojde ke včasné detekci ztráty napájejícího napětí, může dojít k bezpečnému ukončení programu a korektnímu uložení všech potřebných dat, která jsou dočasně uložena ve volatilní paměti RAM, což potvrzuje vhodnost zvoleného superkondenzátoru pro danou aplikaci zálohovaného napájení.
 
 \begin{figure}[h]
     \centering
@@ -865,10 +843,11 @@ Následující obrázek~\ref{fig:test-capacitors}, zachycuje průběh napětí z
 \end{figure}
 
 
-
 Na následujícím obrázku~\ref{fig:backup-power} je pak znázorněno výsledné schéma obvodu určeného k realizaci zálohovaného napájení včetně detekce ztráty hlavního napájecího napětí. Obvod zahrnuje zmíněnou Schottkyho diodu, která zabraňuje zpětnému toku proudu z kondenzátoru, a nabíjecí odpor s hodnotou $\SI{10}{\ohm}$, která byla zvolena tak, aby nabíjecí proud nepřekročil maximální proud povolený základním profilem napájení standardu USB-C, a zároveň aby nabíjení kondenzátoru probíhalo v přiměřeném čase.
 
-Součástí navrženého obvodu zálohovaného napájení je rovněž detekce ztráty napájecího napětí, jelikož je monitorována \SI{5}{\volt} větev vývojové desky, která překračuje maximální přípustné napětí pro přímé připojení na vstupy mikrokontroléru pracujícího s logikou \SI{3.3}{\volt}, je tedy zapotřebí využít napěťový dělič, který upravuje napěťový signál, aby mohl být zpracován periferiemi pracujícími s digitálními signály, jako jsou GPIO, nebo analogovými signály, jako je komparátor (CMP) či analogově-digitální převodník (ADC).
+\newpage
+
+Součástí navrženého obvodu zálohovaného napájení je také detekce ztráty napájecího napětí. Monitorování je realizováno přes napěťový dělič, protože sledovaná \SI{5}{\volt} větev vývojové desky překračuje maximální přípustné napětí pro přímé připojení na vstupy mikrokontroléru pracujícího s logikou \SI{3.3}{\volt}. Výstup z napěťového děliče je připojen na pin P0\_22, který umožňuje využití funkcí GPIO, komparátoru (CMP) i analogově--digitálního převodníku (ADC).
 
 \begin{figure}[h]
     \centering
@@ -913,7 +892,7 @@ Modul NEO-7M obsahuje integrovaný přijímač, pasivní keramickou anténu a an
 \subsection{Signalizace stavu systému}
 Důležitou součástí digitálního záznamníku je také informování uživatele o běžném stavu systému, mezi které například patří informace o probíhajícím záznamu nebo dosažení bezpečného stavu pro odpojení zařízení. Signalizace je také nutná z důvodu výskytu případných chyb, které mohou nastat. K informování o těchto stavech slouží sada pěti světelných diod typu LED.
 
-Každá dioda je připojena k bipolárnímu tranzistoru typu NPN (konkrétně BC546 od společnosti ON Semi), který slouží jako spínací prvek. Tranzistor je řízen malým proudem z mikrokontroléru prostřednictvím příslušného GPIO pinu, což umožňuje spínat větší proud tekoucí přes LED diodu. Pokud je tedy na bázi tranzistoru přítomen signál s logickou úrovní „1“, tranzistor se otevře a umožní průtok proudu skrze diodu a sériově zapojený omezovací rezistor, čímž dojde k jejímu rozsvícení. Schéma zapojení jedné z těchto LED diod je znázorněno na obrázku~\ref{fig:control-diodes}. Všechny diody jsou napájeny napětím \SI{3.3}{\volt} a proud tekoucí jednotlivými LED je omezen odpovídajícími rezistory, přičemž jednotlivé diody je pak možné připojit do pinové lišty (Pin Header).
+Každá dioda je připojena k bipolárnímu tranzistoru typu NPN (konkrétně BC546 od společnosti ON Semi), který slouží jako spínací prvek. Tranzistor je řízen malým proudem z mikrokontroléru prostřednictvím příslušného GPIO pinu, což umožňuje spínat proud tekoucí přes LED diodu. Pokud je tedy na bázi tranzistoru přítomen signál s logickou úrovní „1“, tranzistor se otevře a umožní průtok proudu skrze diodu a sériově zapojený omezovací rezistor, čímž dojde k jejímu rozsvícení. Schéma zapojení jedné z těchto LED diod je znázorněno na obrázku~\ref{fig:control-diodes}. Všechny diody jsou napájeny napětím \SI{3.3}{\volt} a proud tekoucí jednotlivými LED je omezen odpovídajícími rezistory, přičemž jednotlivé diody je pak možné připojit do pinové lišty (Pin Header).
 
 \begin{figure}[h]
     \centering
@@ -927,7 +906,7 @@ Každá dioda je připojena k bipolárnímu tranzistoru typu NPN (konkrétně BC
 
 \subsection{Layout expanzní desky}
 \label{bom_list}
-Výše zmíněné obvody byly navrženy na dvouvrstvou desku plošného spoje, jejíž rozměry i rozmístění pinových lišt přesně odpovídají vývodům konektorů vývojové desky FRDM-MCXN947 od společnosti NXP Semiconductors.
+Výše zmíněné obvody byly navrženy na dvouvrstvou desku plošného spoje v návrhovém softwaru KiCAD~8, jejíž rozměry i rozmístění pinových lišt přesně odpovídají vývodům konektorů vývojové desky FRDM-MCXN947 od společnosti NXP Semiconductors.
 
 Ve středu desky se nachází logika zálohovaného napájení s detekcí ztráty napájecího napětí a také jsou zde otvory pro přichycení GPS modulu NEO--7M. Připojení GPS modulu je zamyšleno tak, aby mohl být modul připojen pomocí 90\textdegree zahnuté pinové lišty a uložen rovnoběžně s rovinou expanzní desky a to z důvodu omezení rozměrů celé sestavy v krytu. Modul NEO--7M sice poskytuje pasivní anténu, nicméně zařízení bude využíváno ve vnitřních prostorách, kde může být nedostačující signál, a proto se počítá s připojením aktivní antény, která má větší rozměry a bude vyvedena skrze kryt zařízení. 
 
@@ -957,13 +936,14 @@ Krom samotných obvodů deska plošného spoje obsahuje čtyři montážní otvo
 \subsection{Seznam součástek expanzní desky}
 \label{bom_list}
 
-Důležitým parametrem expanzní desky je i její cena. Celková cena komponent použitých na realizaci expanzní desky činí přibližně 880~Kč. V této kapitole je uveden přehled součástek použitých při návrhu digitálního záznamníku, včetně jejich orientačních cen. 
+Důležitým parametrem expanzní desky je i její cena. Celková cena komponent použitých na realizaci expanzní desky k datu 25.2.2025 činí přibližně 880~Kč. V následující tabulce \ref{tab:bom} je uveden přehled součástek použitých při návrhu digitálního záznamníku, včetně jejich orientačních cen. 
 
-Nutno dodat, že doporučené pin headery od výrobce Samtec nejsou nezbytně nutné a lze je nahradit levnějšími alternativami. Všechny komponenty byly vybírány tak, aby je bylo možné objednat u jednoho distributora elektronických součástek z důvodu zjednoduššení procesu objednávky a zároveň minimalizace nákladů na dopravu.
+Nutno dodat, že doporučené pin headery od výrobce Samtec nejsou nezbytně nutné a lze je nahradit levnějšími alternativami. Všechny komponenty byly vybírány tak, aby je bylo možné objednat u jednoho distributora elektronických součástek z důvodu zjednodušení procesu objednávky a zároveň minimalizace nákladů na dopravu.
 
 \begin{table}[htbp]
     \centering
     \caption{Přehled použitých součástek}
+    \label{tab:bom}
     \begin{tabularx}{\textwidth}{|X|X|c|c|}
         \hline
         \textbf{Součástka} & \textbf{Hodnota / Popis} & \textbf{Počet} & \textbf{Cena za kus} \\
