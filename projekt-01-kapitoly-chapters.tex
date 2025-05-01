@@ -286,23 +286,22 @@ V těchto případech je proto nutné zvážit provozní podmínky a očekávano
 % Strategie ukládání dat 
 % Architektury ukládání dat 
 % ORIGIN: Způsoby zápisu dat
-\section{Synchronizační značky digitálních záznamníků} 
-\label{synchronizace_systemu}
-Přítomnost časových značek ve výsledných záznamech digitálního záznamníku mohou představovat klíčový prvek a to obzvášť při následném zpracování dat. Jejich hlavním účelem je zajistit přesnou časovou orientaci jednotlivých záznamů, což je zásadní pro správnou interpretaci uložených událostí, analýzu jejich posloupnosti i případné porovnávání dat, vůči datům z vícero různých zařízení, bez kterých by nebylo možné správně interpretovat vztahy mezi událostmi nebo porovnávat data získaná v různých podmínkách. V praxi se pak často rozlišují dva základní typy časových značek, a to relativní časové značky a absolutní časové značky.
+\section{Koncepty vkládání synchronizačních značek do záznamu} 
+\label{casove_znacky}
+Součástí funkce digitálního záznamníku může být také vkládání synchronizačních značek do zaznamenaných dat. Synchronizační značky poskytují časový kontext jednotlivým událostem a jejich přítomnost může být důležitá zejména při následném zpracování a analýze uložených dat. Existuje několik přístupů, jak vkládání synchronizačních značek v systému záznamu implementovat.
 
-\subsection{Relativní časové značky} 
-Relativní časové značky vyjadřují časový okamžik vztažený k určitému referenčnímu bodu, typicky ke spuštění zařízení nebo zahájení konkrétního měření. Jsou využívány především v systémech, kde je podstatné sledovat pouze pořadí a vzájemné rozestupy mezi jednotlivými událostmi, nikoli jejich konkrétní datum a čas.
+V prvním případě jde o zařízení zaměřená na sledování konkrétních událostí, jako jsou překročení prahové hodnoty, uplynutí pevně definovaného intervalu nebo výskyt externího podnětu, například přerušení od senzoru. Časová značka se v těchto případech přidává pouze v okamžiku výskytu takové události. \cite{datalogger_implementation_temperature}
 
-Relativní čas lze v praxi generovat například pomocí interního časovače mikrokontroléru, které jsou standardní součástí většiny mikrokontrolérů a umožňují přesné měření uplynulého času na základě hodinového signálu získávaného z interního nebo externího oscilátoru. nebo vnitřního systémového čítače. Alternativně je možné relativní čas generovat pomocí vnitřního systémového čítače, například modulu Systick u procesorů založených na architektuře ARM Cortex--M, který je přímo svázán s hlavním taktem procesoru a běží nezávisle na ostatních periferiích.
+Následující ukázka v jazyce~C demonstruje jednoduchý princip vkládání synchronizačních značek během pravidelného výskytu události, při kterém je potřeba změřit teplotní veličinu. Záznamník každých například pět minut změří aktuální teplotu, získá aktuální čas ze systémového časovače a uloží hodnotu ve formátu, kde je časová značka uvedena v hranatých závorkách před naměřenou hodnotou. \cite{datalogger_implementation_temperature}
 
-Příklad výsledného záznamu dat z monitorovaného zařízení může vypadat jako v následující ukázce~\ref{lst:relative-timestamp}, kde v hranatých závorkách je uvedena relativní časová značka vyjadřující počet tiků od spuštění systému.
-
-\begin{lstlisting}[language={}, caption={Ukázka záznamu s relativními časovými značkami}, label={lst:relative-timestamp}]
-[000000] Start systemu
-[000105] Inicializace senzoru
-[000347] Navazani spojeni s externim zarizenim
-[000892] Data prijata
-[002030] Prechod zarizeni do rezimu spanku
+\begin{lstlisting}[language=C, caption={Vkládání časové značky zaznamenané události}]
+while (1)
+{
+    float teplota = MeasureTemperature();
+    uint32_t timestamp = GetTimestamp();
+    printf("[%d] Teplota: %.2f \n", timestamp, temperature);
+    DelayMinutes(5);
+}
 \end{lstlisting}
 
 V případě, že záznamník slouží k záznamu datového proudu, například sériové komunikace, není okamžik vkládání časové značky předem jasně daný jednotlivými událostmi. Digitální záznamník proto musí implementovat mechanismus pro detekci vhodného okamžiku, kdy do datového toku synchronizační značku vložit.
@@ -1229,22 +1228,26 @@ Během užití digitálního záznamníku může nastat situace, kdy konfigurač
 % ----------------------------------------------------
 
 \section{Funkcionální testování systému}
-Funkcionalita digitálního záznamníku byla prověřena pomocí testovacího skriptu napsaného v jazyce Python s využitím objektově orientovaného přístupu. Testovací skript se nachází v adresáři \texttt{tests/} pod názvem \texttt{serial\_test.py}. 
+Funkcionalita digitálního záznamníku byla prověřena pomocí skriptu využívajícího objektově
+orientovaný přístup napsaném v jazyce Python. Tento skript simuluje monitorované
+zařízení tak, že načítá testovací textové soubory a jejich obsah postupně odesílá ve formě
+sériových dat přes COM port do digitálního záznamníku. Testovací skript se nachází v adresáři
+\texttt{tests/} pod názvem \texttt{serial\_test.py} a pro jeho korektní funkcionalitu je potřeba
+správně nastavit hodnoty definující COM port přes který budou data posílána, sadu testovacích
+souborů a přenosovou rychlost.
 
-Skript \texttt{serial\_test.py} simuluje monitorované zařízení tak, že načítá testovací textové soubory a jejich obsah postupně odesílá ve formě sériových dat přes COM port do digitálního záznamníku. Mezi odesláním jednotlivých souborů je zařazena časová prodleva, která záměrně zapříčiní vyvolání funkce \texttt{CONSOLELOG\_Flush()} a každý testovací vstup je tak zaznamenán do samostatného souboru, který může být porovnán vůči originálnímu testovacímu souboru. 
+Testování s pomocí skriptu bylo provedeno s různými přenosovými rychlostmi, přičemž
+testování bylo primárně zaměřeno na přenosové rychlosti odpovídající skutečným scénářům
+nasazení. Po ukončení testu byly zaznamenané výstupy porovnány s původními testovacími
+soubory. Výsledky porovnání potvrdily, že ve všech testovaných případech proběhl přenos
+korektně a nedošlo k žádné ztrátě ani poškození dat.
 
-Aby mohl skript správně fungovat, je nezbytné nastavit parametry přímo ve zdrojovém kódu. Makro \texttt{TESTS\_FOLDER} určuje relativní cestu k adresáři obsahujícímu testovací soubory a \texttt{TEST\_CASES} obsahuje seznam názvů souborů, které budou odesílány. Důležité je také nastavit makro \texttt{COM\_PORT}, které specifikuje sériový portu, přes který bude probíhat komunikace, a \texttt{BAUD\_RATE}, jež určuje přenosovou rychlost odpovídající konfiguraci digitálního záznamníku.
-
-\begin{lstlisting}[language=Python, caption={Příklad konfigurace testovacího skriptu \texttt{serial\_test.py}}, label={lst:test-script}] 
-TESTS_FOLDER = 'test_files'
-TEST_CASES = ['test_1kb_one_line.txt', 'test_420B.txt']
-COM_PORT = 'COM11'
-BAUD_RATE = 230400
-\end{lstlisting}
-
-Testování s pomocí skriptu bylo provedeno s různými přenosovými rychlostmi, přičemž testování bylo primárně zaměřeno na přenosové rychlosti odpovídající skutečným scénářům nasazení. Po ukončení testu byly zaznamenané výstupy porovnány s původními testovacími soubory. Výsledky porovnání potvrdily, že ve všech testovaných případech proběhl přenos korektně a nedošlo k žádné ztrátě ani poškození dat.
-
-Součástí funkčního testování bylo také ověření chování digitálního záznamníku v hraničních či nestandardních situacích, které mohou nastat při reálném nasazení digitálního záznamníku. Testy byly zaměřeny na případy, jako je absence nebo nekompletní obsah konfiguračního souboru, použití nové SD karty bez vytvořeného souborového systému, nebo ověření funkčnosti s různě velkými záznamovými soubory. Výsledky testování jsou uvedeny v následující tabulce~\ref{tab:test-extremes}.
+Součástí funkčního testování bylo také ověření chování digitálního záznamníku v hraničních
+či nestandardních situacích, které mohou nastat při reálném nasazení digitálního
+záznamníku. Testy byly zaměřeny na případy, jako je absence nebo nekompletní obsah konfiguračního
+souboru, použití nové SD karty bez vytvořeného souborového systému, nebo
+ověření funkčnosti s různě velkými záznamovými soubory. Výsledky testování jsou uvedeny
+v následující tabulce~\ref{tab:test-extremes}.
 
 \begin{longtable}{|p{6cm}|p{5cm}|p{2.5cm}|}
     \caption{Výsledky testování hraničních stavů digitálního záznamníku}
@@ -1275,7 +1278,7 @@ Součástí funkčního testování bylo také ověření chování digitálníh
     \hline
     Záznam s velikostí souboru 1~MB & Správné naplnění a ukončení souboru bez ztráty dat & Ano \\
     \hline
-    Docházející volná kapacita SD karty (tzn. volná kapacita pod 500~MB) & Signalizace pomocí LED & Ano \\
+    Volná kapacita SD karty pod hodnotou definovanou parametrem \texttt{free\_space} & Signalizace pomocí LED & Ano \\
     \hline
     Přenos zaznamenaných dat z digitálního záznamníku & Přeneseny záznamy do hostitelského zařízení z digitálního záznamníku & Ano \\
     \hline
@@ -1302,7 +1305,6 @@ Pozornost byla věnována primárně pravidlům spadajícím do kategorie Requir
 CTIMER_ClearStatusFlags(CTIMER4, kCTIMER_Match0Flag);
 /*lint +e9034 */
 \end{lstlisting}
-% ----------------------------------------------------
 
 % ----------------------------------------------------
 
@@ -1332,19 +1334,21 @@ Digitální záznamník by rovněž mohl být vybaven volitelnou možností odes
 \label{zaver}
 Cílem bakalářské práce bylo navržení a realizace digitálního záznamníku pro účely společnosti NXP Semiconductors, a tohoto cíle bylo dosaženo.
 
-Práce se věnuje historickému pozadí záznamu dat, počátkům záznamu dat v počátcích elektrotechniky a digitálnímu záznamu dat včetně záznamu dat na osobním počítači a na mikrokontrolérech. Rozvedeny jsou také klíčové koncepty včetně vkládání synchronizačních značek, které jsou mnohdy využívány digitálními záznamníky a architektury ukládání dat.
+Práce se věnuje historickému pozadí záznamu dat, počátkům záznamu dat v počátcích elektrotechniky a digitálnímu záznamu dat včetně záznamu dat na osobním počítači a na mikrokontrolérech. Rozvedeny jsou také klíčové koncepty nevyjímaje vkládání synchronizačních značek, které jsou mnohdy využívány digitálními záznamníky a architektury ukládání dat.
 
 Navazující část práce je zaměřena na analýzu existujících řešení dostupných na trhu a identifikaci jejich klíčových vlastností. Na tuto analýzu navazuje podrobná rešerše jednotlivých komponent, které byly brány v úvahu při návrhu architektury digitálního záznamníku a samotný návrh této architektury.
 
-Navržený digitální záznamník neobsahuje klasické ovládací prvky, které byly zmíněny v zadání, jelikož ovládání digitálního záznamníku probíhá na základě připojení/odpojení aplikačního USB s ověřením pomocí USB OTG. Díky tomuto přístupu je zjednodušena obsluha zařízení, jelikož digitální záznamník bude často používán nezkušenou obsluhou, která s tímto zařízením přijde do kontaktu poprvé.
+Architektura digitálního záznamníku neobsahuje klasické ovládací prvky, které byly zmíněny v zadání, jelikož ovládání digitálního záznamníku probíhá na základě připojení/odpojení aplikačního USB s ověřením pomocí USB~OTG. Díky tomuto přístupu je zjednodušena obsluha zařízení, neboť digitální záznamník bude často používán nezkušenou obsluhou, která s tímto zařízením přijde do kontaktu poprvé.
 
-Součástí práce je popsán návrh a realizace hardwarové expanzní desky, která rozšiřuje funkcionalitu vývojové desky, a taktéž je popsán i návrh a implementace firmwaru. Následně je rozebrán způsob jakým probíhalo testování digitálního záznamníku, při kterém byla ověřena správná funkcionalita digitálního záznamníku a dále byla ověřena bezpečnost a spolehlivost kódu firmwaru vůči pravidlům standardu MISRA C. 
+Součástí práce je návrh a realizace hardwarové expanzní desky, která rozšiřuje funkcionalitu vývojové desky, a taktéž je popsán i návrh a implementace firmwaru. Následně je rozebrán způsob, jakým probíhalo testování digitálního záznamníku, při kterém byla ověřena správná funkcionalita digitálního záznamníku a dále byla ověřena bezpečnost a spolehlivost kódu firmwaru vůči pravidlům standardu MISRA~C. 
 
-Výsledkem práce je zařízení, které umožňuje záznam dat z rozhraní UART včetně vkládání časových značek do záznamů, systematické ukládání záznamů a pozdější přístup k těmto datům bez nutnosti vyjmutí paměťového média. Záznamník je zároveň schopen bezpečně reagovat na výpadky napájecího napětí a zabezpečit tak případnou ztrátu či poškození zaznamenaných dat a souborového systému. 
+Výsledkem práce je zařízení, které umožňuje záznam sériových dat z rozhraní UART včetně vkládání časových značek do záznamů, systematické ukládání záznamů a pozdější přístup k těmto datům bez nutnosti vyjmutí paměťového média. Záznamník je zároveň schopen bezpečně reagovat na výpadky napájecího napětí a zabezpečit tak případnou ztrátu či poškození zaznamenaných dat a souborového systému. 
 
 Digitální záznamník také obsahuje přípravu na možná rozšíření v připojení GPS modulu pro synchronizaci času. Firmware digitálního záznamníku je díky své modularitě možné nadále rozšiřovat, a nebo upravit pro záznam jiného typu dat.
 
 Výhodou vyvinutého záznamníku jsou i nižší náklady na realizaci vůči konkurenci, která byla zmíněná v kapitole~\ref{existujici_reseni}. Celková cena zařízení činí přibližně 1473~Kč. Například \textit{AirDrive Serial Logger Pro} stojí přibližně dvojnásobnou cenu a zařízení \textit{Anticyclone Anti-Log Pro} v nejlevnější konfiguraci přesahuje čtyřnásobek.
+
+
 %===============================================================================
 
 % Pro kompilaci po částech (viz projekt.tex) nutno odkomentovat
