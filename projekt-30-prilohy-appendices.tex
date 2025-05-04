@@ -5,34 +5,35 @@
 %\begin{document}
 
 % Umístění obsahu paměťového média do příloh je vhodné konzultovat s vedoucím
-%\chapter{Obsah přiloženého paměťového média}
+\chapter{Obsah přiloženého paměťového média}
 
-%\chapter{Manuál}
 
-%\chapter{Konfigurační soubor}
+\begin{itemize}
+    \item \texttt{application/} -- adresář obsahující firmware digitálního záznamníku, včetně vygenerované HTML a Doxygen dokumentace.
+    \begin{itemize}
+        \item \texttt{src/} -- adresář obsahující zdrojové soubory firmware digitálního záznamníku.
+        \item \texttt{include/} -- adresář obsahující hlavičkové soubory firmware digitálního záznamníku.
+        \item \texttt{doc/} -- adresář obsahující LaTeX a HTML Doxygen dokumentaci firmware digitálního záznamníku.
+    \end{itemize}
+    \item \texttt{hardware/} -- adresář s projektem expanzní desky: schématy zapojení, návrhem PCB, seznamem součástek (BOM) a schématem v PDF.
 
-%\chapter{RelaxNG Schéma konfiguračního souboru}
-
-%\chapter{Plakát}
-\chapter{Obsah připojeného úložiště média}
-
-\begin{itemize}[leftmargin=2cm]
+    \begin{itemize}
+        \item \texttt{design/} -- adresář obsahující KiCAD projekt expanzní desky.
+        \item \texttt{BOM.txt} -- adresář obsahující hlavičkové soubory firmware digitálního záznamníku.
+    \end{itemize}
     
-    \item[\texttt{application}] Adresář obsahující firmware digitálního záznamníku včetně vygenerované HTML a Doxygen dokumentace.
+    \item \texttt{logs/} -- složka pro ukládání záznamů z provozu zařízení, například dat ze senzorů.
+    
+    \item \texttt{power\_consumption/} -- data z analýzy spotřeby energie, změřená pomocí Power Profiler Kit II od společnosti Nordic Semiconductors.
+    
+    \item \texttt{tests/} -- testovací skript, testovací soubory a výstupy ze statické analýzy kódu pomocí nástroje PC-lint Plus.
 
-    \item[\texttt{hardware}] Adresář obsahující projekt expanzní desky, obsahuje schémata zapojení, návrhy desek plošných spojů (PCB), BOM a také kompletní schéma v PDF.
+    \item \texttt{logs/} -- složka obsahující obrázky k README.
 
-    \item[\texttt{logs}] Složka pro ukládání záznamů z provozu zařízení, například zaznamenaná data ze senzorů.
-
-    \item[\texttt{power\_consumption}] Data z analýzy spotřeby energie změřených pomocí Power Profiler Kit II od společnosti Nordic Semiconductors.
-
-    \item[\texttt{tests}] Testovací skript včetně testovacích souborů a výstupní soubory ze statické analýzy kódu, ke které byl využit nástroj PC-lint Plus.
-
-    \item[\texttt{thesis}] Obsahuje samotný text technické zprávě k bakalářské práci, včetně obrázků a digramů.
-
-    \item[\texttt{README.md}] Úvodní soubor s popisem projektu, jak jej nainstalovat a používat.
+    \item \texttt{thesis/} -- adresář obsahující text technické zprávy k bakalářské práci, včetně obrázků a diagramů.
+    
+    \item \texttt{README.md} -- úvodní soubor s popisem projektu, instalace a způsobem použití.
 \end{itemize}
-
 
 % Pro kompilaci po částech (viz projekt.tex) nutno odkomentovat
 %\end{document}
