@@ -1118,10 +1118,10 @@ Samotný záznam dat je založen na konceptech představených v~kapitole~\ref{k
 Data jsou následně v~běhu záznamové úlohy vkládána z~cirkulárního bufferu do jedné ze dvou vyrovnávacích pamětí, u kterých se využívá koncept vícenásobné vyrovnávací paměti (viz. kapitola~\ref{vicenasobna_vyrovnavaci_pamet}), přičemž jedna paměť vždy slouží ke sběru a~předzpracování přicházejících dat (Back Buffer), zatímco druhá slouží k~jejich ukládání na paměťovou kartu prostřednictvím řadiče SDHC (Front Buffer). Role těchto dvou pamětí jsou mezi sebou cyklicky prohazovány na základě jednoduché výměny ukazatelů. Znaky jsou tedy vkládány do Back Buffer a~při vkládání je každý nový znak porovnáván s předchozím tak, aby bylo možné detekovat přítomnost znakové dvojice \texttt{CR+LF} z~prostředí operačního systému Windows \texttt{CR+LF} (Carriage Return Line Feed). Tento bílý znak je detekován z~toho důvodu, že monitorovaná bezdrátová nabíječka používá znakové dvojice \texttt{CR+LF} pro ukončení řádku. Díky jeho rozpoznání je tak možné jednoznačně identifikovat začátek nového řádku. V případě, že je tato znaková sekvence zachycena, je z~interního obvodu reálného času mikrokontroléru MCXN947 získán aktuální čas, který je následně vložen jako časová značka na začátek právě detekovaného řádku. Výsledný formát zaznamenaného textu po doplnění časových značek vypadá následovně:
 
 \begin{verbatim}
-[12:34:56] Starting system diagnostics...
-[12:34:57] Sensor reading: 23.5°C
-[12:34:58] Data transmission OK
-[12:34:59] System idle
+(12:34:56) Starting system diagnostics...
+(12:34:57) Sensor reading: 23.5°C
+(12:34:58) Data transmission OK
+(12:34:59) System idle
 \end{verbatim}
 
 % U ADMA uvest ze to je neblokujici zpusob
@@ -1202,7 +1202,7 @@ Digitální záznamník využívá sadu pěti LED diod, které slouží k~signal
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.00\textwidth]{obrazky-figures/signal-diodes-datalogger.pdf}
+    \includegraphics[width=1.00\textwidth]{obrazky-figures/leds-resized-marked.jpg}
     
     \caption{Zjednuduššený diagram běhu a~přepínání úloh}
     \label{fig:signal-diodes}
@@ -1310,6 +1310,8 @@ Kromě funkcionálního testování byla provedena statická analýza zdrojovéh
 K tomuto účelu byl využit nástroj PC-lint Plus ve~verzi 2.2 od společnosti Vector s 14denní licencí zdarma. Konfigurační soubory \texttt{lint\_config.lts} a~\texttt{sources.lts} spolu s výstupními reporty nástroje jsou uloženy ve~složce \texttt{test/static-analysis/}.
 
 Pozornost byla věnována primárně pravidlům spadajícím do kategorie Required a~Mandatory.\footnote{Standard MISRA C rozlišuje kategorie Advisory, Mandatory a~Required. Pravidla ze skupiny Advisory nebyly brány v~potaz, tyto chyby nijak nenarušují fukcionalitu firmwaru.} Všechna nalezená porušení pravidel patřící do kategorií Required a~Mandatory byla opravena, případně obhájena pomocí komentářů ve~zdrojovém kódu, kde je uveden odkaz na příslušné pravidlo i~odůvodnění výjimky (viz ukázka~\ref{lst:misra}). Obhájená porušení se týkají zejména kvůli architektuře MCUXpresso SDK, FreeRTOSu, či z~důvodu, že PC-lint Plus nedokázal například najít souvislosti mezi zdrojovými a~hlavičkovými soubory.
+
+\newpage
 
 \begin{lstlisting}[language=C, caption={Ukázka odůvodněného porušení pravidla MISRA}, label={lst:misra}]
 /* MISRA Deviation Note:
