@@ -7,33 +7,96 @@
 % Umístění obsahu paměťového média do příloh je vhodné konzultovat s vedoucím
 \chapter{Obsah přiloženého paměťového média}
 
-
 \begin{itemize}
-    \item \texttt{application/} -- adresář obsahující firmware digitálního záznamníku, včetně vygenerované HTML a Doxygen dokumentace.
+    \item \texttt{application/} -- adresář obsahující firmware digitálního záznamníku, včetně vygenerované HTML a Doxygen dokumentace
     \begin{itemize}
-        \item \texttt{src/} -- adresář obsahující zdrojové soubory firmware digitálního záznamníku.
-        \item \texttt{include/} -- adresář obsahující hlavičkové soubory firmware digitálního záznamníku.
-        \item \texttt{doc/} -- adresář obsahující LaTeX a HTML Doxygen dokumentaci firmware digitálního záznamníku.
+        \item \texttt{src/} -- adresář obsahující zdrojové soubory firmware digitálního záznamníku
+        \item \texttt{include/} -- adresář obsahující hlavičkové soubory firmware digitálního záznamníku
+        \item \texttt{doc/} -- adresář obsahující LaTeX a HTML Doxygen dokumentaci firmware digitálního záznamníku
+        \item součástí projektu jsou nutné externí knihovny a moduly, které jsou potřeba k sestavení projektu, tyto celky byly převzdaty z MCUXpresso SDK
     \end{itemize}
-    \item \texttt{hardware/} -- adresář s projektem expanzní desky: schématy zapojení, návrhem PCB, seznamem součástek (BOM) a schématem v PDF.
+    \item \texttt{hardware/} -- adresář s projektem expanzní desky: schématy zapojení, návrhem PCB, seznamem součástek (BOM) a schématem v PDF
 
     \begin{itemize}
         \item \texttt{design/} -- adresář obsahující KiCAD projekt expanzní desky.
-        \item \texttt{BOM.txt} -- adresář obsahující hlavičkové soubory firmware digitálního záznamníku.
+        \item \texttt{BOM.txt} -- adresář obsahující hlavičkové soubory firmware digitálního záznamníku
     \end{itemize}
     
-    \item \texttt{logs/} -- složka pro ukládání záznamů z provozu zařízení, například dat ze senzorů.
+    \item \texttt{power\_consumption/} -- data z analýzy spotřeby energie, změřená pomocí Power Profiler Kit II od společnosti Nordic Semiconductors
     
-    \item \texttt{power\_consumption/} -- data z analýzy spotřeby energie, změřená pomocí Power Profiler Kit II od společnosti Nordic Semiconductors.
-    
-    \item \texttt{tests/} -- testovací skript, testovací soubory a výstupy ze statické analýzy kódu pomocí nástroje PC-lint Plus.
+    \item \texttt{tests/} -- adresář obsahující testovací skripty, testovací soubory a výstupy ze statické analýzy kódu pomocí nástroje PC-lint Plus
 
-    \item \texttt{logs/} -- složka obsahující obrázky k README.
+    \item \texttt{misc/} -- složka obsahující obrázky k README
 
-    \item \texttt{thesis/} -- adresář obsahující text technické zprávy k bakalářské práci, včetně obrázků a diagramů.
+    \item \texttt{thesis/} -- adresář obsahující text technické zprávy k bakalářské práci, včetně obrázků a diagramů
     
-    \item \texttt{README.md} -- úvodní soubor s popisem projektu, instalace a způsobem použití.
+    \item \texttt{manual.pdf} -- manuál k použití digitálního záznamníku
+    \item \texttt{video-ukazka.mp4} -- video ukázka použití digitálního záznamníku
+    \item \texttt{README.md} -- úvodní soubor s popisem projektu, instalací a způsobem použití
 \end{itemize}
+
+\chapter{Manuál}
+\label{manual_datalogger}
+
+Digitální záznamník disponuje dvěma USB rozhraními typu~C. První z nich je na vývojové desce označeno jako \texttt{MCU Link} a slouží výhradně pro napájení zařízení a běh samotné záznamové úlohy. Pokud je záznamník napájen pouze prostřednictvím tohoto konektoru, automaticky se spustí režim záznamu dat. Druhé rozhraní, označené jako \texttt{USB1\_HS}, slouží pro připojení k hostitelskému zařízení, jakmile je toto rozhraní připojeno, zařízení automaticky přejde do režimu \texttt{USB Mass Storage} a zpřístupní obsah paměťové karty bez ohledu na stav portu \texttt{MCU Link}.\footnote{V případě, že uživatel chce po skončení záznamu okamžitě přistoupit k uloženým datům, doporučuje se současně s portem \texttt{MCU Link} připojit i \texttt{USB1\_HS}. Samotné připojení \texttt{USB1\_HS} se doporučuje až po dostatečném nabití zálohovacího kondenzátoru, aby byl zajištěn bezpečný přechod mezi režimy bez ztráty dat.}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.90\textwidth]{obrazky-figures/usbs.jpg}
+    
+    \caption{USB porty digitálního záznamníku}
+    \label{fig:usb-ports}
+\end{figure}
+
+
+\section{Zahájení záznamu dat}
+Před použitím digitálního záznamníku se doporučuje mít na paměťové SD kartě připraven konfigurační soubor \texttt{config}, jak je popsáno v kapitole~\ref{expanzni_deska}, který umožňuje upravit chování zařízení dle specifických požadavků a nahradit výchozí hodnoty definované ve firmwaru.
+
+Po připojení \texttt{MCU Link} USB portu je vhodné vyčkat, dokud se nerozsvítí LED dioda indikující stav, kdy je zálohovací kondenzátor dostatečně nabitý a zařízení je připraveno k bezpečnému odpojení od napájecího zdroje (viz.~\ref{fig:leds-backup-power}). Teprve poté je vhodné zahájit záznam dat, aby nedošlo k jejich případné ztrátě.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.70\textwidth]{obrazky-figures/leds_backup_power.jpg}
+    
+    \caption{Stav indující dostatečně nabitého kondenzátoru pro zálohované napájení}
+    \label{fig:leds-backup-power}
+\end{figure}
+
+Je-li k digitálnímu záznamníku připojeno monitorovací zařízení, začne blikat další LED dioda umístěná vedle diody pro zálohované napájení (viz obrázek~\ref{fig:leds-recording}). 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.65\textwidth]{obrazky-figures/leds_recording-1.jpg}
+    
+    \caption{Stav diod při záznamu dat}
+    \label{fig:leds-recording}
+\end{figure}
+
+\newpage
+
+Po ukončení záznamu dat (a bez odpojení záznamníku) zůstanou LED diody svítit trvale, jak je znázorněno na následujícím obrázku~\ref{fig:leds-after-flush}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.65\textwidth]{obrazky-figures/leds_after_flush.jpg}
+    
+    \caption{Stav diod po ukončení záznamu}
+    \label{fig:leds-after-flush}
+\end{figure}
+
+Pro obnovení záznamu dat po jeho přerušení stačí znovu připojit digitální záznamník k monitorovanému zařízení. Záznamník automaticky přejde zpět do režimu záznamu a pokračuje ve zpracování příchozích dat.
+
+\section{Vyčtení dat}
+Pro vyčtení dat z digitálního záznamníku stačí připojit port \texttt{USB1\_HS}, jak je znázorněno na obrázku~\ref{fig:usb-ports}. Zařízení se automaticky přepne do režimu USB Mass Storage a v operačním systému se zobrazí jako vyměnitelné úložiště (viz.~\ref{fig:datalogger-medium}). V kořenovém adresáři jsou uloženy jednotlivé složky se záznamy (tzv. \texttt{Session Directories}) a popřípadě konfigurační soubor.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.57\textwidth]{obrazky-figures/session-directories.jpg}
+    
+    \caption{Ukázka obsahu paměťového média digitálního záznamníku}
+    \label{fig:datalogger-medium}
+\end{figure}
+
 
 % Pro kompilaci po částech (viz projekt.tex) nutno odkomentovat
 %\end{document}
