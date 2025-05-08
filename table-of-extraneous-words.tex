@@ -1,12 +1,10 @@
-
-
 \newcommand\listabbreviationname{Seznam zkratek}
 
 \chapter*{\listabbreviationname}
 \addcontentsline{toc}{chapter}{\listabbreviationname}
 
 \renewcommand{\arraystretch}{1.3}
-\begin{longtable}{|c|l|}
+\begin{longtable}{|c|p{12cm}|}
 \caption{Seznam použitých zkratek} \label{tab:zkratky} \\
 \hline
 \textbf{Zkratka} & \textbf{Význam} \\ \hline
@@ -22,38 +20,60 @@
 \hline
 \endlastfoot
 
-ADC     & Analog-Digital Converter (analogově-digitální převodník)                  \\ \hline
-API     & Application Programming Interface (rozhraní pro programování aplikací)    \\ \hline
-DRAM    & Dynamic Random-Access Memory (typ paměti)                                 \\ \hline
-EMC     & Electromagnetic Compatibility (elektromagnetická kompatibilita)           \\ \hline
-FAT     & File Allocation Table (alokační tabulka souborů)                          \\ \hline
-FATFS   & FAT File System (hierarchický souborový systém)                           \\ \hline
-FeRAM   & Ferroelectric RAM (typ paměti)                                            \\ \hline
-FIFO    & First-In, First-Out (typ fronty)                                          \\ \hline
-GPIO    & General Purpose Input Output                                              \\ \hline
-GPS     & Global Positioning System (globální polohový systém)                      \\ \hline
-HID     & Human Interface Device                                                    \\ \hline
-HTTP    & HyperText Transfer Protocol (síťový protokol)                             \\ \hline
-ISR     & Interrupt Service Routine (rutina obsluhy přerušení)                      \\ \hline
-I2C     & Inter-Integrated Circuit (sériová sběrnice)                               \\ \hline
-I3C     & Improved Inter-Integrated Circuit (sériová sběrnice)                      \\ \hline
-MCU     & Micro Controller Unit (mikrokontroler / mikrořadič)                       \\ \hline
-MMQT    & MQ Telemetry Transport (síťový protokol)                                  \\ \hline
-MSC     & Mass Storage Class                                                        \\ \hline
+ADC     & Analog-Digital Converter (analogově-digitální převodník) \\ \hline
+ADMA    & Advanced Direct Memory Access (transportní algoritmus) \\ \hline
+API     & Application Programming Interface (rozhraní pro programování aplikací) \\ \hline
+BOT     & Bulk-Only Transport (protokol přenosu dat přes USB) \\ \hline
+CBI     & Control/Bulk/Interrupt (USB přenosový protokol) \\ \hline
+DAC     & Digital-Analog Converter (digitálně-analogový převodník) \\ \hline
+DRAM    & Dynamic Random-Access Memory (typ paměti) \\ \hline
+EMC     & Electromagnetic Compatibility (elektromagnetická kompatibilita) \\ \hline
+ESR     & Equivalent Series Resistance (ekvivalentní sériový odpor) \\ \hline
+exFAT   & Extended File Allocation Table (typ souborového systému FAT) \\ \hline
+FAT     & File Allocation Table (alokační tabulka souborů) \\ \hline
+FATFS   & FAT File System (hierarchický souborový systém) \\ \hline
+FeRAM   & Ferroelectric RAM (typ paměti) \\ \hline
+FIFO    & First-In, First-Out (typ fronty) \\ \hline
+GPIO    & General Purpose Input Output \\ \hline
+GNSS    & Global Navigation Satellite System (globální družicový navigační systém) \\ \hline
+GPT     & GUID Partition Table (tabulka oddílů s globálními identifikátory) \\ \hline
+GPS     & Global Positioning System (globální polohový systém) \\ \hline
+HTTP    & HyperText Transfer Protocol (síťový protokol) \\ \hline
+I/O     & Input/Output (vstup/výstup) \\ \hline
+I2C     & Inter-Integrated Circuit (sériová sběrnice) \\ \hline
+I3C     & Improved Inter-Integrated Circuit (sériová sběrnice) \\ \hline
+IoT     & Internet of Things (internet věcí) \\ \hline
+ISR     & Interrupt Service Routine (rutina obsluhy přerušení) \\ \hline
+LBA     & Logical Block Addressing (logické adresování bloků) \\ \hline
+LDO     & Low-Dropout Regulator (regulátor napětí s nízkým úbytkem) \\ \hline
+LED     & Light-Emitting Diode (světlo emitující dioda) \\ \hline
+LFN     & Long File Name (dlouhé názvy souborů v systému FAT) \\ \hline
+LPCMP   & Low-Power Comparator (nízkopříkonový komparátor) \\ \hline
+MCU     & Micro Controller Unit (mikrokontroler / mikrořadič) \\ \hline
+MMQT    & MQ Telemetry Transport (síťový protokol) \\ \hline
+MTP     & Media Transfer Protocol (protokol pro přenos multimediálních souborů) \\ \hline
+MSC     & Mass Storage Class \\ \hline
+NMEA    & National Marine Electronics Association (standard datového formátu GPS) \\ \hline
 NTP     & Network Time Protocol (síťový protokol pro synchronizaci vnitřních hodin) \\ \hline
-OEM     & Original Equipment Manufacturer                                           \\ \hline
-RAM     & Random-Access Memory (typ paměti)                                         \\ \hline
-RFP     & Request for Proposal                                                      \\ \hline
-RTC     & Real-Time Clock (obvod reálného času)                                     \\ \hline
-RTOS    & Real-Time Operating System (operační systém v reálném čase)               \\ \hline
-SD      & Secure Digital (paměťová karta)                                           \\ \hline
-SDHC    & Secure Digital High Capacity (typ paměťové karty)                         \\ \hline
-SRAM    & Static Random-Access Memory (typ paměti)                                  \\ \hline
-SPI     & Serial Peripheral Interface (sériová sběrnice)                            \\ \hline
-TCP     & Transmission Control Protocol (síťový transportní protokol)               \\ \hline
-UART    & Universal Asynchronous Receiver-Transmitter (sériová sběrnice)            \\ \hline
-UDP     & User Datagram Protocol (síťový transportní protokol)                      \\ \hline
-USB     & Universal Serial Bus (sériová sběrnice)                                   \\ \hline
-WPC     & Wireless Power Consortium                                                 \\ \hline
+OEM     & Original Equipment Manufacturer \\ \hline
+PPS     & Pulse Per Second (pulz za sekundu) \\ \hline
+RAM     & Random-Access Memory (typ paměti) \\ \hline
+RFP     & Request for Proposal \\ \hline
+RTC     & Real-Time Clock (obvod reálného času) \\ \hline
+RTOS    & Real-Time Operating System (operační systém reálného času) \\ \hline
+SCL     & Serial Clock Line (hodinová linka I2C sběrnice) \\ \hline
+SDA     & Serial Data Line (datová linka I2C sběrnice) \\ \hline
+SD      & Secure Digital (paměťová karta) \\ \hline
+SDHC    & Secure Digital High Capacity (typ paměťové karty) \\ \hline
+SPI     & Serial Peripheral Interface (sériová sběrnice) \\ \hline
+SRAM    & Static Random-Access Memory (typ paměti) \\ \hline
+TCP     & Transmission Control Protocol (síťový transportní protokol) \\ \hline
+TXCO    & Temperature Compensated Crystal Oscillator (teplotně kompenzovaný krystalový oscilátor) \\ \hline
+UART    & Universal Asynchronous Receiver-Transmitter (sériová sběrnice) \\ \hline
+UDP     & User Datagram Protocol (síťový transportní protokol) \\ \hline
+USB     & Universal Serial Bus (sériová sběrnice) \\ \hline
+uSDHC   & Ultra Secure Digital Host Controller (řadič paměťových karet SD) \\ \hline
+WPC     & Wireless Power Consortium \\ \hline
+Wi-Fi   & Wireless Fidelity (bezdrátová síť dle IEEE 802.11) \\ \hline
 
 \end{longtable}
