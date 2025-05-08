@@ -517,7 +517,7 @@ FATFS v~současnosti představuje jeden z~nejrozšířenějších souborových s
 % FAT is pretty bad on Flash devices because the low numbered sectors get rewritten frequently. Devices like USB sticks have wear levelling code, but if you    're accessing raw hardware wear is a~potential issue.
 
 \subsection{LittleFS}
-Alternativou k~souborovému systému FATFS může být blokový (block-based) souborový systém LittleFS, který je podobně jako FATFS implementován ve~formě odlehčené softwarové knihovny určené primárně pro vestavěné systémy a~mikrokontroléry.  Tento souborový systém byl vyvinut s ohledem na specifika pamětí typu flash, aby se rovnoměrně rozdělil zápis na jednotlivé bloky a~nebyly první bloky vytíženy více než ty s většími indexy.
+Alternativou k~souborovému systému FATFS může být žurnálovací souborový systém LittleFS, který je podobně jako FATFS implementován ve~formě odlehčené softwarové knihovny určené primárně pro vestavěné systémy a~mikrokontroléry.  Tento souborový systém byl vyvinut s ohledem na specifika pamětí typu flash, aby se rovnoměrně rozdělil zápis na jednotlivé bloky a~nebyly první bloky vytíženy více než ty s většími indexy.~\cite{nxp_the_design_of_the_little_filesystem}
 
 \begin{figure}[h]
     \centering
@@ -531,15 +531,15 @@ Alternativou k~souborovému systému FATFS může být blokový (block-based) so
 % https://github.com/littlefs-project/littlefs/blob/master/DESIGN.md
 % k~tomu je využit mechanismus žurnálování (journaling), který je využíván v~pokročilých souborových systémech jako je ext3, XFS či ext4.
 
-Souborový systém LittleFS využívá pokročilý mechanismus atomického zpracování známého například z~databázových systémů, kdy je každá operace buď kompletně dokončena, nebo v~případě selhání či výpadku napájení zcela zrušena. k~tomu je využit mechanismus žurnálování (journaling). Operace nad souborovým systémem jsou nejprve zaznamenány do speciální struktury žurnálu před jejich fyzickým provedením. Pokud by došlo k~selhání, souborový systém se může spolehlivě vrátit do konzistentního stavu.
+Souborový systém LittleFS využívá pokročilý mechanismus atomického zpracování známého například z~databázových systémů, kdy je každá operace buď kompletně dokončena, nebo v~případě selhání či výpadku napájení zcela zrušena. k~tomu je využit mechanismus žurnálování (journaling). Operace nad souborovým systémem jsou nejprve zaznamenány do speciální struktury žurnálu před jejich fyzickým provedením. Pokud by došlo k~selhání, souborový systém se může spolehlivě vrátit do konzistentního stavu.~\cite{nxp_the_design_of_the_little_filesystem}
 
-K žurnálování souborový systém LittleFS využívá technologii páry metadat (metadata pairs). Při každé operaci jsou atomicky měněna metadata souborového systému a~tedy ke změně jsou využity dvě speciální oblasti, označované jako metadata páry, které jsou opatřeny kontrolními součty (checksum) a~čísly revizí (revision count). Při každém zápisu se střídavě aktualizuje jeden ze dvou bloků metadat, přičemž druhý blok vždy uchovává předchozí konzistentní stav. Pokud by tedy došlo k~selhání zápisu, souborový systém může jednoduše detekovat poškozený stav a~obnovit data z~druhého, neporušeného bloku.~\cite{nxp_the_design_of_the_little_filesystem}
+K žurnálování souborový systém LittleFS využívá technologii páry metadat (metadata pairs). Při každé operaci jsou atomicky měněna metadata souborového systému a~tedy ke změně jsou využity dvě speciální oblasti, označované jako metadata páry, které jsou opatřeny kontrolními součty (checksum) a~čísly revizí (revision count). Při každém zápisu se střídavě aktualizuje jeden ze dvou bloků metadat, přičemž druhý blok vždy uchovává předchozí konzistentní stav. Pokud by tedy došlo k~selhání zápisu, systém při následném spuštění zkontroluje kontrolní součty, revizní čísla obou bloků a rozhodne, který blok obsahuje platná data.~\cite{nxp_the_design_of_the_little_filesystem}
 
 Pro samotná data (non--meta data) souborový systém LittleFS používá techniku Copy-on-Write (COW). Tato technika zajišťuje konzistenci dat tak, že při každém zápisu jsou aktuální (nová) data nejprve zapsána do volných bloků a~teprve po úspěšném dokončení zápisu jsou bloky s neaktuálními/starými daty označeny jako volné. Pokud by tedy došlo během zápisu k~chybě nebo výpadku napájení, systém se vrátí k~původním, neporušeným blokům, a~tím zabrání ztrátě nebo poškození dat.~\cite{nxp_the_design_of_the_little_filesystem}
 
 Hlavními výhodami souborového systému LittleFS jsou tedy šetrnost k~paměťovým médiím, nad kterými souborový systém operuje, velmi nízká paměťová náročnost jak na velikost programového kódu v~paměti flash, tak na množství operační paměti RAM potřebné k~jeho provozu. Dalším významným přínosem jsou již výše zmíněné pokročilé mechanismy známé z~databázových systémů či pokročilých souborových systémů, zejména žurnálování a~atomické operace, které umožňují zachovat souborový systém v~konzistentním stavu i~v případě neočekávaných selhání nebo výpadků napájení.~\cite{nxp_the_design_of_the_little_filesystem}
 
-Žurnálovací souborový systém LittleFS má ale také své nevýhody. Jednou z~nejvýznamnějších je absence kompatibility při použití běžných paměťových médií, jakými jsou například SD či microSD~karty, se standardními operačními systémy osobních počítačů, jakými jsou třeba Windows, Linux a~MacOS. Data uložená pomocí LittleFS tak nejsou přímo čitelná na běžném počítači bez použití dodatečného softwarového nástroje (wrapperu).~\cite{cnx_software_little_fs}
+Žurnálovací souborový systém LittleFS má ale také své nevýhody. Jednou z nejvýznamnějších je absence kompatibility se standardními operačními systémy, jako jsou Windows, Linux nebo macOS. Data uložená pomocí LittleFS nejsou přímo čitelná na běžném počítači bez použití dodatečného softwarového nástroje (tzv. wrapperu).\cite{cnx_software_little_fs}
 
 % \subsection{Chan FATFS}
 
@@ -604,13 +604,13 @@ Schéma na následujícím obrázku~\ref{fig:timer} znázorňuje základní stru
     \centering
     \includegraphics[width=1.00\textwidth]{obrazky-figures/timer-cz.pdf}
     
-    \caption{Blokový diagram časovače}
+    \caption{Blokový diagram časovače~\cite{nxp_KL05_Reference_Manual}}
     \label{fig:timer}
 \end{figure}
 
 Výhodou takového způsobu je výhoda v~granulaci času, je možné přizpůsobit časové rozlišení. Časové rozlišení lze ovlivnit volbou hodinového zdroje, hodnotou děličky kmitočtu a~nastavením mezní hodnoty MOD. Lze tak snadno generovat přerušení s periodou i~v řadě jednotek mikrosekund, sekund až po výrazně delší časové úseky. V základní podobě poskytuje tento mechanismus měření relativního času, často od začátku běhu systému, pokud není použit doplňující prvek, který by umožňoval uchování či zjištění aktuálního času, jako je doplňující obvod reálného času nebo GPS modul. Právě skutečnost, že se jedná o~relativní čas, přináší i~určité výhody, odpadá totiž nutnost řešit komplexní problémy spojené s absolutním časem, jako jsou přechody mezi letním a~zimním časem, nebo postupná odchylka interního časového základu od reálného času, která je například přirozeným důsledkem výrobní tolerance, teplotní charakteristice a~stárnutí krystalového oscilátoru, působením elektromagnetického rušení a~dalšími faktory.~\cite{ti_rtc}
 
-Naopak mezi nevýhody použití interního časovače patří skutečnost, že takto získaný čas je pouze relativní, což v~některých aplikacích nemusí být dostačující. Další nevýhodou je, že zpracování přerušení generovaných časovačem probíhá přímo jádrem mikrokontroleru, a~tím odebírá výpočetní kapacitu, která by jinak mohla být věnována jiným úlohám. Platí přitom, že čím jemnější časové rozlišení je požadováno, tím vyšší je frekvence generovaných přerušení a~tím větší je dopad na výpočetní výkon mikrokontroléru.
+Naopak mezi nevýhody použití interního časovače patří skutečnost, že takto získaný čas je pouze relativní, což v~některých aplikacích nemusí být dostačující. Další nevýhodou je, že zpracování přerušení generovaných časovačem probíhá přímo jádrem mikrokontroléru, a~tím odebírá výpočetní kapacitu, která by jinak mohla být věnována jiným úlohám. Platí přitom, že čím jemnější časové rozlišení je požadováno, tím vyšší je frekvence generovaných přerušení a~tím větší je dopad na výpočetní výkon mikrokontroléru.
 
 \subsection{Obvod reálného času}
 \label{real_time_circuit}
@@ -636,7 +636,7 @@ Další možností, jak získat časové značky, je využití vzdálených zdro
 Koncept stratum slouží k~vyjádření vzdálenosti daného časového zdroje od primárního referenčního času. Hodnotou stratum 0 jsou označeny primární zdroje času, takovými jsou například atomové hodiny. Následovné zdroje s hodnotou stratum 1 jsou přímo synchronizována se zařízeními s hodnotou stratum 0, přičemž další úrovně (stratum 2, 3 a~vyšší) postupně navazují na předchozí zařízení s hodnotou stratum o~jednu jednotku nižší.~\cite{sookocheff_ntp}
 
 \subsubsection{Globální polohovací systém (GPS)}
-Hodnotu stratum 0 mají například satelity globálního polohovacího systému (GPS), které obsahují atomové hodiny. Přesný čas satelitů je v~systému GPS naprosto zásadní, neboť na jeho základě probíhá výpočet polohy přijímače. Bez znalosti velmi přesného času by nebylo možné určit, za jak dlouhou dobu doputoval signál od satelitu k~přijímači, a~tím pádem by vznikaly chyby ve~výpočtu vzdálenosti, respektive polohy.\footnote{Chyba jedné nanosekundy v~tranzitním čase znaméná chybu 30cm ve~zdálenosti.} GPS satelity tedy pravidelně vysílají rádiový signál (RF signál) obsahující identifikátor satelitu, hodinový signál (tj. čas) a~části almanachu obsahující například rovnici oběžné dráhy satelitu. Přijímač potřebuje tato data alespoň ze čtyř satelitů\footnote{GPS přijímač, může pro dopočitání využívá data i~více než ze čtyř satelitů, aby se eliminovaly chyby vzniklé například z~odchylek atovových hodin jednotlivých satelitů, či ze zanedbání faktu, že orbity satelitů nejsou zcela dokonalé kružnice.}, aby mohl dopočítat řešení čtyř rovnic o~čtyřech neznámých, jehož součástí je i~údaj o~přesném čase.~\cite{sparkfun_gps}
+Hodnotu stratum 0 mají například satelity globálního polohovacího systému (GPS), které obsahují atomové hodiny. Přesný čas satelitů je v~systému GPS naprosto zásadní, neboť na jeho základě probíhá výpočet polohy přijímače. Bez znalosti velmi přesného času by nebylo možné určit, za jak dlouhou dobu doputoval signál od satelitu k~přijímači, a~tím pádem by vznikaly chyby ve~výpočtu vzdálenosti, respektive polohy.\footnote{Chyba jedné nanosekundy v~tranzitním čase znaméná chybu 30cm ve~zdálenosti.} GPS satelity tedy pravidelně vysílají rádiový signál obsahující identifikátor satelitu, hodinový signál (tj. čas) a~části almanachu obsahující například rovnici oběžné dráhy satelitu. Přijímač potřebuje tato data alespoň ze čtyř satelitů\footnote{GPS přijímač, může pro dopočitání využívá data i~více než ze čtyř satelitů, aby se eliminovaly chyby vzniklé například z~odchylek atovových hodin jednotlivých satelitů, či ze zanedbání faktu, že orbity satelitů nejsou zcela dokonalé kružnice.}, aby mohl dopočítat řešení čtyř rovnic o~čtyřech neznámých, jehož součástí je i~údaj o~přesném čase.~\cite{sparkfun_gps}
 
 \begin{figure}[h]
     \centering
@@ -648,7 +648,7 @@ Hodnotu stratum 0 mají například satelity globálního polohovacího systému
 
 Z pohledu přijímače má na starosti veškeré výpočty speciální GPS čipset, který integruje řadu funkcí potřebných pro správnou činnost systému. Kromě výpočtů spojených s určením polohy zpracovává i~analogový rádiový signál přijatý anténou, provádí konverzi signálu do digitální podoby, spravuje řízení napájení a~poskytuje rozhraní pro interakci s uživatelem. Rozdíly mezi čipovými sadami obvykle spočívají v~rovnováze mezi spotřebou energie, časy akvizice a~dostupností hardwaru.~\cite{sparkfun_gps}
 
-Jedna z~nevýhod globálního polohovacího systému může nastat u zařízení využívaných v~interiérech. Ve vnitřních prostorech může nastat problém se samotným průchodem signálu, moderní budovy často obsahují betonové stěny, kovové konstrukce, skla s metalizovanými vrstvami nebo střechy pokryté solárními panely, které představují překážky pro rádiový signál, díky kterým mohou být výsledné údaje o~čase a~poloze nepřesné z~důvodu změny trajektorie signálu, nebo může dojít k~výraznému zeslabení či dokonce pohlcení signálu.~\cite{sparkfun_gps}
+Jedna z~nevýhod globálního polohovacího systému může nastat u zařízení využívaných v~interiérech. Ve vnitřních prostorech může nastat problém se samotným průchodem signálu. Moderní budovy často obsahují betonové stěny, kovové konstrukce, skla s metalizovanými vrstvami nebo střechy pokryté solárními panely, které představují překážky pro rádiový signál, díky kterým mohou být vypočítané údaje nepřesné z~důvodu změny trajektorie signálu. Může ale také dojít k~výraznému zeslabení či dokonce pohlcení signálu.~\cite{sparkfun_gps}
 % Diky zmene trajektorie muze dojit k~nepresnym vypoctum
 
 
@@ -657,18 +657,17 @@ Další široce používanou technologií pro získání přesného času je sí
 
 Princip spočívá ve~výměně časových značek mezi klientem a~serverem. Klient odešle dotaz na NTP server ve~chvíli $T_1$ a~server tento dotaz přijme v~čase $T_2$. Po zpracování server odešle odpověď v~čase $T_3$, kterou klient přijme v~čase $T_4$. Na základě těchto čtyř časových údajů lze vypočítat celkové síťové zpoždění $\delta$ a~časový rozdíl (offset) $\theta$ mezi hodinami klienta a~serveru. Zpoždění $\delta$ lze určit jako:
 
-\begin{equation}
+\[
     \delta = (T_4 - T_1) - (T_3 - T_2)
-    \label{eq:ntp_delay}
-\end{equation}
+\]
+
     
 
 Zatímco rozdíl mezi klientským a~serverovým časem čili offset ($\theta$), lze vypočítat dle vztahu:
 
-\begin{equation}
+\[
     \theta = \frac{(T_2 - T_1) + (T_3 - T_4)}{2}
-    \label{eq:ntp_offset}
-\end{equation}
+\]
 
 Získané hodnoty spoždění a~rozdílu pak klientovi umožňují upravit systémový čas tak, aby co nejpřesněji odpovídal referenčnímu času. Protokol NTP navíc provádí více opakovaných měření a~volí ty s nejnižším zpožděním, čímž zvyšuje stabilitu synchronizace i~při kolísajícím síťovém připojení.~\cite{sookocheff_ntp}
 
@@ -687,9 +686,9 @@ NTP poskytuje přesný čas, nicméně také není vhodný pro každé vestavné
 Důležitou součástí digitálního záznamníku je způsob řízení běhu aplikace, příčemž tato volba zásadně ovlivňuje architekturu výsledného řešení. U aplikací vestavných zařízení se zpravidla rozhoduje mezi dvěma směry. Prvním z~nich je implementace na holém železe, obvykle se pro tento způsob využívá anglický název bare--metal a~druhou možností může být stavět program nad operačním systémem reálného času (Real-Time Operating System, zkráceně RTOS). V následujících podkapitolách budou oba přístupy rozebrány, včetně jejich výhod a~nevýhod. 
 
 \subsection{Bare-Metal}
-Bare-metal přístup znamená přímé řízení programu bez operačního systému, typicky s hlavní smyčkou (tzv. \emph{superloop}). Celý systém je dedikován pouze jedné aplikaci, která tak získává přímou kontrolu nad hardwarem. Program tedy přímo přistupuje k~hardwarovým registrům mikrokontrolérů.~\cite{sysgo_rtos_disadvantages}
+Bare-metal přístup znamená přímé řízení programu bez operačního systému, typicky s hlavní smyčkou (tzv. \emph{superloop}). Celý systém je dedikován pouze jedné aplikaci, která tak získává přímou kontrolu nad hardwarem. Program tedy přímo přistupuje k~hardwarovým registrům mikrokontrolérů.~\cite{sysgo_baremetal_vs_rtos}
 
-Program se obvykle skládá ze dvou hlavních fází. První fází je inicializace, během které se nastavují systémové zdroje, konfiguruje se taktování, inicializují se periferie a~případně se nastavují přerušení. Tato inicializace probíhá pouze jednou při startu systému. Po dokončení inicializace přechází aplikace do hlavní smyčky, kde v~nekonečném cyklu vykonává logiku programu, například zpracovává příchozí události a~obsluhuje periferie. Řízení programu standardně probíhá sekvenčně, nicméně od tohoto sekvenčního provádění se odchýlí pouze tehdy, když dojde k~události přerušení.~\cite{sysgo_rtos_disadvantages}
+Program se obvykle skládá ze dvou hlavních fází. První fází je inicializace, během které se nastavují systémové zdroje, konfiguruje se taktování, inicializují se periferie a~případně se nastavují přerušení. Tato inicializace probíhá pouze jednou při startu systému. Po dokončení inicializace přechází aplikace do hlavní smyčky, kde v~nekonečném cyklu vykonává logiku programu, například zpracovává příchozí události a~obsluhuje periferie. Řízení programu standardně probíhá sekvenčně, nicméně od tohoto sekvenčního provádění se odchýlí pouze tehdy, když dojde k~události přerušení.~\cite{sysgo_baremetal_vs_rtos}
 
 \begin{figure}[h]
     \centering
@@ -725,10 +724,10 @@ Plánovač je součástí jádra (kernelu), které představuje centrální komp
 % RTOS je obvykle menší a~lehčí než operační systém pro všeobecné použití, takže je vhodný pro zařízení s omezenou pamětí, výpočetní kapacitou a~spotřebou energie.
 Základními technickými výhodami RTOS jsou především deterministické chování, tedy schopnost reagovat na události ve~striktně definovaném čase, a~přesné řízení časování jednotlivých operací. To umožňuje systémům garantovat, že kritické úlohy budou vykonány ve~stanovených časových limitech, bez ohledu na zátěž systému. Dále již byly nastíněny oblasti, ve~kterých se operační systémy reálného času běžně uplatňují, mohou jimi být kritické systémy, jejichž selhání může mít katastrofální následky. Proto různé standardizované RTOS garantují vyšší bezpečnostní standardy a~spolehlivější bezpečnostní funkce, například definované normami ISO 26262, DO-178C nebo IEC 61508.~\cite{freertos_safertos}
 
-Naopak jedním z~častých argumentů proti jejich použití je větší režie (overhead), která může snížit výkon a~zvýšit paměťové nároky, čímž se zvyšují nároky na hardware. RTOS vnáší do systému složitost, která může ztížit jeho pochopení a~ladění. Vývojáři musí být obeznámeni s rozhraním RTOS API a~rozumět tomu, jak fungují úlohy, zdroje a~komunikace mezi úlohami. Získání těchto znalostí může trvat delší dobu, což prodlužuje dobu vývoje a~zvyšuje náklady. Použití RTOS může také zvýšit náklady na systém. Mnoho komerčních dodavatelů RTOS si účtuje licenční poplatky, které mohou být pro malé projekty nákladné.~\cite{sysgo_rtos_disadvantages}
+Naopak jedním z~častých argumentů proti jejich použití je větší režie (overhead), která může snížit výkon a~zvýšit paměťové nároky, čímž se zvyšují nároky na hardware. RTOS vnáší do systému složitost, která může ztížit jeho pochopení a~ladění. Vývojáři musí být obeznámeni s rozhraním RTOS API a~rozumět tomu, jak fungují úlohy, zdroje a~komunikace mezi úlohami. Získání těchto znalostí může trvat delší dobu, což prodlužuje dobu vývoje a~zvyšuje náklady. Použití RTOS může také zvýšit náklady na systém. Mnoho komerčních dodavatelů RTOS si účtuje licenční poplatky, které mohou být pro malé projekty nákladné.~\cite{sysgo_baremetal_vs_rtos}
 
 \subsubsection{FreeRTOS}
-Jednou z~možností je FreeRTOS, což je open-source operační systém reálného času, který je podobný vývoji s bare-metal přístupem. FreeRTOS podporuje mnoho různých architektur a~kompilátorů a~je navržen tak, aby byl malý, jednoduchý a~snadno použitelný. Jeho jádro tvoří v~základu tři oblasti - správa úloh, komunikace a~propojení s hardwarem. Správa úloh se stará o~vytváření úloh, jak statických, tak dynamických, tak i~jejich plánování a~správu životního cyklu. Dále FreeRTOS poskytuje oblast zaměřenou na komunikaci mezi jednotlivými úlohami, k~tomu slouží fronty (queue). Úlohy a~přerušení používají fronty k~vzájemnému odesílání dat a~k signalizaci použití kritických prostředků pomocí semaforů a~mutexů. Poslední oblast slouží jako mezistupeň mezi hardwarově nezávislým jádrem FreeRTOS a~hardwarově závislým kódem.~\cite{the_architecture_of_open_source_applications}
+Jednou z implementací operačního systému je open-source řešení FreeRTOS, který je podobný vývoji s bare-metal přístupem. FreeRTOS podporuje mnoho různých architektur a~kompilátorů a~je navržen tak, aby byl malý, jednoduchý a~snadno použitelný. Jeho jádro tvoří v~základu tři oblasti - správa úloh, komunikace a~propojení s hardwarem. Správa úloh se stará o~vytváření úloh, jak statických, tak dynamických, tak i~jejich plánování a~správu životního cyklu. Dále FreeRTOS poskytuje oblast zaměřenou na komunikaci mezi jednotlivými úlohami, k~tomu slouží fronty (queue). Úlohy a~přerušení používají fronty k~vzájemnému odesílání dat a~k signalizaci použití kritických prostředků pomocí semaforů a~mutexů. Poslední oblast slouží jako mezistupeň mezi hardwarově nezávislým jádrem FreeRTOS a~hardwarově závislým kódem.~\cite{the_architecture_of_open_source_applications}
 
 Mezi hlavní výhody FreeRTOS patří jeho nízké nároky na systémové prostředky, což jej činí vhodným pro mikrokontroléry s omezenou pamětí a~výpočetním výkonem. FreeRTOS poskytuje základní mechanismy pro plánování úloh, a~to včetně prioritního plánovače s preempcí, který umožňuje přerušení aktuálně běžící úlohy ve~prospěch jiné úlohy s vyšší prioritou. Velkou výhodou FreeRTOS je také jeho historie trvající přes 20~let, k~dispozici je rozsáhlá dokumentace, příklady použití a~současně mnoho výrobců, jako například NXP Semiconductors, poskytuje profesionální podporu.~\cite{freertos_book, the_architecture_of_open_source_applications}
 
@@ -787,6 +786,7 @@ Důležitou součástí návrhu systému je rovněž detekce ztráty napájecíh
 %\subsection{Řešení problému synchronizace času}
 
 % ----------------------------------------------------
+
 \chapter{Realizace hardwaru}
 \label{realizace_hardwaru}
 
@@ -798,15 +798,6 @@ Vybraná základová deska FRDM-MCXN947 neobsahuje všechny potřebné komponent
 \subsection{Zálohované napájení}
 \label{zalohovane_napajeni_hw}
 Důležitou součástí realizovaného digitálního záznamníku je zálohované napájení s detekcí ztráty napájecího napětí. Zálohované napájení lze realizovat několika způsoby, například pomocí knoflíkové baterie nebo pomocí kondenzátoru. Nejschůdnější variantou pro digitální záznamník se ukázal být kondenzátor, respektive superkondenzátor. Na rozdíl od baterií je schopen okamžitě dodat relativně vysoký vybíjecí proud, který byl naměřen při testování spotřeby pomocí zařízení Power Profiler Kit II od společnosti Nordic Semiconductors (viz. obrázek~\ref{fig:power-consumption}), při kterém se ukázalo, že vstupní proud může dosáhnout hodnot až \SI{250}{\milli\ampere}. Nutné je také zmínit, že měření probíhalo na prototypu digitálního záznamníku, jehož firmware v~té době zajišťoval pouze základní funkce pro záznam a~čtení dat. Součástí testovaného řešení ještě nebyla expanzní deska se zálohovaným napájením a~spotřeba může být ve~skutečnosti mírně vyšší.~\cite{nordic_semi_ppk2}
-
-%\begin{figure}[h]
-%    \centering
-%    \includegraphics[width=0.64\textwidth]{obrazky-figures/power-consumption-5.jpg}
-%    
-%    \caption{Výsledek měření spotřeby implementovaného záznamníku pomocí Power Profiler Kit II 
-%   ~\cite{nordic_semi_ppk2}}
-%    \label{fig:power-consumption}
-%\end{figure}
 
 \begin{figure}[h]
     \centering
@@ -840,14 +831,14 @@ V_{\text{LDO Min}} = V_{\text{LDO Out}} + V_{\text{Dropout}}
 
 V případě použitého stabilizátoru, který je využit na vývojové desce FRDM-MCXN947, je hodnota Dropout Voltage rovna \SI{0.2}{\volt} a~minimálním napětím, kterým tedy tato deska musí být napájena, činí \SI{3.5}{\volt}. Součástí zapojení na schématu je také Schottky dioda, na které vzniká úbytek napětí, u použité součástky činí tento úbytek přibližně \SI{0.4}{\volt}. Z těchto hodnot vyplývá, že je nutné sledovat napětí vybíjejícího se kondenzátoru v~intervalu od \SI{4.6}{\volt} do \SI{3.5}{\volt}, které definuje časový interval, ve~kterém by měl být provoz vývojové desky stabilní.
 
-Následující obrázek~\ref{fig:test-capacitors}, zachycuje průběh napětí z~výše zmíněného testu, zaznamenaného pomocí osciloskopu, ze kterého je patrné chování napájecího napětí v~čase. Z naměřených dat vyplývá, že napětí na kondenzátoru zůstává v~požadovaném funkčním rozsahu od \SI{4.6}{\volt} do \SI{3.5}{\volt} po dobu přibližně 1.3 sekundy při odporu $\SI{20}{\ohm}$. Pokud tedy dojde ke včasné detekci ztráty napájejícího napětí, může dojít k~bezpečnému ukončení programu a~korektnímu uložení všech potřebných dat, která jsou dočasně uložena ve~volatilní paměti RAM, což potvrzuje vhodnost zvoleného superkondenzátoru pro danou aplikaci zálohovaného napájení.
+Následující obrázek~\ref{fig:test-capacitors-osciloscope}, zachycuje průběh napětí z~výše zmíněného testu, zaznamenaného pomocí osciloskopu, ze kterého je patrné chování napájecího napětí v~čase. Z naměřených dat vyplývá, že napětí na kondenzátoru zůstává v~požadovaném funkčním rozsahu od \SI{4.6}{\volt} do \SI{3.5}{\volt} po dobu přibližně 1.3 sekundy při odporu $\SI{20}{\ohm}$. Pokud tedy dojde ke včasné detekci ztráty napájejícího napětí, může dojít k~bezpečnému ukončení programu a~korektnímu uložení všech potřebných dat, která jsou dočasně uložena ve~volatilní paměti RAM, což potvrzuje vhodnost zvoleného superkondenzátoru pro danou aplikaci zálohovaného napájení.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=1.00\textwidth]{obrazky-figures/capacitor-test-osciloscope.png}
     
     \caption{Průběh napětí na kondenzátoru při vybíjení zachycený osciloskopem}
-    \label{fig:test-capacitors}
+    \label{fig:test-capacitors-osciloscope}
 \end{figure}
 
 
@@ -927,7 +918,7 @@ Krom samotných obvodů deska plošného spoje obsahuje čtyři montážní otvo
     \includegraphics[width=0.75\textwidth]{obrazky-figures/extension_shield-brd-front.pdf}
     
     \caption{Layout expanzní desky -- přední strana}
-    \label{fig:neo-7m}
+    \label{fig:layout-front}
 \end{figure}
 
 \begin{figure}[h]
@@ -935,7 +926,7 @@ Krom samotných obvodů deska plošného spoje obsahuje čtyři montážní otvo
     \includegraphics[width=0.75\textwidth]{obrazky-figures/extension_shield-brd-back.pdf}
     
     \caption{Layout expanzní desky -- spodní strana}
-    \label{fig:neo-7m}
+    \label{fig:layout-back}
 \end{figure}
 
 \newpage
@@ -986,7 +977,7 @@ Výsledkem je zhotovená expanzní deska, na kterou byly připájeny všechny na
     \includegraphics[width=1.00\textwidth]{obrazky-figures/datalogger.jpg}
     
     \caption{Výsledná expanzní deska}
-    \label{fig:run-wout-freertos}
+    \label{fig:expansion-board}
 \end{figure}
 
 
@@ -1042,7 +1033,7 @@ Je-li připojení potvrzeno, příslušný semafor je uvolněn ve~prospěch \tex
     \includegraphics[width=1.00\textwidth]{obrazky-figures/run_wout_freertos-updated.pdf}
     
     \caption{Zjednuduššený diagram běhu a~přepínání úloh}
-    \label{fig:run-wout-freertos}
+    \label{fig:application-run-freertos}
 \end{figure}
 
 \newpage
@@ -1204,7 +1195,7 @@ Digitální záznamník využívá sadu pěti LED diod, které slouží k~signal
     \centering
     \includegraphics[width=1.00\textwidth]{obrazky-figures/leds-resized-marked.jpg}
     
-    \caption{Zjednuduššený diagram běhu a~přepínání úloh}
+    \caption{Signalizační diody digitálního záznamníku}
     \label{fig:signal-diodes}
 \end{figure}
 
@@ -1309,7 +1300,7 @@ Kromě funkcionálního testování byla provedena statická analýza zdrojovéh
 % k~spuštění PC-lint Plus je potřeba nástoj nastavit pomocí konfiguračních souborů
 K tomuto účelu byl využit nástroj PC-lint Plus ve~verzi 2.2 od společnosti Vector s 14denní licencí zdarma. Konfigurační soubory \texttt{lint\_config.lts} a~\texttt{sources.lts} spolu s výstupními reporty nástroje jsou uloženy ve~složce \texttt{test/static-analysis/}.
 
-Pozornost byla věnována primárně pravidlům spadajícím do kategorie Required a~Mandatory.\footnote{Standard MISRA C rozlišuje kategorie Advisory, Mandatory a~Required. Pravidla ze skupiny Advisory nebyly brány v~potaz, tyto chyby nijak nenarušují fukcionalitu firmwaru.} Všechna nalezená porušení pravidel patřící do kategorií Required a~Mandatory byla opravena, případně obhájena pomocí komentářů ve~zdrojovém kódu, kde je uveden odkaz na příslušné pravidlo i~odůvodnění výjimky (viz ukázka~\ref{lst:misra}). Obhájená porušení se týkají zejména kvůli architektuře MCUXpresso SDK, FreeRTOSu, či z~důvodu, že PC-lint Plus nedokázal například najít souvislosti mezi zdrojovými a~hlavičkovými soubory.
+Pozornost byla věnována primárně pravidlům spadajícím do kategorie Required a~Mandatory.\footnote{Standard MISRA C rozlišuje kategorie Advisory, Mandatory a~Required. Pravidla ze skupiny Advisory nebyly brány v~potaz, porušení pravidel této kategorie nijak nenarušují fukcionalitu firmwaru.} Všechna nalezená porušení pravidel patřící do kategorií Required a~Mandatory byla opravena, případně obhájena pomocí komentářů ve~zdrojovém kódu, kde je uveden odkaz na příslušné pravidlo i~odůvodnění výjimky (viz ukázka~\ref{lst:misra}). Obhájená porušení se týkají zejména kvůli architektuře MCUXpresso SDK, FreeRTOSu, či z~důvodu, že PC-lint Plus nedokázal například najít souvislosti mezi zdrojovými a~hlavičkovými soubory.
 
 \newpage
 
