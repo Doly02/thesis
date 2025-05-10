@@ -194,22 +194,22 @@ Digitální záznamníky implementované v~podobě dedikovaného zařízení na 
 \label{vicenasobna_vyrovnavaci_pamet}
 Jedním z~častých konceptů využívaných v~implementaci digitálních záznamníků je použití vícenásobné vyrovnávací paměti. Tento koncept je převážně známý díky algoritmům využívaným v~oboru počítačové grafiky. Grafický čip musí zpracovat velké množství dat za krátký časový úsek, proto algoritmus zpracování dat využívá dvě vyrovnávací paměti, přední vyrovnávací paměť, takzvaný Front Buffer, jež je využívána pro zobrazení aktuálního snímku, a~zadní vyrovnávací paměť, Back Buffer, ve~které čip připravuje nový obsah. Jakmile je nový snímek kompletní, vyrovnávací paměti se~vzájemně prohodí a~výsledný obsah tak může být plynule vykreslen bez artefaktů a~trhání.~\cite{buffering_chang, multiple_buffering_batch_saving, double_buffering_model}
 
-Obdobný mechanismus se~využívá i~v digitálních záznamnících, kde slouží k~zajištění kontinuálního sběru dat bez výpadků. Zatímco Back Buffer přijímá nová digitální data ze vstupní periferie a~popřípadě je zpracovává, Front Buffer je současně ukládán na úložné médium. Jakmile je Back Buffer naplněn daty a~obsah Front Bufferu je uložen, dojde k~jejich prohození.~\cite{buffering_chang, multiple_buffering_batch_saving, double_buffering_model}
+Obdobný mechanismus se~využívá i~v digitálních záznamnících, kde slouží k~zajištění kontinuálního sběru dat bez výpadků (viz obrázek~\ref{fig:multiple-buffering-1}). Zatímco Back Buffer přijímá nová digitální data ze vstupní periferie a~popřípadě je zpracovává, Front Buffer je současně ukládán na úložné médium. Jakmile je Back Buffer naplněn daty a~obsah Front Bufferu je uložen, dojde k~jejich prohození.~\cite{buffering_chang, multiple_buffering_batch_saving, double_buffering_model}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.00\textwidth]{obrazky-figures/multiple_buffering-1.pdf}
+    \includegraphics[width=1.00\textwidth]{obrazky-figures/multiple_buffering-1-1.pdf}
     
     \caption{Schéma principu práce s vícenásobnou vyrovnávací paměťí -- sběr dat}
     \label{fig:multiple-buffering-1}
 \end{figure}
 
 % Důležitou vlastností tohoto přístupu je jeho nízká operační režijní náročnost. Plynulý chod zpracování dat je zajištěn bez nutnosti fyzického přenosu obsahu mezi vyrovnávacími pamětmi. Místo toho se~využívají ukazatele (pointery), které směřují na počáteční adresy jednotlivých bufferů. Jakmile je Back Buffer naplněn, ukazatele se~prohodí, čímž dojde k~záměně rolí jednotlivých bufferů, vyrovnávací paměť mající roli Back Buffer je přiřazena role Front Buffer a~vyrovnávací paměť s původní rolí Front Buffer je naopak přidělena role Back Buffer.
-Důležitou vlastností tohoto přístupu je jeho nízká operační režijní náročnost. Plynulý chod zpracování dat je zajištěn bez nutnosti fyzického přenosu obsahu mezi vyrovnávacími pamětmi. Místo toho se~využívají ukazatele (pointery), které směřují na počáteční adresy jednotlivých bufferů. Jakmile je Back Buffer naplněn, ukazatele se~prohodí, čímž dojde k~záměně rolí jednotlivých bufferů, buffer mající roli Back Buffer je přiřazena role Front Buffer a~naopak bufferu s původní rolí Front Buffer je přidělena role Back Buffer.~\cite{buffering_chang, multiple_buffering_batch_saving, double_buffering_model}
+Důležitou vlastností tohoto přístupu je jeho nízká operační režijní náročnost. Plynulý chod zpracování dat je zajištěn bez nutnosti fyzického přenosu obsahu mezi vyrovnávacími pamětmi. Místo toho se~využívají ukazatele (pointery), které směřují na počáteční adresy jednotlivých bufferů. Jakmile je Back Buffer naplněn, ukazatele se~prohodí, čímž dojde k~záměně rolí jednotlivých bufferů, buffer mající roli Back Buffer je přiřazena role Front Buffer a~naopak bufferu s původní rolí Front Buffer je přidělena role Back Buffer, jak je zobrazeno na následujícím obrázku~\ref{fig:multiple-buffering-2}.~\cite{buffering_chang, multiple_buffering_batch_saving, double_buffering_model}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.00\textwidth]{obrazky-figures/multiple_buffering-2.pdf}
+    \includegraphics[width=1.00\textwidth]{obrazky-figures/multiple_buffering-2-2.pdf}
     
     \caption{Schéma principu práce s vícenásobnou vyrovnávací paměťí -- prohození ukazatelů}
     \label{fig:multiple-buffering-2}
@@ -246,6 +246,7 @@ U dávkového ukládání se využívá podobná zásada jako u mazání dat ve 
 \label{cirkularni_buffer}
 Cirkulární buffer (circular buffer), někdy také označovaný jako kruhový nebo cylindrický buffer, je datová struktura, která funguje na principu FIFO fronty (First-In, First-Out), kde je paměť organizována jako logický kruh. Tento přístup je často využíván k~řešení problému typu jednoho producenta a~konzumenta (producent-consumer problem), kde jedno vlákno je zodpovědné za produkci dat, a~druhé vlákno je zodpovědné za konzumaci dat. Například ve~vestavěných zařízeních, jedním z~vláken je rutina obsluhy přerušení, která čte data ze senzoru, a~druhým vláknem je hlavní smyčka události, která data určitým způsobem zpracovává.~\cite{embedjournal_ring_buffer}
 
+Princip činnosti cirkulárního bufferu (viz obrázek~\ref{fig:circular-buffer}) spočívá v~použití dvou ukazatelů, jedním z~nich je zápisový ukazatel (head) a~druhým z~nich je čtecí ukazatel (tail). Ukazatel head vždy směřuje na pozici, kam bude zapisován následující prvek, zatímco ukazatel tail ukazuje na pozici, ze které bude čtena následující hodnota. Pokud ukazatel head dosáhne konce pole, vrací se~na jeho začátek, čímž je zajištěna kruhová povaha struktury. Při plném bufferu pak lze zvolit dvě strategie, buď mohou být přepsána nejstarší data, nebo lze nová data odmítnout, přičemž výběr závisí na konkrétní aplikaci.~\cite{embedjournal_ring_buffer, medium_ring_buffer}
 
 \begin{figure}[h]
     \centering
@@ -254,8 +255,6 @@ Cirkulární buffer (circular buffer), někdy také označovaný jako kruhový n
     \caption{Cirkulární vyrovnávací paměť}
     \label{fig:circular-buffer}
 \end{figure}
-
-Princip činnosti cirkulárního bufferu spočívá v~použití dvou ukazatelů, jedním z~nich je zápisový ukazatel (head) a~druhým z~nich je čtecí ukazatel (tail). Ukazatel head vždy směřuje na pozici, kam bude zapisován následující prvek, zatímco ukazatel tail ukazuje na pozici, ze které bude čtena následující hodnota. Pokud ukazatel head dosáhne konce pole, vrací se~na jeho začátek, čímž je zajištěna kruhová povaha struktury. Při plném bufferu pak lze zvolit dvě strategie, buď mohou být přepsána nejstarší data, nebo lze nová data odmítnout, přičemž výběr závisí na konkrétní aplikaci.~\cite{embedjournal_ring_buffer, medium_ring_buffer}
 
 Z hlediska časové složitosti nabízí cirkulární buffer konstantní časovou složitost $\mathcal{O}(1)$ pro základní operace typu zápis (enqueue) a~čtení (dequeue). Tato efektivita vyplývá z~absence potřeby přesouvat prvky v~paměti při zápisu a~čtení dat, místo toho se~pouze inkrementují ukazatele s~využitím operace modulo. Pokud jde o~prostorovou složitost, velikost cirkulárního bufferu je určena předem, zpravidla jde totiž o~staticky alokované pole, což odpovídá složitosti $\mathcal{O}(n)$, kde $n$ je maximální počet prvků, které může buffer pojmout.~\cite{petrungaro_ring_buffer_complexity}
 
@@ -289,9 +288,9 @@ Součástí funkce digitálního záznamníku může být také vkládání sync
 
 Jeden z možných přístupů spočívá ve vkládání časových značek při výskytu jednotlivých událostí, například překročení prahové hodnoty, uplynutí pevně definovaného intervalu nebo výskyt externího podnětu, jako je přerušení od senzoru. Časová značka se~v~těchto případech přidává pouze v~okamžiku výskytu takové události do zaznamenaných dat.~\cite{datalogger_implementation_temperature, researchgate_general_dataloggger_multiple_sdcards, ieee_multi_connectivity_datalogger_sd_card}
 
-Následující ukázka v~jazyce~C demonstruje jednoduchý princip vkládání synchronizačních značek během pravidelného výskytu události, při kterém je potřeba změřit teplotní veličinu. Záznamník každých například pět minut změří aktuální teplotu, získá aktuální čas ze systémového časovače a~uloží hodnotu ve~formátu, kde je časová značka uvedena v~hranatých závorkách před naměřenou hodnotou.~\cite{datalogger_implementation_temperature}
+Následující ukázka ~\ref{lst:event-timestamps} v~jazyce~C demonstruje jednoduchý princip vkládání synchronizačních značek během pravidelného výskytu události, při kterém je potřeba změřit teplotní veličinu. Záznamník každých například pět minut změří aktuální teplotu, získá aktuální čas ze systémového časovače a~uloží hodnotu ve~formátu, kde je časová značka uvedena v~hranatých závorkách před naměřenou hodnotou.~\cite{datalogger_implementation_temperature}
 
-\begin{lstlisting}[language=C, caption={Vkládání časové značky zaznamenané události}]
+\begin{lstlisting}[language=C, caption={Vkládání časové značky zaznamenané události}, label={lst:event-timestamps}]
 while (1)
 {
     float teplota = MeasureTemperature();
@@ -326,7 +325,7 @@ Tento způsob eliminuje potřebu mezivrstvy mezi záznamníkem a~úložištěm, 
 \subsection{Zápis na permanentní uložiště přes mezivrstvu s FeRAM paměti}
 Alternativní volbou k~přímému zápisu na permanentní úložiště je využití mezivrstvy založené na~paměti FeRAM (Ferroelectric Random Access Memory). FeRAM je nevolatilní paměť, jež kombinuje výhody rychlé volatilní RAM paměti a~perzistentního úložiště.
 
-Ve feroelektrické RAM paměti jsou data ukládána pomocí změny polarizace feroelektrického materiálu v~paměťové buňce. Jednotlivé buňky se~skládají podobně jako je tomu u~dynamické RAM (DRAM), z~jednoho tranzistoru a~jednoho feroelektrického kondenzátoru (1T-1C). Na rozdíl však od DRAM, kde je informace uchovávána jako elektrický náboj v~lineárním dielektriku, FeRAM využívá feroelektrický materiál, jakým je třeba titaničitan olovnatý (PZT), který vykazuje hysterezní chování. Jakmile je aktivní elektrické pole, dipóly se~v~krystalové mřížce přeuspořádají do jednoho ze dvou stabilních stavů odpovídajících binárním hodnotám nula či jedna a~tento stav zůstává zachován i~po odeznění elektrického pole. K~samotnému čtení a~zápisu do konkrétní paměťové buňky jsou využívány tři hlavní signálové linky Word Line a~Bit Line určující konkrétní buňku a~Plate Line, která vytváří elektrické pole potřebné k~přepólování feroelektrického materiálu během zápisu.~\cite{ieee_feram_ultra_high_density_embedded_mem}
+Ve feroelektrické RAM paměti jsou data ukládána pomocí změny polarizace feroelektrického materiálu v~paměťové buňce. Jednotlivé buňky se~skládají podobně jako je tomu u~dynamické RAM (DRAM), z~jednoho tranzistoru a~jednoho feroelektrického kondenzátoru (1T-1C). Na rozdíl však od DRAM, kde je informace uchovávána jako elektrický náboj v~lineárním dielektriku, FeRAM využívá feroelektrický materiál, jakým je třeba titaničitan olovnatý (PZT), který vykazuje hysterezní chování. Jakmile je aktivní elektrické pole, dipóly se~v~krystalové mřížce přeuspořádají do jednoho ze dvou stabilních stavů odpovídajících binárním hodnotám nula či jedna a~tento stav zůstává zachován i~po odeznění elektrického pole. K~samotnému čtení a~zápisu do konkrétní paměťové buňky jsou využívány tři hlavní signálové linky Word Line a~Bit Line určující konkrétní buňku a~Plate Line, která vytváří elektrické pole potřebné k~přepólování feroelektrického materiálu během zápisu, jak je znázorněno na obrázku~\ref{fig:feram-1t-1c}.~\cite{ieee_feram_ultra_high_density_embedded_mem}
 
 \begin{figure}[h]
     \centering
@@ -391,7 +390,7 @@ Společnost Keelog poskytuje vícero variant AirDrive záznamníků, které se~l
     \centering
     \includegraphics[width=1.00\textwidth]{obrazky-figures/keeylog_airdrive_serial_logger.pdf}
     
-    \caption{Keeylog AirDrive Serial Logger s přístupem k~datům přes webové rozhraní~\cite{keelog_airdrive_serial_datalogger, keelog_airdrive_serial_datalogger_scheme}}
+    \caption{Keeylog AirDrive Serial Logger s přístupem k~datům přes webové rozhraní~\cite{keelog_airdrive_serial_datalogger_scheme, keelog_airdrive_serial_datalogger}}
     \label{fig:keelog-airdrive-serial-datalogger}
 \end{figure}
 
@@ -401,7 +400,7 @@ Navzdory svým pokročilým funkcím má AirDrive Serial Logger i~několik nevý
 
 \subsection{Anticyclone Systems AntiLog Data Logger Pro}
 \label{anticyclone_systems_antilog_data_logger}
-Druhým zmíněným řešením digitálního záznamníku je AntiLog Data Logger od společnosti Anticyclone Systems, který lze klasifikovat jako vysoce výkonný digitální záznamník určený pro záznam sériových dat v~průmyslových a~vývojových aplikacích.\footnote{Společnost Anticyclone Systems nabízí tři varianty těchto záznamníků, v~tomto textu je primárně popsána verze Pro, jež je svými parametry a~funkcionalitou nejblíže záznamníkům, které jsou předmětem této bakalářské práce.} Podobně jako u~řešení od společnosti Keeylog (viz. kapitola~\ref{keelog_airdrive_serial_datalogger}) umožňuje data přijímat pomocí standardu RS-232 a~také plnohodnotně zaznamenávat obousměrné sériové přenosy s vysokými přenosovými rychlostmi až 921 600~baudů. Zařízení umožňuje dlouhodobé zaznamenávání díky podpoře velkokapacitních nevolatilních úložišť až do velikosti 1 TB. AntiLog Data Logger je dostupný ve~verzích AntiLog, AntiLog Pro a~OEM modul pro přímou integraci do jiných systémů. Nejpokročilejší verze Pro podporuje funkce jako časové razítkování, podpora GNSS/NMEA dat a~možnost vícekanálového záznamu, což jej činí vhodnou volbou pro aplikace, kde je potřeba přesné a~rozsáhlé monitorování sériových přenosů.~\cite{anticyclone_systems_antilog_pro}
+Druhým zmíněným řešením digitálního záznamníku je AntiLog Data Logger od společnosti Anticyclone Systems (viz. obrázek \ref{fig:antilog-pro}), který lze klasifikovat jako vysoce výkonný digitální záznamník určený pro záznam sériových dat v~průmyslových a~vývojových aplikacích.\footnote{Společnost Anticyclone Systems nabízí tři varianty těchto záznamníků, v~tomto textu je primárně popsána verze Pro, jež je svými parametry a~funkcionalitou nejblíže záznamníkům, které jsou předmětem této bakalářské práce.} Podobně jako u~řešení od společnosti Keeylog (viz. kapitola~\ref{keelog_airdrive_serial_datalogger}) umožňuje data přijímat pomocí standardu RS-232 a~také plnohodnotně zaznamenávat obousměrné sériové přenosy s vysokými přenosovými rychlostmi až 921 600~baudů. Zařízení umožňuje dlouhodobé zaznamenávání díky podpoře velkokapacitních nevolatilních úložišť až do velikosti 1 TB. AntiLog Data Logger je dostupný ve~verzích AntiLog, AntiLog Pro a~OEM modul pro přímou integraci do jiných systémů. Nejpokročilejší verze Pro podporuje funkce jako časové razítkování, podpora GNSS/NMEA dat a~možnost vícekanálového záznamu, což jej činí vhodnou volbou pro aplikace, kde je potřeba přesné a~rozsáhlé monitorování sériových přenosů.~\cite{anticyclone_systems_antilog_pro}
 
 \begin{figure}[h]
     \centering
@@ -413,7 +412,7 @@ Druhým zmíněným řešením digitálního záznamníku je AntiLog Data Logger
 
 Výhodou je také nízká spotřeba\footnote{Společnost uvádí spotřebu \SI{58}{\milli\watt} při přenosové rychlosti 9600~baudů a~při přenosové rychlosti 115000~baudů spotřeba stoupne na \SI{90}{\milli\watt}} a~možnosti přípojení baterie, které umožňují použití jak ve~vnitřních prostředích, tak i~v exteriérech, tedy například v~přírodě. Záznamník podporuje pokročilé časové razítkování s rezolucí až jednu milisekundu, usnadňující synchronizaci a~post-processing dat. Záznam lze rozšířit o~měření veličin, jako je teplota, vlhkost či tlak, prostřednictvím podporovaných senzorů komunikujících po sběrnici I\textsuperscript{2}C, a~to paralelně se~záznamem až dvou datových kanálů využívajících standard RS-232. Možné je také propojení až 255 jednotek do jednoho vícekanálového záznamníku, které pak umožňuje komplexní monitorování více zařízení současně.~\cite{anticyclone_systems_antilog_pro}
 
-Přesto má AntiLog Data Logger i~své nevýhody. Hlavním omezením je vysoká pořizovací cena, ta se~aktuálně pohybuje u~zařízení Anticyclone Anti-Log Pro od 229 £ do 366 £. Kromě ceny může být překážkou nutnost použití speciální aplikace AntiTermPro RS-232 terminálový software pro konfiguraci a~přehrávání zaznamenaných dat, což znesnadňuje práci se~zařízením nezkušené obsluze, která příjde do kontaktu s digitálním záznamníkem poprvé.~\cite{anticyclone_systems_antilog_pro}
+Hlavním nevýhodou Anti-Log záznamníku je jeho vysoká pořizovací cena, ta se~aktuálně pohybuje u~zařízení Anticyclone Anti-Log Pro od 229 £ do 366 £. Kromě ceny může být překážkou nutnost použití speciální aplikace AntiTermPro RS-232 terminálový software pro konfiguraci a~přehrávání zaznamenaných dat, což znesnadňuje práci se~zařízením nezkušené obsluze, která přijde do kontaktu s digitálním záznamníkem poprvé.~\cite{anticyclone_systems_antilog_pro}
 
 \subsection{Shrnutí představených řešení}
 
@@ -503,6 +502,8 @@ Prvním z~představených souborových systémů je FAT File System (FATFS), kte
 
 Fyzické úložiště v~systému FAT je rozděleno do několika oblastí, konkrétně do zaváděcího záznamu (boot record) ležícího v~rezervované oblasti (reserved area), který obsahuje informace nutné pro inicializaci a~načtení souborového systému, alokační tabulky FAT1 a~FAT2, které spravují umístění jednotlivých shluků. Za nimi se~nachází oblast kořenového adresáře (root directory), ve~které jsou umístěny záznamy o~souborech a~adresářích nejvyšší úrovně. Poslední část tvoří datová oblast (data area), kde jsou samotné soubory a~podadresáře fyzicky uloženy.~\cite{recoverit_fat_filesystem}
 
+\newpage
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=1.00\textwidth]{obrazky-figures/fatfs_structure-cz.pdf}
@@ -524,9 +525,9 @@ Alternativou k~souborovému systému FATFS může být žurnálovací souborový
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.95\textwidth]{obrazky-figures/journaling-cz.pdf}
+    \includegraphics[width=1.00\textwidth]{obrazky-figures/journaling-experimental-2_cropped.pdf}
     
-    \caption{Průběh zápisu do souboru spravovaným žurnálovacím souborovým systémem~\cite{architecture_and_design_of_the_linux_storage_stack}}
+    \caption{Žurnálování při zápisu do souboru~\cite{architecture_and_design_of_the_linux_storage_stack}}
     \label{fig:journaling}
 \end{figure}
 
@@ -566,7 +567,7 @@ Součástí USB Mass Storage bývá také USB Floppy Interface (UFI), což je sa
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.65\textwidth]{obrazky-figures/mass_storage_protocol-cz.pdf}
+    \includegraphics[width=0.78\textwidth]{obrazky-figures/mass_storage_protocol-3.pdf}
     
     \caption{Stavový diagram USB Mass Storage protokolu~\cite{silicon_labs_mass_storage_protocol}}
     \label{fig:mass-storage-protocol}
@@ -580,16 +581,15 @@ Komunikace mezi hostitelem a~zařízením v~rámci protokolu Bulk-Only Transport
 \subsection{Media Transfer Protocol}
 Media Transfer Protokol neboli zkráceně MTP je druhým významným protokolem umožňujícím přenos multimediálních dat mezi hostitelem a~cílovým zařízením pomocí USB. MTP protokol byl navržen firmou Microsoft na základě protokolu Picture Transfer Protocol (PTP), se~kterým je dodnes zpětně kompatibilní. MTP je od roku 2008 součástí USB standardu a~od roku 2011 se~stal standardem pro transfer souborů u~zařízení využívajících operační systém Android.~\cite{usb_standard_mtp}
 
+Komunikace probíhá ve~formě transakcí, přičemž role komunikujících zařízení jsou iniciátor (initiator) a~odpovídající (responder), zároveň je možné, aby si zařízení role mohly vyměnit. Transakce probíhají vždy ve~třech fázích definovaných standardem, tou první je fáze požadavku na operaci (Operation Request Phase), kdy iniciátor vyšle požadavek na provedení určité operace. Následuje volitelná druhá fáze přenosu dat (Data Phase), ve~které proběhne přenos dat, pokud to daná operace vyžaduje. Poslední je fáze odpovědi, ve~které odpovídající odešle iniciátoru odpověď, ve~které informuje o~výsledku operace. Probíhající komunikace je vždy jednosměrná (unidirectional), tedy v~rámci jedné operace mohou data být pouze přenášena od iniciátora k~odpovídajícímu či naopak, nikoliv však oběma směry současně.~\cite{usb_standard_mtp}
+
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.50\textwidth]{obrazky-figures/mtp_phases-cz.pdf}
+    \includegraphics[width=0.55\textwidth]{obrazky-figures/mtp_phases.pdf}
     
     \caption{Stavový diagram Media Transfer Protocol~\cite{usb_standard_mtp}}
     \label{fig:mtp-protocol}
 \end{figure}
-
-Komunikace probíhá ve~formě transakcí, přičemž role komunikujících zařízení jsou iniciátor (initiator) a~odpovídající (responder), zároveň je možné, aby si zařízení role mohly vyměnit. Transakce probíhají vždy ve~třech fázích definovaných standardem, tou první je fáze požadavku na operaci (Operation Request Phase), kdy iniciátor vyšle požadavek na provedení určité operace. Následuje volitelná druhá fáze přenosu dat (Data Phase), ve~které proběhne přenos dat, pokud to daná operace vyžaduje. Poslední je fáze odpovědi, ve~které odpovídající odešle iniciátoru odpověď, ve~které informuje o~výsledku operace. Probíhající komunikace je vždy jednosměrná (unidirectional), tedy v~rámci jedné operace mohou data být pouze přenášena od iniciátora k~odpovídajícímu či naopak, nikoliv však oběma směry současně.~\cite{usb_standard_mtp}
-
 
 Na rozdíl od USB Mass Storage, kde je médium připojeno přímo jako blokové zařízení a~hostitel má přímý přístup k~souborovému systému, u~MTP k~tomuto přímému přístupu nedochází. Iniciátor tedy není zodpovědný za přímé operace se~souborovým systémem, ale pouze zasílá žádosti o~přenos nebo manipulaci se~soubory. To znamená, že data zde nejsou interpretována připojeným zařízením (iniciátorem), ale interpretaci má na starosti odpovídající zařízení, a~připojenému iniciátoru předává jen celé soubory. To přináší výhodu, obě zařízení mohou přistupovat k~datům současně. Naopak to ale vytváří nové problémy. Přes počítač nelze opravit poškozené soubory uložené na zařízení, v~případě úpravy souboru je třeba nejprve soubor stáhnout do počítače, zde upravit a~následně přenést zpět do zařízení.~\cite{usb_standard_mtp}
 
@@ -602,6 +602,8 @@ Požadavkem na implementovaný digitální záznamník je také vkládání čas
 Jedním z nejjednodušších způsobů, jak~generovat časové značky, je~využití interního časovače, který je~běžně dostupný na~většině mikrokontrolérů. Interní časovač pracuje na~základě přetečení čítače, který je~taktován z~hodinového signálu, jenž je~generován interním oscilátorem nebo~zvoleným hodinovým zdrojem mikrokontroléru.~\cite{nxp_KL05_Reference_Manual}
 
 Schéma na následujícím obrázku~\ref{fig:timer} znázorňuje základní strukturu interního časovače. Na vstupu se~nachází multiplexor (Mux), pomocí kterého je třeba zvolit vhodný zdroj hodinového signálu, na základě kterého bude časovač reagovat, tedy inkrementovat. Tuto reakci můžeme dále ještě upravit pomocí děličky kmitočtu (prescaler). Pomocí prescaleru lze snížit rychlost příchodu pulzů do čítače, a~tím ovlivnit rychlost, s jakou časovač bude inkrementovat svou hodnotu. Na výstupu z~prescaleru je napojen čítač (Module Counter), který s každým přijatým impulzem zvýší svou hodnotu o~jedničku. Tento čítač je navíc svázán s modulo registrem (MOD), který definuje mezní hodnotu čítače. Jakmile čítač dosáhne hodnoty uložené v~registru MOD, dojde k~jeho přetečení (overflow), čítač se~automaticky vynuluje\footnote{V nejjednodušším případě je čítač vynulován, některé časovače, umožňují nastavit i~jiné reakce, jakou je třeba dekrementace zpět na počáteční hodnotu.} a~je vygenerován příznak přetečení (TOF -- Timer Overflow Flag). Pokud je zároveň nastaven příznak TOIE (Timer Overflow Interrupt Enable), tak je do procesoru odeslán požadavek na vyvolání přerušení. V~rámci obslužné rutiny tohoto přerušení je následně možné aktualizovat čítač časových značek a~udržovat tak aktuální hodnotu pro následné doplnění do záznamů.~\cite{nxp_KL05_Reference_Manual}
+
+\newpage
 
 \begin{figure}[h]
     \centering
@@ -735,9 +737,9 @@ Jednou z implementací operačního systému reálného času je open-source ře
 
 Mezi hlavní výhody FreeRTOS patří jeho nízké nároky na systémové prostředky, což jej činí vhodným pro mikrokontroléry s omezenou pamětí a~výpočetním výkonem. FreeRTOS poskytuje základní mechanismy pro plánování úloh, a~to včetně prioritního plánovače s preempcí, který umožňuje přerušení aktuálně běžící úlohy ve~prospěch jiné úlohy s vyšší prioritou. Velkou výhodou FreeRTOS je také jeho historie trvající přes 20~let, k~dispozici je rozsáhlá dokumentace, příklady použití a~současně mnoho výrobců, jako například NXP Semiconductors, poskytuje profesionální podporu.~\cite{freertos_book, the_architecture_of_open_source_applications}
 
-\newpage
 
 Z hlediska bezpečnosti FreeRTOS dodržuje přísný standard psaní kódu v~souladu s normou MISRA-C. Vybrané knihovny FreeRTOS byly navíc formálně ověřeny z~hlediska paměťové bezpečnosti. Důraz na bezpečnost potvrzují i~certifikace, které hodnotí zabezpečení IoT platforem z~hlediska architektury, implementace a~odolnosti vůči útokům.~\cite{freertos_security}
+
 
 Přestože je FreeRTOS široce používán a~oblíbený díky své jednoduchosti a~nízké režii, nelze opomenout jeho omezení ve~srovnání s robustnějšími RTOS, jakým je například Zephyr. Nevýhodou může být omezená podpora knihoven a~celkově nižší flexibilita. Není jednoduché jen tak přidat podporu na nový mikrokontrolér, jelikož portace je do značné míry jedinečná a~velmi závislá na použitém procesoru a~nástrojích.~\cite{freertos_portability, freertos_vs_zephyr}
 
@@ -775,7 +777,6 @@ Přepnutí ze záznamové úlohy do USB Mass Storage úlohy nastane, jakmile bud
     \label{fig:system-architecture}
 \end{figure}
 
-\newpage
 
 Důležitou součástí návrhu systému je rovněž detekce ztráty napájecího napětí, která umožní včasnou reakci na neočekávané odpojení napájení. K~tomuto účelu bude využita periferie LPCMP (Low-Power Comparator), která je součástí mikrokontroléru MCXN947. Jakmile napájecí napětí poklesne pod stanovenou prahovou hodnotu, komparátor tento stav vyhodnotí a~vygeneruje přerušení, které informuje aplikační vrstvu o~hrozícím výpadku. Od tohoto okamžiku bude úkolem aplikace zajistit uložení všech rozpracovaných dat, která dosud nebyla zapsána do permanentního paměťového média, a~také korektní uzavření otevřených souborů, aby bylo možné firmware bezpečně ukončit a~předejít ztrátě nebo poškození dat.
 
