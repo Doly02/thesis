@@ -10,9 +10,9 @@
 \begin{itemize}
     \item \texttt{application/} -- adresář obsahující firmware digitálního záznamníku, včetně vygenerované HTML a Doxygen dokumentace
     \begin{itemize}
-        \item \texttt{src/} -- adresář obsahující zdrojové soubory firmware digitálního záznamníku
-        \item \texttt{include/} -- adresář obsahující hlavičkové soubory firmware digitálního záznamníku
-        \item \texttt{doc/} -- adresář obsahující LaTeX a HTML Doxygen dokumentaci firmware digitálního záznamníku
+        \item \texttt{src/} -- adresář obsahující zdrojové soubory firmwaru digitálního záznamníku
+        \item \texttt{include/} -- adresář obsahující hlavičkové soubory firmwaru digitálního záznamníku
+        \item \texttt{doc/} -- adresář obsahující LaTeX a HTML Doxygen dokumentaci firmwaru digitálního záznamníku
         \item součástí projektu jsou nutné externí knihovny a moduly, které jsou potřeba k sestavení projektu, tyto celky byly převzdaty z MCUXpresso SDK
     \end{itemize}
     \item \texttt{hardware/} -- adresář s projektem expanzní desky: schématy zapojení, návrhem PCB, seznamem součástek (BOM) a schématem v PDF
@@ -20,7 +20,16 @@
     \begin{itemize}
         \item \texttt{design/} -- adresář obsahující KiCAD projekt expanzní desky.
         \item \texttt{BOM.txt} -- adresář obsahující hlavičkové soubory firmware digitálního záznamníku
+        \item \texttt{schematik.pdf} -- schématik realizované expanzní desky
     \end{itemize}
+    
+    \item \texttt{thesis/} -- adresář obsahující text technické zprávy k bakalářské práci, včetně obrázků a diagramů
+
+    \begin{itemize}
+        \item \texttt{xdolak09-bthesis.pdf} -- finální text technické zprávy k bakalářské práci
+        \item \texttt{xdolak09-bthesis-src.zip} -- archiv se zdrojovými soubory zprávy, včetně všech použitých obrázků
+    \end{itemize}
+    
     
     \item \texttt{power\_consumption/} -- data z analýzy spotřeby energie, změřená pomocí Power Profiler Kit II od společnosti Nordic Semiconductors
 
@@ -30,15 +39,14 @@
 
     \item \texttt{misc/} -- složka obsahující obrázky k README
 
-    \item \texttt{thesis/} -- adresář obsahující text technické zprávy k bakalářské práci, včetně obrázků a diagramů
-    
+
     \item \texttt{manual.pdf} -- manuál k použití digitálního záznamníku
     \item \texttt{video-ukazka.mp4} -- video ukázka použití digitálního záznamníku ve formátu MP4
     \item \texttt{video-ukazka.mov} -- video ukázka použití digitálního záznamníku ve formátu MOV
     \item \texttt{README.md} -- úvodní soubor s popisem projektu, instalací a způsobem použití
 \end{itemize}
 
-Celý obsah přiloženého paměťového média je rovněž dostupný prostřednictvím cloudového úložiště NextCloud, které poskytuje Fakulta informačních technologií VUT v Brně, na adrese: \url{https://nextcloud.fit.vutbr.cz/s/xgZG6ZdZeccKQMC}.
+Celý obsah přiloženého paměťového média je rovněž dostupný prostřednictvím cloudového úložiště Nextcloud na adrese: \url{https://nextcloud.fit.vutbr.cz/s/xgZG6ZdZeccKQMC}.
 
 \chapter{Projekt digitálního záznamníku}
 Digitální záznamník je možné dále rozšířit nebo upravit dle konkrétních požadavků. Celý projekt, včetně implementace firmwaru, návrhu expanzní desky i veškeré dokumentace, je veřejně dostupný na platformě GitHub.
@@ -46,12 +54,12 @@ Digitální záznamník je možné dále rozšířit nebo upravit dle konkrétn�
 \begin{itemize}
     \item Odkaz na GitHub repozitář je \url{https://github.com/Doly02/nxp-mcxn947-datalogger}
 \end{itemize}
-
+    
 \chapter{Použité nástroje}
 
 \begin{itemize}
     \item \textbf{MCUXpresso IDE} ve verzi 11.10.0, jež bylo využito jako hlavní vývojové prostředí pro implementaci firmwaru digitálního záznamníku.
-    \item \textbf{NXP SDK FRDM-MCXN947} ve verzi 2.16.000 s~\textbf{GCC-based ARM Embedded Toolchain} včetně kterých jsou ovladače pro desku \textbf{FRDM-MCXN947}, knihovna \textbf{FATFS}, \textbf{FreeRTOS} a~moduly \textbf{Mass Storage}, \textbf{MMC} a~\textbf{USB}.
+    \item \textbf{NXP SDK FRDM-MCXN947} ve verzi 2.16.000 včetně kterého jsou ovladače pro desku \textbf{FRDM-MCXN947}, knihovna \textbf{FATFS}, operační systém reálného času \textbf{FreeRTOS} a~moduly \textbf{Mass Storage}, \textbf{MMC} a~\textbf{USB}.
     \item \textbf{MCU-Link}, který byl použitý pro nahrávání a ladění firmwaru.
     \item \textbf{nRF Connect for Desktop} od \textbf{Nordic Semiconductor} pro měření spotřeby digitálního záznamníku pomocí \textbf{Power Profiler Kit II}.
     \item \textbf{Logic} ve verzi 2.4.22 pro pozorování signálů digitálního záznamníku pomocí logického analyzátoru \textbf{Saleae Logic Pro~16}.
