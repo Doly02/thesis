@@ -23,6 +23,8 @@
     \end{itemize}
     
     \item \texttt{power\_consumption/} -- data z analýzy spotřeby energie, změřená pomocí Power Profiler Kit II od společnosti Nordic Semiconductors
+
+    \item \texttt{powerloss\_detection/} -- data z analýzy chování digitálního záznamníku při ztrátě napájecího napětí zaznamenaná pomocí Saleae Logic 16 Pro
     
     \item \texttt{tests/} -- adresář obsahující testovací skripty, testovací soubory a výstupy ze statické analýzy kódu pomocí nástroje PC-lint Plus
 
@@ -31,72 +33,36 @@
     \item \texttt{thesis/} -- adresář obsahující text technické zprávy k bakalářské práci, včetně obrázků a diagramů
     
     \item \texttt{manual.pdf} -- manuál k použití digitálního záznamníku
-    \item \texttt{video-ukazka.mp4} -- video ukázka použití digitálního záznamníku
+    \item \texttt{video-ukazka.mp4} -- video ukázka použití digitálního záznamníku ve formátu MP4
+    \item \texttt{video-ukazka.mov} -- video ukázka použití digitálního záznamníku ve formátu MOV
     \item \texttt{README.md} -- úvodní soubor s popisem projektu, instalací a způsobem použití
 \end{itemize}
 
-\chapter{Manuál}
-\label{manual_datalogger}
+Celý obsah přiloženého paměťového média je rovněž dostupný prostřednictvím cloudového úložiště NextCloud, které poskytuje Fakulta informačních technologií VUT v Brně, na adrese: \url{https://nextcloud.fit.vutbr.cz/s/xgZG6ZdZeccKQMC}.
 
-Digitální záznamník disponuje dvěma USB rozhraními typu~C. První z nich je na vývojové desce označeno jako \texttt{MCU Link} a slouží výhradně pro napájení zařízení a běh samotné záznamové úlohy. Pokud je záznamník napájen pouze prostřednictvím tohoto konektoru, automaticky se spustí režim záznamu dat. Druhé rozhraní, označené jako \texttt{USB1\_HS}, slouží pro připojení k hostitelskému zařízení, jakmile je toto rozhraní připojeno, zařízení automaticky přejde do režimu \texttt{USB Mass Storage} a zpřístupní obsah paměťové karty bez ohledu na stav portu \texttt{MCU Link}.\footnote{V případě, že uživatel chce po skončení záznamu okamžitě přistoupit k uloženým datům, doporučuje se současně s portem \texttt{MCU Link} připojit i \texttt{USB1\_HS}. Samotné připojení \texttt{USB1\_HS} se doporučuje až po dostatečném nabití zálohovacího kondenzátoru, aby byl zajištěn bezpečný přechod mezi režimy bez ztráty dat.}
+\chapter{Projekt digitálního záznamníku}
+Digitální záznamník je možné dále rozšířit nebo upravit dle konkrétních požadavků. Celý projekt, včetně implementace firmwaru, návrhu expanzní desky i veškeré dokumentace, je veřejně dostupný na platformě GitHub.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.90\textwidth]{obrazky-figures/usbs.jpg}
-    
-    \caption{USB porty digitálního záznamníku}
-    \label{fig:usb-ports}
-\end{figure}
+\begin{itemize}
+    \item Odkaz na GitHub repozitář je \url{https://github.com/Doly02/nxp-mcxn947-datalogger}
+\end{itemize}
 
+\chapter{Použité nástroje}
 
-\section{Zahájení záznamu dat}
-Před použitím digitálního záznamníku se doporučuje mít na paměťové SD kartě připraven konfigurační soubor \texttt{config}, jak je popsáno v kapitole~\ref{expanzni_deska}, který umožňuje upravit chování zařízení dle specifických požadavků a nahradit výchozí hodnoty definované ve firmwaru.
-
-Po připojení \texttt{MCU Link} USB portu je vhodné vyčkat, dokud se nerozsvítí LED dioda indikující stav, kdy je zálohovací kondenzátor dostatečně nabitý a zařízení je připraveno k bezpečnému odpojení od napájecího zdroje (viz.~\ref{fig:leds-backup-power}). Teprve poté je vhodné zahájit záznam dat, aby nedošlo k jejich případné ztrátě.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.70\textwidth]{obrazky-figures/leds_backup_power.jpg}
-    
-    \caption{Stav indující dostatečně nabitého kondenzátoru pro zálohované napájení}
-    \label{fig:leds-backup-power}
-\end{figure}
-
-Je-li k digitálnímu záznamníku připojeno monitorovací zařízení, začne blikat další LED dioda umístěná vedle diody pro zálohované napájení (viz obrázek~\ref{fig:leds-recording}). 
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.65\textwidth]{obrazky-figures/leds_recording-1.jpg}
-    
-    \caption{Stav diod při záznamu dat}
-    \label{fig:leds-recording}
-\end{figure}
-
-\newpage
-
-Po ukončení záznamu dat (a bez odpojení záznamníku) zůstanou LED diody svítit trvale, jak je znázorněno na následujícím obrázku~\ref{fig:leds-after-flush}.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.65\textwidth]{obrazky-figures/leds_after_flush.jpg}
-    
-    \caption{Stav diod po ukončení záznamu}
-    \label{fig:leds-after-flush}
-\end{figure}
-
-Pro obnovení záznamu dat po jeho přerušení stačí znovu připojit digitální záznamník k monitorovanému zařízení. Záznamník automaticky přejde zpět do režimu záznamu a pokračuje ve zpracování příchozích dat.
-
-\section{Vyčtení dat}
-Pro vyčtení dat z digitálního záznamníku stačí připojit port \texttt{USB1\_HS}, jak je znázorněno na obrázku~\ref{fig:usb-ports}. Zařízení se automaticky přepne do režimu USB Mass Storage a v operačním systému se zobrazí jako vyměnitelné úložiště (viz.~\ref{fig:datalogger-medium}). V kořenovém adresáři jsou uloženy jednotlivé složky se záznamy (tzv. \texttt{Session Directories}) a popřípadě konfigurační soubor.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.57\textwidth]{obrazky-figures/session-directories.jpg}
-    
-    \caption{Ukázka obsahu paměťového média digitálního záznamníku}
-    \label{fig:datalogger-medium}
-\end{figure}
-
+\begin{itemize}
+    \item \textbf{MCUXpresso IDE} ve verzi 11.10.0, jež bylo využito jako hlavní vývojové prostředí pro implementaci firmwaru digitálního záznamníku.
+    \item \textbf{NXP SDK FRDM-MCXN947} ve verzi 2.16.000 s~\textbf{GCC-based ARM Embedded Toolchain} včetně kterých jsou ovladače pro desku \textbf{FRDM-MCXN947}, knihovna \textbf{FATFS}, \textbf{FreeRTOS} a~moduly \textbf{Mass Storage}, \textbf{MMC} a~\textbf{USB}.
+    \item \textbf{MCU-Link}, který byl použitý pro nahrávání a ladění firmwaru.
+    \item \textbf{nRF Connect for Desktop} od \textbf{Nordic Semiconductor} pro měření spotřeby digitálního záznamníku pomocí \textbf{Power Profiler Kit II}.
+    \item \textbf{Logic} ve verzi 2.4.22 pro pozorování signálů digitálního záznamníku pomocí logického analyzátoru \textbf{Saleae Logic Pro~16}.
+    \item \textbf{GitHub} pro verzování firmwaru digitálního záznamníku a~technické zprávy.
+    \item \textbf{KiCAD 8} pro návrh expanzní desky digitálního záznamníku.
+    \item \textbf{PC-lint Plus} ve verzi 2.2 pro statickou analýzu zdrojového kódu. 
+    \item \textbf{Doxygen} pro generování HTML a~LaTeX dokumentace zdrojového kódu.
+    \item \textbf{Overleaf} pro úpravu zdrojových kódů technické zprávy.
+    \item \textbf{Draw.io} pro tvorbu diagramů, které jsou součástí technické zprávy.
+    \item \textbf{ChatGPT}, který byl využit pro návrhy vylepšení struktury a~formulace vět v~technické zprávě.
+\end{itemize}
 
 % Pro kompilaci po částech (viz projekt.tex) nutno odkomentovat
 %\end{document}
