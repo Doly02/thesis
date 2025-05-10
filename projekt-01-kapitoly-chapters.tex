@@ -78,7 +78,7 @@ Další limitací těchto přístrojů je ruční vyhodnocování dat, což je m
 % TODO: Kde napsat co je to vubec zaznamnik? Ze je to pristroj, ktery zpracovava, uklada a~pripadne analyzuje data...
 \section{Digitální zpracování dat}
 \label{digitalni_zaznam_dat}
-S nástupem číslicových systémů v~polovině 20. století došlo k~velkému pokroku ve~způsobu, jakým byla data zaznamenávána, zpracovávána a~uchovávána. Digitální zpracování dat v~porovnání s analogovým zpracováním se~liší způsobem, jakým se~v~systému obecně pracuje se~signály. Zatímco analogový záznam pracuje se~spojitými (kontinuálními) signály, digitální záznam využívá diskrétní (číslicové) hodnoty, které jsou uchovávány v~binární podobě.
+S nástupem číslicových systémů v~polovině 20. století došlo k~velkému pokroku ve~způsobu, jakým byla data zaznamenávána, zpracovávána a~uchovávána. Digitální zpracování dat v~porovnání s~analogovým zpracováním se~liší způsobem, jakým se~v~systému obecně pracuje se~signály. Zatímco analogový záznam pracuje se~spojitými (kontinuálními) signály, digitální záznam využívá diskrétní (číslicové) hodnoty, které jsou uchovávány v~binární podobě.
 
 \subsection{Princip digitálního záznamu dat}
 Z předchozího textu je tedy zřejmé, že digitální zpracování dat (tedy i~záznam dat) vyžaduje číslicové hodnoty a~z toho plyne, že již na vstupu musí být příchozí signály v~digitální podobě. Data tedy musí být generována číslicovými zdroji nebo musí být převedena do digitálního tvaru pomocí komponenty k~tomu určené, kterou je například analogově-digitální převodník, aby následně mohly být zpracovány výpočetním strojem a~případně uloženy na paměťové médium.
@@ -113,7 +113,7 @@ Druhým hlavním prvkem digitálního záznamníku je procesorové jádro (pří
 
 \newpage
 
-Poslední a~také jednou z~nejdůležitějších všeobecnou částí digitálního záznamníku je úložiště, kde jsou data ukládána pro pozdější přenos a~zpracování (post-processing). Volba tohoto úložného prostoru závisí na požadavcích aplikace a~rozsahu jejího využití, od osobních "hobby" projektů až po zařízení využívaná ve~velkopodnikových prostředích, nasazována ve~vysokých počtech. V~závislosti na tom lze využít různé strategie, které jsou v~koherenci s různými technologiemi od paměťových karet SD a~eMMC přes interní RAM či flash paměti až po síťová úložiště, včetně cloudových služeb. V~mnoha případech je také využíván hybridní přístup. Nashromžděná data mohou být nejprve ukládána do interní volatilní paměti záznamníku, jakou je třeba RAM úložiště a~následně dávkově přenášena na trvalé médium (viz. kapitola~\ref{fig:batch-processing}) v~podobě lokálního či vzdáleného úložiště. Lze také přidat různé mezivrstvy pamětí, například feroelektrickou paměť s náhodným přístupem (FeRA), která je podrobněji rozebrána v~kapitole~\ref{fig:feram-1t-1c}, nebo jiné varianty nevolatilních pamětí s náhodným přístupem, případně další typy pamětí.~\cite{datalogger_sd_mmc_usb_flash_disk, researchgate_general_dataloggger_multiple_sdcards, rta_local_vs_cloud}
+Poslední a~také jednou z~nejdůležitějších všeobecnou částí digitálního záznamníku je úložiště, kde jsou data ukládána pro pozdější přenos a~zpracování (post-processing). Volba tohoto úložného prostoru závisí na požadavcích aplikace a~rozsahu jejího využití, od osobních "hobby" projektů až po zařízení využívaná ve~velkopodnikových prostředích, nasazována ve~vysokých počtech. V~závislosti na tom lze využít různé strategie, které jsou v~koherenci s různými technologiemi od paměťových karet SD a~eMMC přes interní RAM či flash paměti až po síťová úložiště, včetně cloudových služeb. V~mnoha případech je také využíván hybridní přístup. Nashromžděná data mohou být nejprve ukládána do interní volatilní paměti záznamníku, jakou je třeba RAM úložiště a~následně dávkově přenášena na trvalé médium (viz. kapitola~\ref{fig:batch-processing}) v~podobě lokálního či vzdáleného úložiště. Lze také přidat různé mezivrstvy pamětí, například feroelektrickou paměť s náhodným přístupem (FeRAM), která je podrobněji rozebrána v~kapitole~\ref{fig:feram-1t-1c}, nebo jiné varianty nevolatilních pamětí s náhodným přístupem, případně další typy pamětí.~\cite{datalogger_sd_mmc_usb_flash_disk, researchgate_general_dataloggger_multiple_sdcards, rta_local_vs_cloud}
 
 \begin{figure}[h]
     \centering
@@ -127,7 +127,7 @@ Poslední a~také jednou z~nejdůležitějších všeobecnou částí digitáln�
 % lokalni uloziste lze vyuzit i~v kombinaci se~vzdalznym ulozistem, kdy vznika hybridni architektura... 
 % Zmiňované lokální uložiště lze navíc využít v~kombinaci ze vzdáleným uložištem, kdy vzníká hybridní architektura, lze například data nejprve ukládat do interní paměti záznamníku (například RAM úložiště) a~následně dávkově přenášena na trvalé médium (viz. kapitola \ref{fig:batch-processing}) nebo odesílána přes síť.~\cite{rta_local_vs_cloud}
 
-Digitální záznamník poskytuje výstupy, obvykle jimi jsou organizovaná data, která mohou být dále analyzována, vizualizována nebo zpracovávána v~rámci stejného systému, popřípadě i~jinými systémy. Jakou podobu mají výstupní data, tedy jaký je jejich formát, opět závisí na konkrétních požadavcích aplikace. Jedním z~požadavků je volba dle typu úložiště. Jedná-li se~o~lokální úložný prostor, například paměťovou kartu, využívají se~velmi často typy formátů, jako třeba formát prostého textu (plain text) nebo binární formy. Databázová řešení typicky využívají formáty vycházející z~relační nebo objektové reprezentace dat. Cloudová řešení naopak nabízejí daleko širší výběr, lze využít jak zmíněný prostý text i~další textové formáty, také je možné využít objektové, relační formáty a~další. Dále záleží, jakým způsobem bude proveden přenos dat ze záznamníku dat. Pokud bude využita síťová komunikace, třeba pomocí MQTT či HTTP, je vhodné data uspořádat do serializované podoby, zatímco při zvolení přenosu přes USB může být vhodnější data organizovat do souborů s textovým formátem. Důležitou roli hrají i~požadavky na následný post-processing a~interpretaci dat v~jiných systémech či aplikacích k~tomu určeným. Například pro náhled na digitální data s časovou závislostí může být vhodné využít formáty, které jsou kompatibilní s například databázovými systémy časových řad. Podobu výstupních dat digitálního záznamníku tedy ovlivňuje celá řada faktorů.~\cite{researchgate_general_dataloggger_multiple_sdcards, medium_optimalization_iot_data_storage_timescaledb}
+Digitální záznamník poskytuje výstupy, obvykle jimi jsou organizovaná data, která mohou být dále analyzována, vizualizována nebo zpracovávána v~rámci stejného systému, popřípadě i~jinými systémy. Jakou podobu mají výstupní data, tedy jaký je jejich formát, opět závisí na konkrétních požadavcích aplikace. Jedním z~požadavků je volba dle typu úložiště. Jedná-li se~o~lokální úložný prostor, například paměťovou kartu, využívají se~velmi často typy formátů, jako třeba formát prostého textu (plain text) nebo binární formy. Databázová řešení typicky využívají formáty vycházející z~relační nebo objektové reprezentace dat. Cloudová řešení naopak nabízejí daleko širší výběr, lze využít jak zmíněný prostý text, i~další textové formáty, také je možné využít objektové, relační formáty a~další. Dále záleží, jakým způsobem bude proveden přenos dat ze záznamníku dat. Pokud bude využita síťová komunikace, třeba pomocí MQTT či HTTP, je vhodné data uspořádat do serializované podoby, zatímco při zvolení přenosu přes USB může být vhodnější data organizovat do souborů s textovým formátem. Důležitou roli hrají i~požadavky na následný post-processing a~interpretaci dat v~jiných systémech či aplikacích k~tomu určeným. Podobu výstupních dat digitálního záznamníku tedy ovlivňuje celá řada faktorů.~\cite{usb_standard_mtp, iot_datalogger_with_timestamping, springer_industry_monitoring, researchgate_general_dataloggger_multiple_sdcards, medium_optimalization_iot_data_storage_timescaledb}
 
 \newpage
 
@@ -141,7 +141,7 @@ Vstupní data mohou například pocházet z~periferií, jako jsou například s�
 % Wireshark: RAM -> Export
 % Terminal or Serial Dataloggers (COM, RS232,...) -> Export to File, Excel or Database
 % 
-Podle požadavků aplikace a~jejího zaměření se~liší i~způsob, jakým jsou data uchovávána. Některé záznamníky ukládají data přímo na trvalé úložiště, jiné záznamníky si naopak tato data dočasně ukládají do operační paměti RAM, kde tato zaznamenaná data slouží k~sledování aktuálního nebo krátkodobého stavu. Pro sledování dlouhodobého stavu je pak možné tyto zaznamenaná data v~paměti RAM uložit či exportovat na lokální, popřípadě vzdálená dlouhodobá úložiště, a~to ve~formátech relevantních dané aplikaci.~\cite{labview, serial_datalogger_timestamping, linux_in_action_log_and_monitoring}
+Podle požadavků aplikace a~jejího zaměření se~liší i~způsob, jakým jsou data uchovávána. Některé záznamníky ukládají data přímo na trvalé úložiště, jiné záznamníky si naopak tato data dočasně ukládají do operační paměti RAM, kde tato zaznamenaná data slouží k~sledování aktuálního nebo krátkodobého stavu. Pro sledování dlouhodobého stavu je pak možné tato zaznamenaná data v~paměti RAM uložit či exportovat na lokální, popřípadě vzdálená dlouhodobá úložiště, a~to ve~formátech relevantních dané aplikaci.~\cite{labview, serial_datalogger_timestamping, linux_in_action_log_and_monitoring}
 
 Za záznamník v~počítačovém systému lze považovat například daemon Syslogd v~systému Linux (viz. obrázek~\ref{fig:syslogd}), který po desetiletí zajišťoval správu systémových záznamů. Typicky procesy a~aplikace odesílají logovací zprávy do pseudo-zařízení /dev/log, kde je přijímá právě syslogd. Ten tyto zprávy dále zpracovává a~na základě přiložených metadat, například časových značek, informací o~původu a~prioritě zprávy a~dalších částí metadat je ukládá do příslušných textových souborů v~adresáři /var/log/.~\cite{linux_in_action_log_and_monitoring}
 
@@ -236,7 +236,7 @@ U dávkového ukládání se využívá podobná zásada jako u mazání dat ve 
     \centering
     \includegraphics[width=1.00\textwidth]{obrazky-figures/nand-architecture-1.pdf}
     
-    \caption{Příklad organizace nevolatilní paměti typu NAND~\cite{ieee_relationships_among_region_segment_frame_and_cluster}}
+    \caption{Příklad organizace nevolatilní paměti typu NAND~\cite{nand_flash_structure}}
     \label{fig:batch-processing}
 \end{figure}
 
@@ -259,7 +259,7 @@ Princip činnosti cirkulárního bufferu spočívá v~použití dvou ukazatelů,
 
 Z hlediska časové složitosti nabízí cirkulární buffer konstantní časovou složitost $\mathcal{O}(1)$ pro základní operace typu zápis (enqueue) a~čtení (dequeue). Tato efektivita vyplývá z~absence potřeby přesouvat prvky v~paměti při zápisu a~čtení dat, místo toho se~pouze inkrementují ukazatele s~využitím operace modulo. Pokud jde o~prostorovou složitost, velikost cirkulárního bufferu je určena předem, zpravidla jde totiž o~staticky alokované pole, což odpovídá složitosti $\mathcal{O}(n)$, kde $n$ je maximální počet prvků, které může buffer pojmout.~\cite{petrungaro_ring_buffer_complexity}
 
-\subsection{Nízko-energetické režimy}
+\subsection{Nízkoenergetické režimy}
 \label{nizko_energeticke_rezimy}
 Energetická efektivita je jedním z~klíčových parametrů obecně vestavěných zařízení, tedy i~digitálních záznamníků implementovaných na platformě MCU, zejména pokud jsou napájeny z~baterií či jiných omezených zdrojů energie (například energy harvesting). Minimalizace spotřeby bývá v~těchto případech realizována využitím nízkoenergetických režimů (low-power modes), které umožňují zařízení přejít do stavu s minimální energetickou náročností během nečinných period. V~praxi mnoho digitálních záznamníků nemusí provádět záznam dat nepřetržitě. Například záznamník teploty může provést měření, uložit naměřenou hodnotu, přejít do režimu nízké spotřeby a~po uplynutí definovaného časového intervalu nebo při výskytu speciální události přejít zpět do aktivního režimu.~\cite{analog_devices_low_power_modes}
 
@@ -358,7 +358,7 @@ V praxi dedikovaný záznamník, který data buď přímo zpracovává, nebo je 
     \centering
     \includegraphics[width=1.00\textwidth]{obrazky-figures/advanced_architecture_of_datalogging.pdf}
     
-    \caption{Schéma pokročilého digitálního záznamníkíku s cloudovým uložištěm postavený na streamingové platformě Kafka~\cite{influxdata_advanced_datalogging_mmqt, confluent_advanced_datalogging}}
+    \caption{Architektura pokročilého systému digitálních záznamníků s cloudovým úložištěm a~platformou Kafka~\cite{influxdata_advanced_datalogging_mmqt, confluent_advanced_datalogging}}
     \label{fig:advanced-architecture-of-datalogging}
 \end{figure}
 
@@ -376,7 +376,7 @@ Přístup se~zápisem na vzdálené uložiště hodí pro digitální záznamní
 
 \section{Existující řešení digitálních záznamníků}
 \label{existujici_reseni}
-Digitální záznamníky dat jsou běžně využívány v~praxi a~existuje řada produkčních řešení zaměřených na záznam různých typů dat. Tato kapitola je věnována popisu některých dostupných řešení, konkrétně záznamníkům zaměřeným na záznam datových toků zmíněných v~kapitole~\ref{digitalni_zaznam_dat}, mezi které se~bude řadit i~výsledné zařízení, které jsem navrhl, implementoval a~popsal v~této bakalářské práci. 
+Digitální záznamníky dat jsou běžně využívány v~praxi a~existuje řada produkčních řešení zaměřených na záznam různých typů dat. Tato kapitola je věnována popisu některých dostupných řešení, konkrétně záznamníkům zaměřeným na záznam sériových dat, mezi které se~bude řadit i~výsledné zařízení, které jsem navrhl, implementoval a~popsal v~této bakalářské práci. 
 
 \subsection{Keeylog AirDrive Serial Logger}
 \label{keelog_airdrive_serial_datalogger}
@@ -395,7 +395,7 @@ Společnost Keelog poskytuje vícero variant AirDrive záznamníků, které se~l
     \label{fig:keelog-airdrive-serial-datalogger}
 \end{figure}
 
-Navzdory svým pokročilým funkcím má AirDrive Serial Logger i~několik nevýhod. Jednou z~nich je omezení na standardy RS-232 a~RS-485, které sice stále nacházejí uplatnění v~průmyslových a~v řadě dalších systémů, avšak v~některých ostatních zařízeních je pro připojení k~jiným rozhraním nutné využít sériové převodníky. Druhou limitací je omezení maximální přenosové rychlosti zaznamenávaných dat, která může činit nejvýše 115200~baudů. To je například nevyhovující pro monitorování systémů bezdrátového nabíjení společnosti NXP Semiconductors, kde se~komunikace probíhá s vyšší komunikační rychlostí.~\cite{keelog_airdrive_serial_datalogger}
+Navzdory svým pokročilým funkcím má AirDrive Serial Logger i~několik nevýhod. Jednou z~nich je omezení na standardy RS-232 a~RS-485, které sice stále nacházejí uplatnění v~průmyslových a~v řadě dalších systémů, avšak v~některých ostatních zařízeních je pro připojení k~jiným rozhraním nutné využít sériové převodníky. Druhou limitací je omezení maximální přenosové rychlosti zaznamenávaných dat, která může činit nejvýše 230400~baudů. To je například nevyhovující pro monitorování systémů bezdrátového nabíjení společnosti NXP Semiconductors, kde se~komunikace probíhá s vyšší komunikační rychlostí.~\cite{keelog_airdrive_serial_datalogger}
 
 \newpage
 
@@ -427,7 +427,7 @@ Obě řešení sice nabízejí možnost odesílání dat na vzdálené úložiš
 
 Základní požadavky splňuje pouze záznamník od společnosti Anticyclone, ten je však drahý a~pro vyčtení dat je nutné mít v~počítači nainstalovanou speciální aplikaci, požadavkem na digitální záznamník je také jednoduchá obsluha bez instalace dodatečných aplikací, aby se~usnadnila práce operátorům testovacích laboratoří, kteří se~záznamníkem přijdou do kontaktu poprvé. 
 
-Naopak záznamník od společnosti Keelog je sice cenově dostupnější, ale jeho maximální přenosová rychlost je omezena pouze na 115200~baudů.
+Naopak záznamník od společnosti Keelog je sice cenově dostupnější, ale jeho maximální přenosová rychlost je omezena pouze na 230400~baudů.
 
 Rozhodl jsem se~tedy navrhnout a~implementovat vlastní řešení digitálního záznamníku, které bude možné využít pro záznam digitálních dat z~bezdrátových nabíječek a~nebude mít výše zmíněné nedostatky.
 
@@ -466,7 +466,7 @@ Raspberry Pi existuje v~několika verzích, následující text je zaměřen na 
     \centering
     \includegraphics[width=0.85\textwidth]{obrazky-figures/pico2w-pinout.pdf}
     
-    \caption{Raspberry Pi Zero 2W vývody (pinout)~\cite{raspberry_pi_pico_2w}}
+    \caption{Vývody Raspberry Pi Zero 2W~\cite{raspberry_pi_pico_2w}}
     \label{fig:raspberry-pi-zero-2w}
 \end{figure}
 
@@ -557,9 +557,9 @@ Jedním z~požadavků na realizaci digitálního záznamníku v~této bakalářs
 
 \subsection{USB Mass Storage}
 \label{usb_mass_storage}
-Možností pro zajištění přístupu k~uloženým datům představuje použití standardu USB Mass Storage (MSC), vypracovaného v~roce 1998 organizací USB-IF (USB Implementers Forum). Tento standard umožňuje, aby zařízení vystupovalo vůči hostitelskému systému jako standardní blokové zařízení (block device), host má tedy přímý přístup k~celému uložišti. Protokol je dnes stále podporován majoritní většinou moderních operačních systémů včetně Microsoft Windows, operačními systémy založenými na Linuxu, ale také i~Mac OS, díky čemuž lze data vyčíst z~SD~karty či zapsat data na SD~kartu téměř z~kterékoliho osobního počítače.~\cite{usb_standard_ufi, silicon_labs_mass_storage_protocol}
+Možností pro zajištění přístupu k~uloženým datům představuje použití standardu USB Mass Storage (MSC), vypracovaného v~roce 1998 organizací USB-IF (USB Implementers Forum). Tento standard umožňuje, aby zařízení vystupovalo vůči hostitelskému systému jako běžné blokové úložiště (block device), tedy například jako paměťová karta nebo externí disk. Velkou výhodou je, že MSC je dodnes podporován většinou moderních operačních systémů, včetně Microsoft Windows, distribucí Linuxu i~macOS. Díky tomu lze data snadno vyčítat a~zapisovat téměř z~jakéhokoliv osobního počítače bez nutnosti speciálních ovladačů.~\cite{usb_standard_ufi, silicon_labs_mass_storage_protocol}
 
-Tento protokol rozlišuje dva komunikační prvky, prvním z~nich je Mass Storage host, tedy zařízení, které aktivně řídí přístup k~úložišti a~provádí operace čtení a~zápisu dat, tím je typicky osobní počítač nebo jiný hostitelský systém. Druhým prvkem je Mass Storage zařízení (device), které je koncovým zařízením vystupující jako externí paměťové médium, tím může být například zmíněný flash Disk či Hard Disk.~\cite{usb_standard_ufi, silicon_labs_mass_storage_protocol}
+USB Mass Storage rozlišuje dva komunikační prvky, prvním z~nich je Mass Storage host, tedy zařízení, které aktivně řídí přístup k~úložišti a~provádí operace čtení a~zápisu dat, tím je typicky osobní počítač nebo jiný hostitelský systém. Druhým prvkem je Mass Storage zařízení (device), které je koncovým zařízením vystupující jako externí paměťové médium, tím může být například zmíněný flash Disk či Hard Disk.~\cite{usb_standard_ufi, silicon_labs_mass_storage_protocol}
 
 Z hlediska přenosových protokolů definuje USB Mass Storage dvě hlavní metody komunikace, kterými jsou Control/Bulk/Interrupt (CBI) a~Bulk-Only Transport (BOT). CBI je přenosový protokol definovaný standardem USB 1.1, který kombinuje tři typy USB přenosů~--~řídicí (control), blokové (bulk) a~přerušovací (interrupt). Přenos se~dále dělí na protokol přenosu dat, který využívá přenos přerušení, a~protokol, který přenos přerušení nevyužívá. V~současnosti nejrozšířenější metodou přenosu v~rámci USB Mass Storage je transport pomocí BOT, v~tomto režimu jsou data přenášena po blocích.
 Součástí USB Mass Storage bývá také USB Floppy Interface (UFI), což je sada příkazů založená na SCSI-2 a~SFF-8070 sadách příkazů, navržená pro jednoduchá bloková zařízení, původně určená pro USB disketové mechaniky (floppy disk), ale dnes běžně používaná pro základní interakci s jakýmkoliv typem Mass Storage zařízení. UFI definuje sadu příkazů pro čtení, zápis a~správu paměťového média.~\cite{usb_standard_ufi}
@@ -716,6 +716,9 @@ RTOS podporuje multitasking, tedy schopnost spouštět více logických jednotek
 
 Plánovač je součástí jádra (kernelu), které představuje centrální komponentu RTOS a~má na starosti správu běhu jednotlivých úloh (viz. obrázek~\ref{fig:rtos-scheduling}) a~přidělování procesorového času. Na rozdíl od jednoduchého sekvenčního provádění kódu v~nekonečné smyčce mohou tyto úlohy běžet paralelně na základě priorit, časování a~dalších parametrů. Kromě samotného plánování a~přepínání mezi úlohami (tzv. přepínání kontextu) zajišťuje jádro také podporu pro synchronizaci a~komunikaci mezi úlohami (např. semafory, fronty, mutexy), správu systémového času a~obsluhu přerušení.~\cite{freertos_book}
 
+% RTOS je obvykle menší a~lehčí než operační systém pro všeobecné použití, takže je vhodný pro zařízení s omezenou pamětí, výpočetní kapacitou a~spotřebou energie.
+Základními technickými výhodami RTOS jsou především deterministické chování, tedy schopnost reagovat na události ve~striktně definovaném čase, a~přesné řízení časování jednotlivých operací. To umožňuje systémům garantovat, že kritické úlohy budou vykonány ve~stanovených časových limitech, bez ohledu na zátěž systému. Dále již byly nastíněny oblasti, ve~kterých se~operační systémy reálného času běžně uplatňují, mohou jimi být kritické systémy, jejichž selhání může mít katastrofální následky. Proto různé standardizované RTOS garantují vyšší bezpečnostní standardy a~spolehlivější bezpečnostní funkce, například definované normami ISO 26262, DO-178C nebo IEC 61508.~\cite{freertos_safertos}
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.90\textwidth]{obrazky-figures/rtos_scheduling.pdf}
@@ -724,8 +727,6 @@ Plánovač je součástí jádra (kernelu), které představuje centrální komp
     \label{fig:rtos-scheduling}
 \end{figure}
 
-% RTOS je obvykle menší a~lehčí než operační systém pro všeobecné použití, takže je vhodný pro zařízení s omezenou pamětí, výpočetní kapacitou a~spotřebou energie.
-Základními technickými výhodami RTOS jsou především deterministické chování, tedy schopnost reagovat na události ve~striktně definovaném čase, a~přesné řízení časování jednotlivých operací. To umožňuje systémům garantovat, že kritické úlohy budou vykonány ve~stanovených časových limitech, bez ohledu na zátěž systému. Dále již byly nastíněny oblasti, ve~kterých se~operační systémy reálného času běžně uplatňují, mohou jimi být kritické systémy, jejichž selhání může mít katastrofální následky. Proto různé standardizované RTOS garantují vyšší bezpečnostní standardy a~spolehlivější bezpečnostní funkce, například definované normami ISO 26262, DO-178C nebo IEC 61508.~\cite{freertos_safertos}
 
 Naopak jedním z~častých argumentů proti jejich použití je větší režie (overhead), která může snížit výkon a~zvýšit paměťové nároky, čímž se~zvyšují nároky na hardware. RTOS vnáší do systému složitost, která může ztížit jeho pochopení a~ladění. Vývojáři musí být obeznámeni s rozhraním RTOS API a~rozumět tomu, jak fungují úlohy, zdroje a~komunikace mezi úlohami. Získání těchto znalostí může trvat delší dobu, což prodlužuje dobu vývoje a~zvyšuje náklady. Použití RTOS může také zvýšit náklady na systém. Mnoho komerčních dodavatelů RTOS si účtuje licenční poplatky, které mohou být pro malé projekty nákladné.~\cite{sysgo_baremetal_vs_rtos}
 
@@ -855,7 +856,7 @@ Součástí navrženého obvodu zálohovaného napájení je také detekce ztrá
     \centering
     \includegraphics[width=0.80\textwidth]{obrazky-figures/backup-power.pdf}
     
-    \caption{Schéma obvodu pro detekci ztráty napájení a~zálohované napájení}
+    \caption{Schéma obvodu pro detekci ztráty napájení a~zálohovaného napájení}
     \label{fig:backup-power}
 \end{figure}
 
@@ -872,7 +873,7 @@ Dále čip DS3231M+ obsahuje vývod 32KHZ, který slouží jako výstup stabiln�
     \centering
     \includegraphics[width=0.80\textwidth]{obrazky-figures/ds3231m+.pdf}
     
-    \caption{Obvod pro reálného času s čipem DS3231M+}
+    \caption{Zapojení obvodu reálného času -- DS3231M+}
     \label{fig:ds3231m+}
 \end{figure}
 
@@ -979,7 +980,7 @@ Výsledkem je zhotovená expanzní deska, na kterou byly připájeny všechny na
     \centering
     \includegraphics[width=0.98\textwidth]{obrazky-figures/datalogger.jpg}
     
-    \caption{Výsledná expanzní deska}
+    \caption{Výsledná expanzní deska -- přední strana}
     \label{fig:expansion-board}
 \end{figure}
 
@@ -1042,7 +1043,7 @@ Je-li připojení potvrzeno, příslušný semafor je uvolněn ve~prospěch \tex
     \centering
     \includegraphics[width=1.00\textwidth]{obrazky-figures/run_wout_freertos-updated.pdf}
     
-    \caption{Zjednuduššený diagram běhu a~přepínání úloh}
+    \caption{Zjednuduššený diagram běhu firmwaru digitálního záznamníku, včetně přepínání úloh}
     \label{fig:application-run-freertos}
 \end{figure}
 
@@ -1192,7 +1193,7 @@ Na následujícím obrázku~\ref{fig:pwrloss-detection-saleae} je možné vidět
     \centering
     \includegraphics[width=1.00\textwidth]{obrazky-figures/saleae-power-loss-det.png}
     
-    \caption{Detekce ztráty napájení, zachycena pomocí Saleae Logic 16 Pro}
+    \caption{Detekce ztráty napájení, zachycena pomocí logického analyzátoru Saleae Logic Pro~16}
     \label{fig:pwrloss-detection-saleae}
 \end{figure}
 
