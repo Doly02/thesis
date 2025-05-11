@@ -194,7 +194,7 @@ Digitální záznamníky implementované v~podobě dedikovaného zařízení na 
 \label{vicenasobna_vyrovnavaci_pamet}
 Jedním z~častých konceptů využívaných v~implementaci digitálních záznamníků je použití vícenásobné vyrovnávací paměti. Tento koncept je převážně známý díky algoritmům využívaným v~oboru počítačové grafiky. Grafický čip musí zpracovat velké množství dat za krátký časový úsek, proto algoritmus zpracování dat využívá dvě vyrovnávací paměti, přední vyrovnávací paměť, takzvaný Front Buffer, jež je využívána pro zobrazení aktuálního snímku, a~zadní vyrovnávací paměť, Back Buffer, ve~které čip připravuje nový obsah. Jakmile je nový snímek kompletní, vyrovnávací paměti se~vzájemně prohodí a~výsledný obsah tak může být plynule vykreslen bez artefaktů a~trhání.~\cite{buffering_chang, multiple_buffering_batch_saving, double_buffering_model}
 
-Obdobný mechanismus se~využívá i~v digitálních záznamnících, kde slouží k~zajištění kontinuálního sběru dat bez výpadků (viz obrázek~\ref{fig:multiple-buffering-1}). Zatímco Back Buffer přijímá nová digitální data ze vstupní periferie a~popřípadě je zpracovává, Front Buffer je současně ukládán na úložné médium. Jakmile je Back Buffer naplněn daty a~obsah Front Bufferu je uložen, dojde k~jejich prohození.~\cite{buffering_chang, multiple_buffering_batch_saving, double_buffering_model}
+Obdobný mechanismus se~využívá i~v digitálních záznamnících, kde slouží k~zajištění kontinuálního sběru dat bez výpadků (viz. obrázek~\ref{fig:multiple-buffering-1}). Zatímco Back Buffer přijímá nová digitální data ze vstupní periferie a~popřípadě je zpracovává, Front Buffer je současně ukládán na úložné médium. Jakmile je Back Buffer naplněn daty a~obsah Front Bufferu je uložen, dojde k~jejich prohození.~\cite{buffering_chang, multiple_buffering_batch_saving, double_buffering_model}
 
 \begin{figure}[h]
     \centering
@@ -219,7 +219,7 @@ Důležitou vlastností tohoto přístupu je jeho nízká operační režijní n
 
 Tato metoda nachází významné uplatnění zejména v~systémech pracujících v~reálném čase, kde dochází k~příjmu velkého objemu dat v~krátkých časových intervalech. Použití více vyrovnávacích pamětí zvyšuje celkovou propustnost systému a~pomáhá předcházet vzniku úzkých míst nebo ztrátě dat. ~\cite{buffering_chang, multiple_buffering_batch_saving, double_buffering_model}
 
-Naopak použití vyrovnávacích pamětí obecně zvyšuje nároky na systémové prostředky a~tím i~celkové náklady. Softwarová implementace bufferů vyžaduje dostatečnou kapacitu volatilní paměti RAM, což může být problém zejména u~starších nebo paměťově omezených vestavěných zařízení. Alternativně v~takovýchto případech lze využít hardwarové paměťové buffery, které však dále navyšují cenu zařízení.~\cite{buffering_chang, multiple_buffering_batch_saving, double_buffering_model}
+Naopak použití vyrovnávacích pamětí obecně zvyšuje nároky na systémové prostředky a~tím i~celkové náklady. Softwarová implementace bufferů vyžaduje dostatečnou kapacitu volatilní paměti RAM, což může být problém zejména u~starších nebo paměťově omezených vestavěných zařízení. Alternativně v~takovýchto případech lze využít hardwarové paměťové buffery, které však dále navyšují cenu zařízení.~\cite{double_buffering_disadvantages, multiple_buffering_batch_saving, double_buffering_model}
 % TODO: Je tedy vhodne si promyslet zda zdroje MCU budou dostacovat.
 
 \newpage
@@ -246,7 +246,7 @@ U dávkového ukládání se využívá podobná zásada jako u mazání dat ve 
 \label{cirkularni_buffer}
 Cirkulární buffer (circular buffer), někdy také označovaný jako kruhový nebo cylindrický buffer, je datová struktura, která funguje na principu FIFO fronty (First-In, First-Out), kde je paměť organizována jako logický kruh. Tento přístup je často využíván k~řešení problému typu jednoho producenta a~konzumenta (producent-consumer problem), kde jedno vlákno je zodpovědné za produkci dat, a~druhé vlákno je zodpovědné za konzumaci dat. Například ve~vestavěných zařízeních, jedním z~vláken je rutina obsluhy přerušení, která čte data ze senzoru, a~druhým vláknem je hlavní smyčka události, která data určitým způsobem zpracovává.~\cite{embedjournal_ring_buffer}
 
-Princip činnosti cirkulárního bufferu (viz obrázek~\ref{fig:circular-buffer}) spočívá v~použití dvou ukazatelů, jedním z~nich je zápisový ukazatel (head) a~druhým z~nich je čtecí ukazatel (tail). Ukazatel head vždy směřuje na pozici, kam bude zapisován následující prvek, zatímco ukazatel tail ukazuje na pozici, ze které bude čtena následující hodnota. Pokud ukazatel head dosáhne konce pole, vrací se~na jeho začátek, čímž je zajištěna kruhová povaha struktury. Při plném bufferu pak lze zvolit dvě strategie, buď mohou být přepsána nejstarší data, nebo lze nová data odmítnout, přičemž výběr závisí na konkrétní aplikaci.~\cite{embedjournal_ring_buffer, medium_ring_buffer}
+Princip činnosti cirkulárního bufferu (viz. obrázek~\ref{fig:circular-buffer}) spočívá v~použití dvou ukazatelů, jedním z~nich je zápisový ukazatel (head) a~druhým z~nich je čtecí ukazatel (tail). Ukazatel head vždy směřuje na pozici, kam bude zapisován následující prvek, zatímco ukazatel tail ukazuje na pozici, ze které bude čtena následující hodnota. Pokud ukazatel head dosáhne konce pole, vrací se~na jeho začátek, čímž je zajištěna kruhová povaha struktury. Při plném bufferu pak lze zvolit dvě strategie, buď mohou být přepsána nejstarší data, nebo lze nová data odmítnout, přičemž výběr závisí na konkrétní aplikaci.~\cite{embedjournal_ring_buffer, medium_ring_buffer}
 
 \begin{figure}[h]
     \centering
@@ -379,20 +379,9 @@ Digitální záznamníky dat jsou běžně využívány v~praxi a~existuje řada
 
 \subsection{Keeylog AirDrive Serial Logger}
 \label{keelog_airdrive_serial_datalogger}
-Jedním z~řešení digitálního záznamníku je AirDrive Serial Logger, vyvinutý společností Keelog. Zařízení AirDrive je moderní digitální záznamník, který umožňuje záznam sériových dat pomocí komunikačního standardu RS-232 či RS-485. Na rozdíl od tradičních řešení, která ukládají data pouze na lokální úložiště, nabízí tento záznamník konektivitu k~Wi-Fi síti, čímž umožňuje ukládání dat na vzdálené uložiště (viz. kapitola~\ref{zapis_na_vzdalene_uloziste}), kam mohou být data pravidelně odesílána a~následně mohou být analyzována. Záznamník AirDrive také podporuje možnost konfigurace, kterou je možné provést pomocí úpravy souboru 
-CONFIG.TXT.~\cite{keelog_airdrive_serial_datalogger, keelog_airdrive_serial_datalogger_pro}
+Jedním z~řešení digitálního záznamníku je AirDrive Serial Logger, vyvinutý společností Keelog. Zařízení AirDrive je moderní digitální záznamník, který umožňuje záznam sériových dat pomocí komunikačního standardu RS-232 či RS-485. Na rozdíl od tradičních řešení, která ukládají data pouze na lokální úložiště, nabízí tento záznamník konektivitu k~Wi-Fi síti, čímž umožňuje ukládání dat na vzdálené uložiště (viz. kapitola~\ref{zapis_na_vzdalene_uloziste}), kam mohou být data pravidelně odesílána a~dále zpracovávána či analyzována. Záznamník AirDrive podporuje konfiguraci prostřednictvím webového rozhraní, přičemž lze tímto způsobem nastavit například přenosovou rychlost, počet datových bitů, paritu a počet stop bitů.~\cite{keelog_airdrive_serial_datalogger}
 
-Společnost Keelog poskytuje vícero variant AirDrive záznamníků, které se~liší poskytnutými funkcionalitami. Hlavním rozdílem mezi jednotlivými verzemi je odlišný přístup k~získaným datům, základní verze pracuje jako Wi-Fi hotspot, zatímco verze Pro a~Max umožňují připojení do existující Wi-Fi sítě a~také odesílání e-mailových reportů, časové razítkování záznamů nebo dokonce živé streamování dat. V~čem se~naopak zmíněné verze neliší, je velikostí interní paměti, která činí 16 GB, jež je uživatelsky přístupná i~jako USB flash disk s rychlostí až 480 Mbps. Zařízení jako AirDrive nachází uplatnění zejména v~průmyslovém monitorování, zpětném inženýrství sériových protokolů, zálohování dat z~platebních terminálů nebo sběru dat ze senzorových systémů.~\cite{keelog_airdrive_serial_datalogger, keelog_airdrive_serial_datalogger_pro}
-
-\newpage
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1.00\textwidth]{obrazky-figures/keeylog_airdrive_serial_logger.pdf}
-    
-    \caption{Keeylog AirDrive Serial Logger s přístupem k~datům přes webové rozhraní~\cite{keelog_airdrive_serial_datalogger_scheme, keelog_airdrive_serial_datalogger}}
-    \label{fig:keelog-airdrive-serial-datalogger}
-\end{figure}
+Společnost Keelog poskytuje vícero variant AirDrive záznamníků, které se~liší poskytnutými funkcionalitami. Hlavním rozdílem mezi jednotlivými verzemi je odlišný přístup k~získaným datům, základní verze pracuje jako Wi-Fi hotspot, zatímco verze Pro a~Max umožňují připojení do existující Wi-Fi sítě a~také odesílání e-mailových reportů, časové razítkování záznamů nebo dokonce živé streamování dat. V~čem se~naopak zmíněné verze neliší, je velikostí interní paměti, která činí 16 GB, jež je uživatelsky přístupná i~jako USB flash disk s rychlostí až 480 Mbps. Zařízení jako AirDrive nachází uplatnění zejména v~průmyslovém monitorování, zpětném inženýrství sériových protokolů, zálohování dat z~platebních terminálů nebo sběru dat ze senzorových systémů.~\cite{keelog_airdrive_serial_datalogger}
 
 Navzdory svým pokročilým funkcím má AirDrive Serial Logger i~několik nevýhod. Jednou z~nich je omezení na standardy RS-232 a~RS-485, které sice stále nacházejí uplatnění v~průmyslových a~v řadě dalších systémů, avšak v~některých ostatních zařízeních je pro připojení k~jiným rozhraním nutné využít sériové převodníky. Druhou limitací je omezení maximální přenosové rychlosti zaznamenávaných dat, která může činit nejvýše 230400~baudů. To je například nevyhovující pro monitorování systémů bezdrátového nabíjení společnosti NXP Semiconductors, kde se~komunikace probíhá s vyšší komunikační rychlostí.~\cite{keelog_airdrive_serial_datalogger}
 
@@ -400,7 +389,7 @@ Navzdory svým pokročilým funkcím má AirDrive Serial Logger i~několik nevý
 
 \subsection{Anticyclone Systems AntiLog Data Logger Pro}
 \label{anticyclone_systems_antilog_data_logger}
-Druhým zmíněným řešením digitálního záznamníku je AntiLog Data Logger od společnosti Anticyclone Systems (viz. obrázek \ref{fig:antilog-pro}), který lze klasifikovat jako vysoce výkonný digitální záznamník určený pro záznam sériových dat v~průmyslových a~vývojových aplikacích.\footnote{Společnost Anticyclone Systems nabízí tři varianty těchto záznamníků, v~tomto textu je primárně popsána verze Pro, jež je svými parametry a~funkcionalitou nejblíže záznamníkům, které jsou předmětem této bakalářské práce.} Podobně jako u~řešení od společnosti Keeylog (viz. kapitola~\ref{keelog_airdrive_serial_datalogger}) umožňuje data přijímat pomocí standardu RS-232 a~také plnohodnotně zaznamenávat obousměrné sériové přenosy s vysokými přenosovými rychlostmi až 921 600~baudů. Zařízení umožňuje dlouhodobé zaznamenávání díky podpoře velkokapacitních nevolatilních úložišť až do velikosti 1 TB. AntiLog Data Logger je dostupný ve~verzích AntiLog, AntiLog Pro a~OEM modul pro přímou integraci do jiných systémů. Nejpokročilejší verze Pro podporuje funkce jako časové razítkování, podpora GNSS/NMEA dat a~možnost vícekanálového záznamu, což jej činí vhodnou volbou pro aplikace, kde je potřeba přesné a~rozsáhlé monitorování sériových přenosů.~\cite{anticyclone_systems_antilog_pro}
+Druhým zmíněným řešením digitálního záznamníku je AntiLog Data Logger od společnosti Anticyclone Systems (viz. obrázek \ref{fig:antilog-pro}), který lze klasifikovat jako vysoce výkonný digitální záznamník určený pro záznam sériových dat v~průmyslových a~vývojových aplikacích.\footnote{Společnost Anticyclone Systems nabízí tři varianty těchto záznamníků, v~tomto textu je primárně popsána verze Pro, jež je svými parametry a~funkcionalitou nejblíže záznamníkům, které jsou předmětem této bakalářské práce.} Podobně jako u~řešení od společnosti Keeylog (viz. kapitola~\ref{keelog_airdrive_serial_datalogger}) umožňuje data přijímat pomocí standardu RS-232 a~také plnohodnotně zaznamenávat obousměrné sériové přenosy s vysokými přenosovými rychlostmi až 921600~baudů. Zařízení umožňuje dlouhodobé zaznamenávání díky podpoře velkokapacitních nevolatilních úložišť až do velikosti 1 TB. AntiLog Data Logger je dostupný ve~verzích AntiLog, AntiLog Pro a~OEM modul pro přímou integraci do jiných systémů. Nejpokročilejší verze Pro podporuje funkce jako časové razítkování, podpora GNSS/NMEA dat a~možnost vícekanálového záznamu, což jej činí vhodnou volbou pro aplikace, kde je potřeba přesné a~rozsáhlé monitorování sériových přenosů.~\cite{anticyclone_systems_antilog_pro}
 
 \begin{figure}[h]
     \centering
@@ -418,7 +407,7 @@ Hlavním nevýhodou Anti-Log záznamníku je jeho vysoká pořizovací cena, ta 
 
 Představená řešení AirDrive a~AntiLog reprezentují různé přístupy k~problematice digitálního záznamu sériových dat. Navzdory svým výhodám však žádné z~uvedených řešení plně neodpovídá požadavkům pro záznam dat společnosti NXP Semiconductors. 
 
-Požadovaný digitální záznamník musí zvládat zaznamenávat sériovou komunikaci o~rychlosti mezi 230,000-400,000~baudů, dále je potřeba vkládat časová razítka, jelikož výsledné záznamy musí být možné synchronizovat s dalším systémem. Nezbytně nutné je, aby záznamník disponoval mechanismem prevence proti ztrátě dat při výpadku napájecího napětí, získaná data musí být možné vyčíst bez nutnosti vyjmutí fyzického média a~navíc to vše za rozumnou pořizovací cenu.
+Požadovaný digitální záznamník musí zvládat zaznamenávat sériovou komunikaci o~rychlosti mezi 230000-400000~baudů, dále je potřeba vkládat časová razítka, jelikož výsledné záznamy musí být možné synchronizovat s dalším systémem. Nezbytně nutné je, aby záznamník disponoval mechanismem prevence proti ztrátě dat při výpadku napájecího napětí, získaná data musí být možné vyčíst bez nutnosti vyjmutí fyzického média a~navíc to vše za rozumnou pořizovací cenu.
 
 Hlavním společným problémem obou představených řešení je prevence ztráty dat při výpadku napájecího napětí, kterou ani jedno řešení neřeší. Společnou nevýhodou záznamníků Keelog a~Anticyclone Systems je jejich zaměření výhradně na standard RS-232, což také není vhodné pro použití, digitální záznamník bude použit k~monitorování bezdrátového nabíjení využívající kanály UARTu a~musel by tak být poskytován společně se~záznamníkem převodník. Dalším omezením obou zařízení je nemožnost přizpůsobit formát zaznamenaných dat konkrétním potřebám, neboť výstup je pevně dán výrobcem a~nelze jej upravit.
 
@@ -469,7 +458,7 @@ Raspberry Pi existuje v~několika verzích, následující text je zaměřen na 
     \label{fig:raspberry-pi-zero-2w}
 \end{figure}
 
-Naopak omezením Raspberry Pi Zero 2 W může být počet komunikačních periferií, platforma totiž disponuje pouze dvěmi moduly UART, SPI a~I\textsuperscript{2}C. Již dvě instance UART periferie mohou vývoj zkomplikovat, pokud by byl jeden UART využit pro ladicí výstup a~druhý pro příjem sériových dat, nebylo by již možné připojit další komponentu komunikující přes UART, což by mohlo výrazně omezit možnosti budoucího rozšíření systému digitálního záznamníku. Raspberry Pi Zero 2 W rovněž nedisponuje žádným analogovým komparátorem, čímž se~zmenšuje výběr jak vyřešit detekci ztráty napájecího napětí, ta by v~tomto případě musela být vyřešena pomocí GPIO, ADC nebo pomocí externí komponenty. Zero 2 W taktéž nedisponuje interním obvodem reálného času, nabízelo by se~tedy využít jako referenční zdroj času například časovač se~softwarovým přerušením,~\cite{raspberry_pi_pico_2w}
+Naopak omezením Raspberry Pi Zero 2 W může být počet komunikačních periferií, platforma totiž disponuje pouze dvěma moduly UART, SPI a~I\textsuperscript{2}C. Již dvě instance UART periferie mohou vývoj zkomplikovat, pokud by byl jeden UART využit pro ladicí výstup a~druhý pro příjem sériových dat, nebylo by již možné připojit další komponentu komunikující přes UART, což by mohlo výrazně omezit možnosti budoucího rozšíření systému digitálního záznamníku. Raspberry Pi Zero 2 W rovněž nedisponuje žádným analogovým komparátorem, čímž se~zmenšuje výběr jak vyřešit detekci ztráty napájecího napětí, ta by v~tomto případě musela být vyřešena pomocí GPIO, ADC nebo pomocí externí komponenty. Zero 2 W taktéž nedisponuje interním obvodem reálného času, nabízelo by se~tedy využít jako referenční zdroj času pro časové značky například časovač se~softwarovým přerušením.~\cite{raspberry_pi_pico_2w}
 
 % ----------------------------------------------------
 % DALSI NAZVY: Volba datového úložiště, Výběr externího uložiště pro záznam dat, Možnosti způsobu ukládání získaných dat
@@ -486,7 +475,7 @@ Naopak omezením Raspberry Pi Zero 2 W může být počet komunikačních perife
 % ----------------------------------------------------
 % DALSI NAZVY: Volba datového úložiště, Výběr externího uložiště pro záznam dat
 \section{Možnosti správy dat -- souborové systémy}
-Zaznamenaná data na externím úložišti je potřeba organizovat a~spravovat, aby mohla být v~budoucnu určitým způsobem interpretována a~zároveň je vhodné zajistit konzistenci a~perzistenci těchto dat. K~tomu účelu lze využít například souborový systém, databázový systém nebo navrhnout vlastní způsob organizace a~správy dat. Každý z~těchto přístupů má svá specifika, nicméně data, která budou zaznamenávána vyvíjeným záznamníkem, jsou nestrukturovaná. Pod pojmem nestrukturovaná data lze rozumět taková data, která nejsou organizována jednotně v~tabulkách (relacích) nebo jiných databázových strukturách, ale mohou být ukládána do více typů souborů v~různých formátech a~umístěna do různorodých adresářových struktur. Z tohoto důvodu byl zvolen souborový systém, díky kterému bude firmware digitálního záznamníku navíc lépe upravitelný pro různé typy záznamu.~\cite{weka_structured_unstructured_data, virginia_tech_file_database_systems}
+Zaznamenaná data na externím úložišti je potřeba organizovat a~spravovat, aby mohla být v~budoucnu určitým způsobem interpretována a~zároveň je vhodné zajistit konzistenci a~perzistenci těchto dat. K~tomu účelu lze využít například souborový systém, databázový systém nebo navrhnout vlastní způsob organizace a~správy dat. Každý z~těchto přístupů má svá specifika, nicméně data, která budou zaznamenávána vyvíjeným záznamníkem, jsou nestrukturovaná. Pod pojmem nestrukturovaná data lze rozumět taková data, která nejsou organizována jednotně v~tabulkách (relacích) nebo jiných databázových strukturách, ale mohou být ukládána do více typů souborů v~různých formátech a~umístěna do různorodých adresářových struktur. Z tohoto důvodu byl zvolen souborový systém.~\cite{weka_structured_unstructured_data, virginia_tech_file_database_systems}
 
 \subsection{FATFS}
 \label{fatfs}
@@ -558,7 +547,7 @@ Jedním z~požadavků na realizaci digitálního záznamníku v~této bakalářs
 
 \subsection{USB Mass Storage}
 \label{usb_mass_storage}
-Možností pro zajištění přístupu k~uloženým datům představuje použití standardu USB Mass Storage (MSC), vypracovaného v~roce 1998 organizací USB-IF (USB Implementers Forum). Tento standard umožňuje, aby zařízení vystupovalo vůči hostitelskému systému jako běžné blokové úložiště (block device), tedy například jako paměťová karta nebo externí disk. Velkou výhodou je, že MSC je dodnes podporován většinou moderních operačních systémů, včetně Microsoft Windows, distribucí Linuxu i~macOS. Díky tomu lze data snadno vyčítat a~zapisovat téměř z~jakéhokoliv osobního počítače bez nutnosti speciálních ovladačů.~\cite{usb_standard_ufi, silicon_labs_mass_storage_protocol}
+Jednou z možností pro zajištění přístupu k~uloženým datům představuje použití standardu USB Mass Storage (MSC), vypracovaného v~roce 1998 organizací USB-IF (USB Implementers Forum). Tento standard umožňuje, aby zařízení vystupovalo vůči hostitelskému systému jako běžné blokové úložiště (block device), tedy například jako paměťová karta nebo externí disk. Velkou výhodou je, že MSC je dodnes podporován většinou moderních operačních systémů, včetně Microsoft Windows, distribucí Linuxu i~macOS. Díky tomu lze data snadno vyčítat a~zapisovat téměř z~jakéhokoliv osobního počítače bez nutnosti speciálních ovladačů.~\cite{usb_standard_ufi, silicon_labs_mass_storage_protocol}
 
 USB Mass Storage rozlišuje dva komunikační prvky, prvním z~nich je Mass Storage host, tedy zařízení, které aktivně řídí přístup k~úložišti a~provádí operace čtení a~zápisu dat, tím je typicky osobní počítač nebo jiný hostitelský systém. Druhým prvkem je Mass Storage zařízení (device), které je koncovým zařízením vystupující jako externí paměťové médium.~\cite{usb_standard_ufi, silicon_labs_mass_storage_protocol}
 
@@ -579,7 +568,7 @@ Komunikace mezi hostitelem a~zařízením v~rámci protokolu Bulk-Only Transport
 
 
 \subsection{Media Transfer Protocol}
-Media Transfer Protokol neboli zkráceně MTP je druhým významným protokolem umožňujícím přenos multimediálních dat mezi hostitelem a~cílovým zařízením pomocí USB. MTP protokol byl navržen firmou Microsoft na základě protokolu Picture Transfer Protocol (PTP), se~kterým je dodnes zpětně kompatibilní. MTP je od roku 2008 součástí USB standardu a~od roku 2011 se~stal standardem pro transfer souborů u~zařízení využívajících operační systém Android.~\cite{usb_standard_mtp}
+Media Transfer Protokol neboli zkráceně MTP je druhým významným protokolem umožňujícím přenos multimediálních dat mezi hostitelem a~cílovým zařízením pomocí USB. MTP protokol byl navržen firmou Microsoft na základě protokolu Picture Transfer Protocol (PTP), se~kterým je dodnes zpětně kompatibilní. MTP je od roku 2008 součástí USB standardu a~od roku 2011 se~stal standardem pro transfer souborů u~zařízení využívajících operační systém Android.~\cite{usb_standard_mtp, mtp_android}
 
 Komunikace probíhá ve~formě transakcí, přičemž role komunikujících zařízení jsou iniciátor (initiator) a~odpovídající (responder), zároveň je možné, aby si zařízení role mohly vyměnit. Transakce probíhají vždy ve~třech fázích definovaných standardem, tou první je fáze požadavku na operaci (Operation Request Phase), kdy iniciátor vyšle požadavek na provedení určité operace. Následuje volitelná druhá fáze přenosu dat (Data Phase), ve~které proběhne přenos dat, pokud to daná operace vyžaduje. Poslední je fáze odpovědi, ve~které odpovídající odešle iniciátoru odpověď, ve~které informuje o~výsledku operace. Probíhající komunikace je vždy jednosměrná (unidirectional), tedy v~rámci jedné operace mohou data být pouze přenášena od iniciátora k~odpovídajícímu či naopak, nikoliv však oběma směry současně.~\cite{usb_standard_mtp}
 
@@ -802,7 +791,7 @@ Vybraná základová deska FRDM-MCXN947 neobsahuje všechny potřebné komponent
 
 \subsection{Zálohované napájení}
 \label{zalohovane_napajeni_hw}
-Důležitou součástí realizovaného digitálního záznamníku je zálohované napájení s detekcí ztráty napájecího napětí. Zálohované napájení lze realizovat několika způsoby, například pomocí Li-Po baterie, knoflíkového článku nebo pomocí kondenzátoru. Nejschůdnější variantou pro digitální záznamník se ukázal být kondenzátor, respektive superkondenzátor. Na rozdíl od baterií je schopen okamžitě dodat relativně vysoký vybíjecí proud, který byl naměřen při testování spotřeby pomocí zařízení Power Profiler Kit II od společnosti Nordic Semiconductors (viz obrázek~\ref{fig:power-consumption}), při kterém se ukázalo, že vstupní proud může dosáhnout hodnot až \SI{250}{\milli\ampere}. Běžné knoflíkové články nebo malé Li-Po baterie by v tomto ohledu nemusely zajistit dostatečný proud a případně by při takové zátěži vedly k velmi krátké výdrži.~\cite{nordic_semi_ppk2}
+Důležitou součástí realizovaného digitálního záznamníku je zálohované napájení s detekcí ztráty napájecího napětí. Zálohované napájení lze realizovat několika způsoby, například pomocí Li-Po baterie, knoflíkového článku nebo pomocí kondenzátoru. Nejschůdnější variantou pro digitální záznamník se ukázal být kondenzátor, respektive superkondenzátor. Na rozdíl od baterií je schopen okamžitě dodat relativně vysoký vybíjecí proud, který byl naměřen při testování spotřeby pomocí zařízení Power Profiler Kit II od společnosti Nordic Semiconductors (viz. obrázek~\ref{fig:power-consumption}), při kterém se ukázalo, že vstupní proud může dosáhnout hodnot až \SI{250}{\milli\ampere}. Běžné knoflíkové články nebo malé Li-Po baterie by v tomto ohledu nemusely zajistit dostatečný proud a případně by při takové zátěži vedly k velmi krátké výdrži.~\cite{nordic_semi_ppk2}
 
 \begin{figure}[h]
     \centering
@@ -820,7 +809,7 @@ Jako vhodný kondenzátor byl tedy vybrán model SCMR14G334SRBB0 od společnosti
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.50\textwidth]{obrazky-figures/test_capacitors.pdf}
+    \includegraphics[width=0.60\textwidth]{obrazky-figures/test_capacitors.pdf}
     
     \caption{Obvod pro testování kondenzátoru}
     \label{fig:test-capacitors}
@@ -834,7 +823,7 @@ Aby bylo možné vyhodnotit vhodnost kondenzátoru pro napájení digitálního 
 V_{\text{LDO Min}} = V_{\text{LDO Out}} + V_{\text{Dropout}}
 \]
 
-V případě použitého stabilizátoru, který je využit na vývojové desce FRDM-MCXN947, je hodnota Dropout Voltage rovna \SI{0.2}{\volt} a~minimálním napětím, kterým tedy tato deska musí být napájena, činí \SI{3.5}{\volt}. Součástí zapojení na schématu je také Schottky dioda, na které vzniká úbytek napětí, u~použité součástky činí tento úbytek přibližně \SI{0.4}{\volt}. Z těchto hodnot vyplývá, že je nutné sledovat napětí vybíjejícího se~kondenzátoru v~intervalu od \SI{4.6}{\volt} do \SI{3.5}{\volt}, které definuje časový interval, ve~kterém by měl být provoz vývojové desky stabilní.
+V případě použitého stabilizátoru, který je využit na vývojové desce FRDM-MCXN947, je hodnota Dropout Voltage rovna \SI{0.2}{\volt} a~minimálním napětím, kterým tedy tato deska musí být napájena, činí \SI{3.5}{\volt}. Součástí zapojení na schématu je také Schottkyho dioda, na které vzniká úbytek napětí, u~použité součástky činí tento úbytek přibližně \SI{0.4}{\volt}. Z těchto hodnot vyplývá, že je nutné sledovat napětí vybíjejícího se~kondenzátoru v~intervalu od \SI{4.6}{\volt} do \SI{3.5}{\volt}, které definuje časový interval, ve~kterém by měl být provoz vývojové desky stabilní.
 
 Následující obrázek~\ref{fig:test-capacitors-osciloscope}, zachycuje průběh napětí z~výše zmíněného testu, zaznamenaného pomocí osciloskopu, ze kterého je patrné chování napájecího napětí v~čase. Z naměřených dat vyplývá, že napětí na kondenzátoru zůstává v~požadovaném funkčním rozsahu od \SI{4.6}{\volt} do \SI{3.5}{\volt} po dobu přibližně 1.3 sekundy při odporu $\SI{20}{\ohm}$. Pokud tedy dojde ke včasné detekci ztráty napájejícího napětí, může dojít k~bezpečnému ukončení programu a~korektnímu uložení všech potřebných dat, která jsou dočasně uložena ve~volatilní paměti RAM, což potvrzuje vhodnost zvoleného superkondenzátoru pro danou aplikaci zálohovaného napájení.
 
@@ -847,11 +836,11 @@ Následující obrázek~\ref{fig:test-capacitors-osciloscope}, zachycuje průbě
 \end{figure}
 
 
-Na následujícím obrázku~\ref{fig:backup-power} je pak znázorněno výsledné schéma obvodu určeného k~realizaci zálohovaného napájení včetně detekce ztráty hlavního napájecího napětí. Obvod zahrnuje zmíněnou Schottkyho diodu, která zabraňuje zpětnému toku proudu z~kondenzátoru, a~nabíjecí odpor s hodnotou $\SI{10}{\ohm}$, která byla zvolena tak, aby nabíjecí proud nepřekročil maximální proud povolený základním profilem napájení standardu USB-C, a~zároveň aby nabíjení kondenzátoru probíhalo v~přiměřeném čase.
+Na následujícím obrázku~\ref{fig:backup-power} je pak znázorněno výsledné schéma obvodu určeného k~realizaci zálohovaného napájení včetně detekce ztráty hlavního napájecího napětí. Obvod zahrnuje zmíněnou Schottkyho diodu, která zajišťuje zpětný tok proudu z~kondenzátoru, a~nabíjecí odpor s hodnotou $\SI{10}{\ohm}$, která byla zvolena tak, aby nabíjecí proud nepřekročil maximální proud povolený základním profilem napájení standardu USB-C, a~zároveň aby nabíjení kondenzátoru probíhalo v~přiměřeném čase.
 
 \newpage
 
-Součástí navrženého obvodu zálohovaného napájení je také detekce ztráty napájecího napětí. Monitorování je realizováno přes napěťový dělič, protože sledovaná \SI{5}{\volt} větev vývojové desky překračuje maximální přípustné napětí pro přímé připojení na vstupy mikrokontroléru pracujícího s logikou \SI{3.3}{\volt}. Výstup z~napěťového děliče je připojen na pin P0\_22, který umožňuje využití funkcí GPIO, komparátoru i~analogově-digitálního převodníku.
+Součástí navrženého obvodu zálohovaného napájení je také detekce ztráty napájecího napětí. Monitorování je realizováno přes napěťový dělič, protože sledovaná \SI{5}{\volt} větev vývojové desky překračuje maximální přípustné napětí pro přímé připojení na vstupy mikrokontroléru pracujícího s logikou \SI{3.3}{\volt}. Výstup z~napěťového děliče je připojen na pin mikrokontroléru P0\_22, který umožňuje využití funkcí GPIO, komparátoru i~analogově-digitálního převodníku.
 
 \begin{figure}[h]
     \centering
@@ -920,7 +909,7 @@ Krom samotných obvodů deska plošného spoje obsahuje čtyři montážní otvo
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.75\textwidth]{obrazky-figures/extension_shield-brd-front.pdf}
+    \includegraphics[width=0.81\textwidth]{obrazky-figures/extension_shield-brd-front.pdf}
     
     \caption{Layout expanzní desky -- přední strana}
     \label{fig:layout-front}
@@ -928,7 +917,7 @@ Krom samotných obvodů deska plošného spoje obsahuje čtyři montážní otvo
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.75\textwidth]{obrazky-figures/extension_shield-brd-back.pdf}
+    \includegraphics[width=0.81\textwidth]{obrazky-figures/extension_shield-brd-back.pdf}
     
     \caption{Layout expanzní desky -- spodní strana}
     \label{fig:layout-back}
@@ -937,7 +926,7 @@ Krom samotných obvodů deska plošného spoje obsahuje čtyři montážní otvo
 \newpage
 
 
-\subsection{Seznam součástek expanzní desky}
+\subsection{Cenová kalkulace součástek expanzní desky}
 \label{bom_list}
 
 Důležitým parametrem expanzní desky je i~její cena. Celková cena komponent použitých na realizaci expanzní desky k~datu 25.2.2025 činí přibližně 880~Kč. V~následující tabulce~\ref{tab:bom} je uveden přehled součástek použitých při návrhu digitálního záznamníku, včetně jejich orientačních cen. 
@@ -962,6 +951,7 @@ Nutno dodat, že doporučené pin headery od výrobce Samtec nejsou nezbytně nu
         SCMR14G334SRBB0     & Superkondenzátor (\mbox{KYOCERA AVX})  & 1  & 141,09 Kč  \\ \hline
         RSX301L-30DDTE25    & Schottky dioda (ROHM)           & 1  & 23,58 Kč   \\ \hline
         BC546               & NPN tranzistor (ON Semi)        & 5  & 5,71 Kč    \\ \hline
+        Bateriový box CR2032 & --                             & 1  & --         \\ \hline
         THT rezistor        & $\SI{10}{\ohm}$                 & 1  & --         \\ \hline
         SMD rezistor R1206  & $\SI{18}{\kilo\ohm}$            & 1  & --         \\ \hline
         SMD rezistor R1206  & $\SI{33}{\kilo\ohm}$            & 1  & --         \\ \hline
@@ -1261,7 +1251,7 @@ nasazení. Po ukončení testu byly zaznamenané výstupy porovnány s původní
 soubory. Výsledky porovnání potvrdily, že ve~všech testovaných případech proběhl přenos
 korektně a~nedošlo k~žádné ztrátě ani poškození dat.
 
-Digitální záznamník byl také úspěšně ověřen pomocí skriptu \texttt{stress\_test.py} obsahující zátěžový test. Při tomto testu byla data do digitálního záznamníku odesílána s rychlostí 921600~baudů. Data byla nejprve shromažďována do cirkulárního bufferu o~velikosti 4~KiB, z něhož se~následně po blocích o~velikosti 4~KiB ukládala na SD kartu. Výsledné záznamové soubory měly velikost 1~MiB.
+Digitální záznamník byl také úspěšně ověřen pomocí skriptu \texttt{stress\_test.py} obsahující zátěžový test. Při tomto testu byla data do digitálního záznamníku odesílána s rychlostí 921,600~baudů. Data byla nejprve shromažďována do cirkulárního bufferu o~velikosti 4~KiB, z něhož se~následně po blocích o~velikosti 4~KiB ukládala na SD kartu. Výsledné záznamové soubory měly velikost 1~MiB.
 
 Součástí funkčního testování bylo také ověření chování digitálního záznamníku v~hraničních
 či nestandardních situacích, které mohou nastat při reálném nasazení digitálního
@@ -1313,7 +1303,7 @@ Kromě funkcionálního testování byla provedena statická analýza zdrojovéh
 % k~spuštění PC-lint Plus je potřeba nástoj nastavit pomocí konfiguračních souborů
 K tomuto účelu byl využit nástroj PC-lint Plus ve verzi 2.2 od společnosti Vector s 14denní licencí zdarma. Konfigurační soubory \texttt{lint\_config.lts} a~\texttt{sources.lts} spolu s výstupními reporty nástroje jsou uloženy ve~složce \texttt{test/static-analysis/}.
 
-Pozornost byla věnována primárně pravidlům spadajícím do kategorie Required a~Mandatory.\footnote{Standard MISRA C rozlišuje kategorie Advisory, Mandatory a~Required. Pravidla ze skupiny Advisory nebyly brány v~potaz, porušení pravidel této kategorie nijak nenarušují fukcionalitu firmwaru.} Všechna nalezená porušení pravidel patřící do kategorií Required a~Mandatory byla opravena, případně obhájena pomocí komentářů ve~zdrojovém kódu, kde je uveden odkaz na příslušné pravidlo i~odůvodnění výjimky (viz ukázka~\ref{lst:misra}). Obhájená porušení se~týkají zejména kvůli architektuře MCUXpresso SDK, FreeRTOSu, či z~důvodu, že PC-lint Plus nedokázal například najít souvislosti mezi zdrojovými a~hlavičkovými soubory.
+Pozornost byla věnována primárně pravidlům spadajícím do kategorie Required a~Mandatory.\footnote{Standard MISRA C rozlišuje kategorie Advisory, Mandatory a~Required. Pravidla ze skupiny Advisory nebyly brány v~potaz, porušení pravidel této kategorie nijak nenarušují fukcionalitu firmwaru.} Všechna nalezená porušení pravidel patřící do kategorií Required a~Mandatory byla opravena, případně obhájena pomocí komentářů ve~zdrojovém kódu, kde je uveden odkaz na příslušné pravidlo i~odůvodnění výjimky (viz. ukázka~\ref{lst:misra}). Obhájená porušení se~týkají zejména kvůli architektuře MCUXpresso SDK, FreeRTOSu, či z~důvodu, že PC-lint Plus nedokázal například najít souvislosti mezi zdrojovými a~hlavičkovými soubory.
 
 \newpage
 
