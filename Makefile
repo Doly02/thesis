@@ -5,7 +5,7 @@
 # Edited by: dytrych AT fit vut cz
 #===========================================
 # asi budete chtit prejmenovat / you will probably rename:
-CO=projekt
+CO=xdolak09-bthesis
 
 all: $(CO).pdf
 
