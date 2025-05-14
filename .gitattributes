@@ -1,1 +1,8 @@
 * text eol=lf
+
+*.jpg binary
+*.png binary
+*.pdf binary
+*.drawio binary
+*.swg binary
+*.sal binary
